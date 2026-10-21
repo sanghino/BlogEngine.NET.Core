@@ -129,7 +129,7 @@ public sealed class ContactController(SiteRenderer site, PublicContent content, 
         return await site.PageAsync("contact", new PageMeta
         {
             Title = site.T("contact"),
-            Description = HtmlText.Strip(blogSettings.ContactFormMessage),
+            Description = HtmlText.ToPlainText(blogSettings.ContactFormMessage),
         }, new Dictionary<string, object?>
         {
             ["contact"] = model,

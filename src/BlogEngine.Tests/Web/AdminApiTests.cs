@@ -148,6 +148,27 @@ public sealed partial class AdminApiTests
         Assert.AreEqual(HttpStatusCode.Created, page.StatusCode, await page.Content.ReadAsStringAsync());
     }
 
+    /// <summary>TinyMCE salva le lettere accentate come entità (&amp;egrave;): nei testi semplici devono tornare caratteri.</summary>
+    [TestMethod]
+    public async Task AccentedLettersSavedAsEntities_AreShownAsCharacters()
+    {
+        var post = await SendJsonAsync<JsonObject>(HttpMethod.Post, "/api/posts", """
+            { "Id": "", "Title": "Accenti", "Author": "admin", "Content": "<p>Perch&egrave; s&igrave;, &egrave; vero</p>", "DateCreated": "2026-10-21 18:00",
+              "Slug": "", "Categories": [], "Tags": [], "IsPublished": true }
+            """, HttpStatusCode.Created);
+        Assert.AreEqual("Perchè sì, è vero", post["Description"]!.GetValue<string>(), "Descrizione automatica in testo semplice.");
+
+        var home = await _admin.GetStringAsync("/");
+        StringAssert.Contains(home, "Perchè sì, è vero", "Il testo è codificato una sola volta e gli accenti restano leggibili.");
+        Assert.IsFalse(home.Contains("&amp;egrave;"), "Niente entità codificate due volte.");
+
+        var single = await _admin.GetStringAsync("/post/Accenti");
+        Assert.IsFalse(single.Contains("&amp;egrave;"));
+        StringAssert.Contains(single, "\"description\": \"Perch\\u00E8 s\\u00EC");
+
+        StringAssert.Contains(await _admin.GetStringAsync("/search?q=perch%C3%A8"), "Accenti", "La ricerca trova la parola con l'accento.");
+    }
+
     [TestMethod]
     public async Task Validation_ErrorsBecomeBadRequestWithMessage()
     {

@@ -89,7 +89,7 @@ public sealed partial class SearchService(IPostService posts, IPageService pages
 
     private static double Score(IReadOnlyList<string> terms, string title, string tags, string description, string content)
     {
-        var plainContent = HtmlText.Strip(content);
+        var plainContent = HtmlText.ToPlainText(content);
         double score = 0;
         foreach (var term in terms)
         {
@@ -105,8 +105,7 @@ public sealed partial class SearchService(IPostService posts, IPageService pages
 
     private static string Text(string? description, string content)
     {
-        var text = string.IsNullOrWhiteSpace(description) ? HtmlText.Strip(content) : HtmlText.Strip(description);
-        text = string.Join(' ', text.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries));
+        var text = HtmlText.ToPlainText(string.IsNullOrWhiteSpace(description) ? content : description);
         return text.Length > 200 ? text[..200] + "..." : text;
     }
 

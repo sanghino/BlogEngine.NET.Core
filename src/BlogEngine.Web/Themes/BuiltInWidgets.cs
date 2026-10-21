@@ -350,7 +350,7 @@ public sealed class PostListWidget(IPostService posts, ICategoryService categori
             {
                 title = post.Title,
                 url = await links.PostAsync(post, cancellationToken),
-                description = post.Description,
+                description = System.Net.WebUtility.HtmlDecode(post.Description),
                 first_image = HtmlText.FirstImageSource(post.Content) ?? string.Empty,
                 date_created = await clock.ToBlogTimeAsync(post.DateCreated),
             });

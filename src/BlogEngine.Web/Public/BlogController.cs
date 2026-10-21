@@ -312,7 +312,7 @@ public sealed class BlogController(
         var result = new List<object>();
         foreach (var (item, _) in related)
         {
-            var text = HtmlText.Strip(string.IsNullOrWhiteSpace(item.Description) ? item.Content : item.Description);
+            var text = HtmlText.ToPlainText(string.IsNullOrWhiteSpace(item.Description) ? item.Content : item.Description);
             result.Add(new
             {
                 title = item.Title,

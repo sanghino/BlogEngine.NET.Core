@@ -59,12 +59,12 @@ public sealed class PublicContent(
 
             if (!string.IsNullOrWhiteSpace(post.Description))
             {
-                body = WebUtility.HtmlEncode(post.Description).Replace("\n", "<br />", StringComparison.Ordinal) + more;
+                body = WebUtility.HtmlEncode(WebUtility.HtmlDecode(post.Description)).Replace("\n", "<br />", StringComparison.Ordinal) + more;
             }
             else
             {
-                var text = HtmlText.Strip(post.Content);
-                body = length > 0 && text.Length > length ? $"{text[..length]}...{more}" : text + more;
+                var text = HtmlText.ToPlainText(post.Content);
+                body = WebUtility.HtmlEncode(length > 0 && text.Length > length ? $"{text[..length]}..." : text) + more;
             }
         }
 
@@ -87,10 +87,9 @@ public sealed class PublicContent(
 
         var appRoot = (await site.GetScopeAsync()).AppRoot;
         var firstImage = HtmlText.FirstImageSource(post.Content) ?? string.Empty;
-        // Uno spazio prima di ogni tag evita di unire le parole di paragrafi diversi.
         // Sul post singolo il testo elaborato (con i campi personalizzati già inseriti) è anche la base della descrizione.
         var source = !string.IsNullOrWhiteSpace(post.Description) ? post.Description : location == ServingLocation.SinglePost ? serving.Body : post.Content;
-        var plain = HtmlText.Strip(source.Replace("<", " <", StringComparison.Ordinal));
+        var plain = HtmlText.ToPlainText(source);
         return new PostModel
         {
             Id = post.Id.ToString(),
@@ -106,8 +105,9 @@ public sealed class PublicContent(
             DateModified = await clock.ToBlogTimeAsync(post.DateModified),
             Body = new HtmlString(serving.Body),
             Content = new HtmlString(post.Content),
-            Description = post.Description,
-            PlainDescription = string.Join(' ', plain.Split((char[]?)null, StringSplitOptions.RemoveEmptyEntries)),
+            // La descrizione è testo semplice: le entità salvate dall'editor (es. &egrave;) diventano caratteri.
+            Description = WebUtility.HtmlDecode(post.Description),
+            PlainDescription = plain,
             FirstImage = firstImage,
             AbsoluteFirstImage = firstImage.Length == 0 || firstImage.Contains("://", StringComparison.Ordinal)
                 ? firstImage

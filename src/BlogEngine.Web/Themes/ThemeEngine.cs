@@ -25,6 +25,12 @@ public sealed class ThemeEngine
     /// <summary>Chiave con cui il contesto della richiesta viene passato a tag e filtri.</summary>
     internal const string ScopeKey = "BlogEngine.ThemeScope";
 
+    /// <summary>
+    /// Codifica HTML che lascia invariate le lettere accentate e gli altri caratteri Unicode
+    /// (quella predefinita le scriverebbe come &amp;#xE8;); &lt;, &gt;, &amp; e virgolette restano codificati.
+    /// </summary>
+    internal static readonly HtmlEncoder Encoder = HtmlEncoder.Create(System.Text.Unicode.UnicodeRanges.All);
+
     private readonly FluidParser _parser = new(new FluidParserOptions { AllowFunctions = false, AllowParentheses = true });
     private readonly ConcurrentDictionary<string, TemplateOptions> _options = new(StringComparer.OrdinalIgnoreCase);
     private readonly ConcurrentDictionary<string, CachedTemplate> _files = new(StringComparer.Ordinal);
@@ -101,7 +107,7 @@ public sealed class ThemeEngine
 
         var template = ParseFile(file.PhysicalPath);
         await using var writer = new StringWriter(CultureInfo.InvariantCulture);
-        await template.RenderAsync(writer, HtmlEncoder.Default, context);
+        await template.RenderAsync(writer, Encoder, context);
         return writer.ToString();
     }
 
@@ -182,7 +188,7 @@ public sealed class ThemeEngine
         }
 
         using var writer = new StringWriter(CultureInfo.InvariantCulture);
-        html.WriteTo(writer, HtmlEncoder.Default);
+        html.WriteTo(writer, Encoder);
         return writer.ToString();
     }
 

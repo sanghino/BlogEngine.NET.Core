@@ -14,6 +14,22 @@ public static partial class HtmlText
     public static string Strip(string? html) =>
         string.IsNullOrWhiteSpace(html) ? string.Empty : TagRegex().Replace(html, string.Empty).Trim();
 
+    /// <summary>
+    /// Testo semplice ricavato dall'HTML: senza tag, con le entità convertite in caratteri
+    /// (&amp;egrave; → è) e gli spazi compattati. Il risultato va codificato quando lo si scrive in una pagina.
+    /// </summary>
+    public static string ToPlainText(string? html)
+    {
+        if (string.IsNullOrWhiteSpace(html))
+        {
+            return string.Empty;
+        }
+
+        // Uno spazio al posto di ogni tag evita di unire le parole di paragrafi diversi.
+        var text = System.Net.WebUtility.HtmlDecode(TagRegex().Replace(html, " "));
+        return SpacesRegex().Replace(text, " ").Trim();
+    }
+
     /// <summary>Testo semplice troncato a <paramref name="maxLength"/> caratteri, con "..." finale se tagliato.</summary>
     public static string Excerpt(string? html, int maxLength)
     {
@@ -35,6 +51,9 @@ public static partial class HtmlText
 
     [GeneratedRegex("<[^>]*>")]
     private static partial Regex TagRegex();
+
+    [GeneratedRegex(@"\s+")]
+    private static partial Regex SpacesRegex();
 
     [GeneratedRegex("""<img\s+?.*?src=('|")(.*?)\1.*?>""", RegexOptions.IgnoreCase | RegexOptions.Singleline)]
     private static partial Regex ImageRegex();
