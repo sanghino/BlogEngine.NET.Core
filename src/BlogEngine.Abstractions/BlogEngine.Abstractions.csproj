@@ -1,3 +1,10 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <!-- SDK pubblico per temi ed estensioni: tutto ciò che è qui è un contratto da mantenere stabile. -->
+  <PropertyGroup>
+    <RootNamespace>BlogEngine</RootNamespace>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+
 </Project>

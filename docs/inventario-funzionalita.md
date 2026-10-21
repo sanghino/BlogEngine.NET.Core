@@ -3,7 +3,7 @@
 Checklist di accettazione del porting di BlogEngine.NET da .NET Framework 4.5 (Web Forms) ad ASP.NET Core 8.
 Ogni voce indica dove si trova oggi nel vecchio codice (`BlogEngine/`) e dove andrà nella nuova soluzione (`src/`).
 
-Legenda stato: ☐ da fare · ◐ in corso · ☑ completato · ✖ eliminato (con motivazione)
+Legenda stato: ☐ da fare · ◐ in corso (logica di dominio pronta nel Core, manca la parte web) · ☑ completato · ✖ eliminato (con motivazione)
 
 Vincoli che valgono per tutte le voci: una sola applicazione .NET Core per sito (Aruba), tutto ciò che viene scritto
 a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabili copiando una cartella.
@@ -14,29 +14,29 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Post: creazione, modifica, bozze, pubblicazione programmata, slug, descrizione, autore | `Post.cs`, `PostRepository`, `PostsController` | Core + API |
-| ☐ | Pagine statiche, gerarchia padre/figlio, pagina iniziale personalizzata | `Page.cs`, `PageRepository`, `PagesController` | Core + API |
-| ☐ | Categorie gerarchiche | `Category.cs`, `CategoriesController` | Core + API |
-| ☐ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + widget |
-| ☐ | Campi personalizzati su post, pagine, profili | `CustomFieldRepository`, `CustomFieldsParser` | Core + API |
-| ☐ | Cestino: eliminazione logica, ripristino, svuotamento | `TrashRepository`, `TrashController` | Core + API |
+| ◐ | Post: creazione, modifica, bozze, pubblicazione programmata, slug, descrizione, autore | `Post.cs`, `PostRepository`, `PostsController` | Core + API |
+| ◐ | Pagine statiche, gerarchia padre/figlio, pagina iniziale personalizzata | `Page.cs`, `PageRepository`, `PagesController` | Core + API |
+| ◐ | Categorie gerarchiche | `Category.cs`, `CategoriesController` | Core + API |
+| ◐ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + widget |
+| ◐ | Campi personalizzati su post, pagine, profili | `CustomFieldRepository`, `CustomFieldsParser` | Core + API |
+| ◐ | Cestino: eliminazione logica, ripristino, svuotamento | `TrashRepository`, `TrashController` | Core + API |
 | ☐ | Allegati / enclosure nei post | `EnableEnclosures` | Core + feed |
 | ☐ | Post correlati | `RelatedPostsBase`, `EnableRelatedPosts` | Core + tema |
-| ☐ | Navigazione post precedente/successivo | `PostNavigationBase` | Tema |
+| ◐ | Navigazione post precedente/successivo | `PostNavigationBase` | Tema |
 | ☐ | Archivio (per mese, calendario) | `archive.aspx`, `PostCalendar`, `MonthList` | Pagina + widget |
 | ☐ | Ricerca, anche nei commenti, con stop word | `Services/Search/Search.cs`, `search.aspx`, `StopWords.cs` | Core + pagina |
 | ☐ | Paginazione elenchi | `Helpers/Pager.cs`, `PostPager` | Core + tema |
-| ☐ | Rating dei post | `RatingHandler` (`rating.axd`), `EnableRating` | Endpoint |
+| ◐ | Rating dei post | `RatingHandler` (`rating.axd`), `EnableRating` | Endpoint |
 | ☐ | Esempio di home page personalizzata | `FrontPageExample.aspx` | Pagina/template di esempio |
 
 ## 2. Commenti
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Commenti annidati, moderazione, approvazione/rifiuto, spam | `Comment.cs`, `CommentsController` | Core + API |
-| ☐ | Chiusura commenti dopo N giorni, sito web e nazione opzionali | `BlogSettings` | Core |
-| ☐ | Filtri commenti configurabili (IP, email, parole) | `CommentFilterRepository`, `CommentFilterController` | Core + API |
-| ☐ | Filtri antispam personalizzati (`ICustomFilter`), segnalazione errori | `Services/Messaging/Protection` | Abstractions (punto di estensione) |
+| ◐ | Commenti annidati, moderazione, approvazione/rifiuto, spam | `Comment.cs`, `CommentsController` | Core + API |
+| ◐ | Chiusura commenti dopo N giorni, sito web e nazione opzionali | `BlogSettings` | Core |
+| ◐ | Filtri commenti configurabili (IP, email, parole) | `CommentFilterRepository`, `CommentFilterController` | Core + API |
+| ◐ | Filtri antispam personalizzati (`ICustomFilter`), segnalazione errori | `Services/Messaging/Protection` | Abstractions (punto di estensione) |
 | ☐ | Avatar (Gravatar, ecc.) | `Data/Services/Avatar.cs` | Core |
 | ☐ | Provider commenti alternativi: Disqus, Facebook | `CommentProvider`, `Disqus*`, `Facebook*` | Tema / impostazioni |
 | ✖ | CoComment | `IsCoCommentEnabled` | Servizio esterno chiuso da anni |
@@ -49,8 +49,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages |
 | ☐ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Razor Pages |
 | ☐ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
-| ☐ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
-| ☐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
+| ◐ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
+| ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
 | ☐ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | Middleware |
 | ☐ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | Endpoint |
 | ☐ | Persistenza chiavi di cifratura su hosting condiviso | (nuovo) | ☑ `App_Data/keys` (Fase 1) |
@@ -59,8 +59,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Più blog nella stessa applicazione (sottocartella o host) | `Blog.cs`, `BlogsController`, `App_Data/blogs` | Core + middleware di risoluzione del blog |
-| ☐ | Blog principale che vede i contenuti dei blog figli | `Blog.cs` | Core |
+| ◐ | Più blog nella stessa applicazione (sottocartella o host) | `Blog.cs`, `BlogsController`, `App_Data/blogs` | Core + middleware di risoluzione del blog |
+| ◐ | Blog principale che vede i contenuti dei blog figli | `Blog.cs` | Core |
 | ☐ | Generatore di nuovi blog da modello | `Helpers/BlogGenerator.cs` | Core |
 
 ## 5. Amministrazione (AngularJS 1.3, mantenuto nella prima fase)
@@ -73,7 +73,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | Contenuti: post, pagine, categorie, tag, commenti, blog | `admin/app/content/*` | API |
 | ☐ | Utenti, ruoli, profilo | `admin/app/security/*` | API |
 | ☐ | Impostazioni: base, avanzate, commenti, email, feed, controlli | `admin/app/settings/*`, `SettingsController` | API |
-| ☐ | Blogroll, ping service | `settings/controls`, `BlogRollController`, `PingServicesController` | API |
+| ◐ | Blogroll, ping service | `settings/controls`, `BlogRollController`, `PingServicesController` | API |
 | ☐ | Strumenti di verifica (email, permessi cartelle) | `settings/tools`, `ToolsController` | API, integrati con la diagnostica |
 | ☐ | Log | `LogsController`, `UnhandledExceptionLogger` | `App_Data/logs` |
 | ☐ | Gestione temi, widget, estensioni (plugin) | `admin/app/custom/*`, `PackagesController`, `PackageExtraController` | Solo installazioni locali (cartella / upload zip) |
@@ -106,7 +106,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | Gestore estensioni: attivazione, priorità, impostazioni | `Web/Extensions/ExtensionManager.cs`, `ExtensionSettings` | Core + loader |
 | ☐ | Estensioni in sorgente `.cs` compilate a runtime | (nuovo: oggi compilate col sito) | Roslyn, cache in `App_Data/cache` |
 | ☐ | Estensioni in DLL precompilate | (nuovo) | `AssemblyLoadContext` |
-| ☐ | Eventi del ciclo di vita su post, pagine, commenti, categorie, ricerca, email, referrer… | eventi statici (`Serving`, `Saving`, `Saved`, `AddingComment`, `CommentAdded`, `Publishing`, `Searching`, `EmailSent`, `SpamAttack`, …) | Abstractions: eventi/hook stabili |
+| ◐ | Eventi del ciclo di vita su post, pagine, commenti, categorie, ricerca, email, referrer… | eventi statici (`Serving`, `Saving`, `Saved`, `AddingComment`, `CommentAdded`, `Publishing`, `Searching`, `EmailSent`, `SpamAttack`, …) | Abstractions: eventi/hook stabili |
 | ☐ | AkismetFilter | `Custom/Extensions/AkismetFilter.cs` | Plugin |
 | ☐ | BBCode | `BBCode.cs` | Plugin |
 | ☐ | BreakPost | `BreakPost.cs` | Plugin |
@@ -150,7 +150,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | Permalink di post (con o senza data), pagine, categorie, tag, autori, calendario, contatti, archivio, ricerca | `UrlRewrite` + `UrlRules.cs` | Routing ASP.NET Core |
 | ☐ | URL senza `.aspx` e redirect da quelli vecchi | `RedirectToRemoveFileExtension` | Routing + redirect |
 | ☐ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | Middleware di gestione errori |
-| ☐ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | Middleware |
+| ◐ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | Middleware |
 
 ## 10. Email, contatti, newsletter
 
@@ -166,12 +166,12 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
 | ☐ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | Resx in Core + `IStringLocalizer` |
-| ☐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
+| ◐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
 | ☐ | Calendario persiano | `AppCode/PersianCulture.cs` | Core |
-| ☐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |
+| ◐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |
 | ☐ | Compressione delle risposte | `CompressionModule`, `CompressWebResource` | Middleware integrato |
 | ☐ | Bundling/minificazione | `EnableOptimization`, System.Web.Optimization | Build |
-| ☐ | Cache | `Providers/CacheProvider` | `IMemoryCache` |
+| ◐ | Cache | `Providers/CacheProvider` | `IMemoryCache` |
 
 ## 12. Dati e installazione
 
