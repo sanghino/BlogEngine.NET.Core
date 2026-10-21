@@ -1,0 +1,13 @@
+{%- comment -%} Tema Standard-2017: porting di PostNavigation.ascx. {%- endcomment -%}
+<div id="postnavigation" class="navigation-posts well-global clearfix">
+    <div class="text-left next-post">
+        {%- if navigation.next_url != '' %}
+        <a href="{{ navigation.next_url }}" class="nav-next">&larr; {{ navigation.next_title }} </a>
+        {%- endif %}
+    </div>
+    <div class="text-right prev-post ">
+        {%- if navigation.previous_url != '' %}
+        <a href="{{ navigation.previous_url }}" class="nav-prev">{{ navigation.previous_title }} &rarr;</a>
+        {%- endif %}
+    </div>
+</div>

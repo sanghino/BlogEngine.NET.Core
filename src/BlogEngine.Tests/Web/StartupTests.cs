@@ -57,7 +57,7 @@ public sealed class StartupTests
 
         var home = await browser.GetStringAsync("/");
         StringAssert.Contains(home, "Il mio blog");
-        StringAssert.Contains(home, BlogWebFactory.AdminUser);
+        StringAssert.Contains(home, "widget administration", "L'utente appena creato è collegato e vede il menu di amministrazione.");
 
         Assert.IsTrue(File.Exists(Path.Combine(factory.DataRoot, InstallationState.InstallationFileName)));
         Assert.IsFalse(File.Exists(Path.Combine(factory.DataRoot, InstallationState.SetupKeyFileName)), "La chiave viene eliminata.");
@@ -127,8 +127,8 @@ public sealed class StartupTests
 
         var childHome = await browser.GetStringAsync("/figlio/");
         StringAssert.Contains(childHome, "Blog figlio");
-        Assert.IsFalse(childHome.Contains(BlogWebFactory.AdminUser), "L'amministratore del principale è un visitatore nel blog figlio.");
-        StringAssert.Contains(childHome, "href=\"/figlio/account/login\"", "I link del blog figlio includono il suo percorso.");
+        Assert.IsFalse(childHome.Contains("widget administration"), "L'amministratore del principale è un visitatore nel blog figlio.");
+        StringAssert.Contains(childHome, "href=\"/figlio/account/login?ReturnUrl=", "I link del blog figlio includono il suo percorso.");
 
         StringAssert.Contains(await browser.GetStringAsync("/"), "Principale");
     }

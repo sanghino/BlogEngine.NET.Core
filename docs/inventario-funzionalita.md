@@ -14,31 +14,31 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ◐ | Post: creazione, modifica, bozze, pubblicazione programmata, slug, descrizione, autore | `Post.cs`, `PostRepository`, `PostsController` | Core + API |
-| ◐ | Pagine statiche, gerarchia padre/figlio, pagina iniziale personalizzata | `Page.cs`, `PageRepository`, `PagesController` | Core + API |
-| ◐ | Categorie gerarchiche | `Category.cs`, `CategoriesController` | Core + API |
-| ◐ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + widget |
-| ☑ | Campi personalizzati su post, pagine, profili | `CustomFieldRepository`, `CustomFieldsParser` | Core + API |
+| ☑ | Post: creazione, modifica, bozze, pubblicazione programmata, slug, descrizione, autore | `Post.cs`, `PostRepository`, `PostsController` | Core + API |
+| ☑ | Pagine statiche, gerarchia padre/figlio, pagina iniziale personalizzata | `Page.cs`, `PageRepository`, `PagesController` | Core + API + `/page/{slug}`; home da `CustomFrontPage` o dalla pagina "home" (`/blog` mostra comunque i post) |
+| ☑ | Categorie gerarchiche | `Category.cs`, `CategoriesController` | Core + API + `/category/{slug}` |
+| ☑ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + `/tag/{tag}` (anche `?tag=`) + widget TagCloud |
+| ☑ | Campi personalizzati su post, pagine, profili e temi | `CustomFieldRepository`, `CustomFieldsParser` | Core + API; segnaposto `[CUSTOMFIELD...]` e `[CUSTOMBLOCK]` nei testi (`CustomFieldTokensHandler`), filtro `theme_field` nei temi |
 | ☑ | Cestino: eliminazione logica, ripristino, svuotamento | `TrashRepository`, `TrashController` | Core + API |
 | ☐ | Allegati / enclosure nei post | `EnableEnclosures` | Core + feed |
-| ☐ | Post correlati | `RelatedPostsBase`, `EnableRelatedPosts` | Core + tema |
-| ◐ | Navigazione post precedente/successivo | `PostNavigationBase` | Tema |
-| ☐ | Archivio (per mese, calendario) | `archive.aspx`, `PostCalendar`, `MonthList` | Pagina + widget |
-| ☐ | Ricerca, anche nei commenti, con stop word | `Services/Search/Search.cs`, `search.aspx`, `StopWords.cs` | Core + pagina |
-| ☐ | Paginazione elenchi | `Helpers/Pager.cs`, `PostPager` | Core + tema |
-| ◐ | Rating dei post | `RatingHandler` (`rating.axd`), `EnableRating` | Endpoint |
+| ☑ | Post correlati | `RelatedPostsBase`, `EnableRelatedPosts` | `BlogController` + `related-posts.liquid` |
+| ☑ | Navigazione post precedente/successivo | `PostNavigationBase` | `post-navigation.liquid` |
+| ☑ | Archivio (per categoria, per mese, calendario) | `archive.aspx`, `PostCalendar`, `MonthList` | `/archive`, `/calendar`, `/{anno}/{mese}/{giorno}`, widget MonthList |
+| ☑ | Ricerca, anche nei commenti, con stop word | `Services/Search/Search.cs`, `search.aspx`, `StopWords.cs` | `SearchService` (Core) + `/search` |
+| ☑ | Paginazione elenchi | `Helpers/Pager.cs`, `PostPager` | `?page=N` + `pager.liquid`, link rel prev/next |
+| ☑ | Rating dei post | `RatingHandler` (`rating.axd`), `EnableRating` | `POST /rating` (un voto per visitatore, cookie) + stelle di `blog.js` |
 | ☐ | Esempio di home page personalizzata | `FrontPageExample.aspx` | Pagina/template di esempio |
 
 ## 2. Commenti
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ◐ | Commenti annidati, moderazione, approvazione/rifiuto, spam | `Comment.cs`, `CommentsController` | Core + API |
-| ◐ | Chiusura commenti dopo N giorni, sito web e nazione opzionali | `BlogSettings` | Core |
+| ☑ | Commenti annidati, moderazione, approvazione/rifiuto, spam | `Comment.cs`, `CommentsController`, `CommentList.ascx` | Core + API + `POST /comment` (fetch con token antifalsificazione al posto del callback Web Forms) e comandi rapidi di moderazione dalla pagina |
+| ☑ | Chiusura commenti dopo N giorni, sito web e nazione opzionali, anteprima, notifica e cancellazione dalle notifiche | `BlogSettings`, `post.aspx` | Core + temi (`?unsubscribe-email=`) |
 | ☑ | Filtri commenti configurabili (IP, email, parole) | `CommentFilterRepository`, `CommentFilterController` | Core + API |
 | ◐ | Filtri antispam personalizzati (`ICustomFilter`), segnalazione errori | `Services/Messaging/Protection` | Abstractions (punto di estensione) |
-| ☐ | Avatar (Gravatar, ecc.) | `Data/Services/Avatar.cs` | Core |
-| ☐ | Provider commenti alternativi: Disqus, Facebook | `CommentProvider`, `Disqus*`, `Facebook*` | Tema / impostazioni |
+| ☑ | Avatar (Gravatar, ecc.) | `Data/Services/Avatar.cs` | `AvatarService` + `comment.avatar` |
+| ☑ | Provider commenti alternativi: Disqus, Facebook | `CommentProvider`, `Disqus*`, `Facebook*` | `post.liquid`, `page.liquid` (Disqus anche sulle pagine) |
 | ✖ | CoComment | `IsCoCommentEnabled` | Servizio esterno chiuso da anni |
 
 ## 3. Utenti, ruoli e sicurezza
@@ -86,18 +86,18 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Motore dei temi installabili da cartella | `.master` + `.ascx` in `Custom/Themes` | Template Liquid (Fluid) in `Custom/Themes` e `App_Data/themes` |
-| ☐ | Tema `Standard` | `Custom/Themes/Standard` | Conversione in Liquid |
-| ☐ | Tema `Standard-2017` | `Custom/Themes/Standard-2017` | Conversione in Liquid |
-| ☐ | Tema `RazorHost` | `Custom/Themes/RazorHost` | Conversione in Liquid |
-| ☐ | Tema dell'amministrazione | `admin/themes/standard` | Statico |
-| ☐ | Tema mobile alternativo | `MobileThemeSwitch.cs` | Da decidere: con temi responsive potrebbe non servire |
-| ☐ | Zone dei widget, ordinamento, configurazione | `WidgetZone`, `WidgetContainer`, `WidgetsController` | Core + motore temi |
-| ☐ | Widget installabili da cartella (`widget.xml` + vista + edit) | `Custom/Widgets/*` | Template Liquid |
-| ☐ | Widget inclusi: Administration, AuthorList, BlogList, BlogRoll, CategoryList, CommentList, LinkList, MonthList, Newsletter, PageList, PostList, Search, TagCloud, TextBox | `Custom/Widgets` | Conversione |
-| ☐ | Menu delle pagine, casella di ricerca | `PageMenu`, `SearchBox`, `SearchOnSearch` | Tag/filtri Liquid |
-| ☐ | Header HTML personalizzato, script di tracking | `HtmlHeader`, `TrackingScript` | Layout |
-| ☐ | Titoli con nome del blog | `UseBlogNameInPageTitles` | Layout |
+| ☑ | Motore dei temi installabili da cartella | `.master` + `.ascx` in `Custom/Themes` | Fluid: `Custom/Themes` e `App_Data/themes`, riletti a ogni modifica; template predefiniti in `Templates/`; anteprima con `?theme=`, cookie del tema; guida in `Custom/Themes/README.md` |
+| ☑ | Tema `Standard` | `Custom/Themes/Standard` | Convertito in Liquid |
+| ☑ | Tema `Standard-2017` | `Custom/Themes/Standard-2017` | Convertito in Liquid |
+| ✖ | Tema `RazorHost` | `Custom/Themes/RazorHost` | Non era un tema grafico ma il ponte per scrivere temi in Razor dentro Web Forms: il motore Liquid ne prende il posto |
+| ☑ | Tema dell'amministrazione | `admin/themes/standard` | Statico (Fase 4b) |
+| ◐ | Tema mobile alternativo | `MobileThemeSwitch.cs` | I temi inclusi sono responsive; il cookie `ThemeCookieName` permette comunque di scegliere un altro tema (es. da un'estensione, Fase 6) |
+| ☑ | Zone dei widget, ordinamento, configurazione | `WidgetZone`, `WidgetContainer`, `WidgetsController` | Tag `widget_zone`, `WidgetService`, API `/api/widgets`; zone lette dai template, widget predefiniti in `theme.json` |
+| ☑ | Widget installabili da cartella (`widget.xml` + vista + edit) | `Custom/Widgets/*` | `widget.liquid` + `widget.json`; pagina di modifica generata dalle impostazioni del manifest; guida in `Custom/Widgets/README.md` |
+| ☑ | Widget inclusi: Administration, AuthorList, BlogList, BlogRoll, CategoryList, CommentList, LinkList, MonthList, Newsletter, PageList, PostList, Search, TagCloud, TextBox | `Custom/Widgets` | Convertiti (BlogRoll scarica i feed in background) |
+| ☑ | Menu delle pagine, casella di ricerca | `PageMenu`, `SearchBox`, `SearchOnSearch` | `blog.pages` (con sottopagine), widget Search |
+| ☑ | Header HTML personalizzato, script di tracking | `HtmlHeader`, `TrackingScript` | `content_for_header`, `content_for_footer` |
+| ☑ | Titoli con nome del blog | `UseBlogNameInPageTitles` | `page_title` |
 
 ## 7. Estensioni
 
@@ -147,9 +147,9 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Permalink di post (con o senza data), pagine, categorie, tag, autori, calendario, contatti, archivio, ricerca | `UrlRewrite` + `UrlRules.cs` | Routing ASP.NET Core |
+| ☑ | Permalink di post (con o senza data), pagine, categorie, tag, autori, calendario, contatti, archivio, ricerca | `UrlRewrite` + `UrlRules.cs` | `BlogController`; le varianti di un post rimandano all'indirizzo definitivo |
 | ☐ | URL senza `.aspx` e redirect da quelli vecchi | `RedirectToRemoveFileExtension` | Routing + redirect |
-| ☐ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | Middleware di gestione errori |
+| ☑ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | `/error/{codice}` con il tema e suggerimenti di contenuti simili |
 | ◐ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | Middleware |
 
 ## 10. Email, contatti, newsletter
@@ -157,9 +157,9 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
 | ◐ | Invio email SMTP (SSL, prefisso oggetto) | `Utils.SendMailMessage`, `BlogSettings` | Core (MailKit o `SmtpClient`) |
-| ☐ | Form contatti con allegati e reCAPTCHA | `contact.aspx` | Pagina + tema |
+| ◐ | Form contatti con allegati e reCAPTCHA | `contact.aspx` | `/contact` con allegati e antispam (campo nascosto + limite di invii); reCAPTCHA con le estensioni (Fase 6) |
 | ☐ | Notifica email dei commenti | estensione SendCommentMail | Plugin |
-| ☐ | Newsletter | widget Newsletter + estensione SendNewsletters | Plugin + widget |
+| ◐ | Newsletter | widget Newsletter + estensione SendNewsletters | Iscrizione dal widget e gestione degli iscritti pronte; invio alla pubblicazione con l'estensione (Fase 6) |
 
 ## 11. Localizzazione e impostazioni generali
 

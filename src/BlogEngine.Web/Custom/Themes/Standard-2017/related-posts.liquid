@@ -1,0 +1,11 @@
+{%- comment -%} Tema Standard-2017: porting di RelatedPosts.ascx. {%- endcomment -%}
+<div id="relatedPosts" class="related-posts well-global">
+    <h3 class="well-global-title">{{ 'relatedPosts' | t }}</h3>
+    <ul class="list-unstyled">
+        {%- for item in related_posts %}
+        <li><a href="{{ item.url }}">{{ item.title }}</a>
+            <div><small class="text-muted">{{ item.description }}</small></div>
+        </li>
+        {%- endfor %}
+    </ul>
+</div>

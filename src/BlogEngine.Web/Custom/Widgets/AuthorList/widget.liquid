@@ -1,0 +1,13 @@
+<div class="Widget widget authorlist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul id="authorlist" class="authorlist">
+            {%- for author in widget.data.authors %}
+            <li>
+                <a rel="nofollow" href="{{ author.feed_url }}"><img width="32" height="32" class="author-avatar" alt="author avatar" src="{{ author.avatar_url }}" /></a>
+                <a class="authorlink" title="Author: {{ author.display_name }}" href="{{ author.url }}">{{ author.display_name }} ({{ author.count }})</a>
+            </li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

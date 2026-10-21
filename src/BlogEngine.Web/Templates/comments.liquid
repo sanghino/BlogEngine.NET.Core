@@ -1,0 +1,44 @@
+{%- comment -%}
+  Elenco dei commenti e modulo per aggiungerne (porting di CommentList.ascx). Gli id degli elementi
+  (commentlist, comment-form, status, cancelReply, txtName, ...) sono usati da Scripts/blog.js.
+{%- endcomment -%}
+<div class="well-global">
+    {%- if comments.count > 0 %}
+    <h3 id="comment" class="well-global-title">{{ 'comments' | t }} ({{ comments.count }})</h3>
+    {%- endif %}
+    <div id="commentlist" style="display: block">
+        {%- for comment in comments.items %}
+        {% include 'comment-view' %}
+        {%- endfor %}
+    </div>
+</div>
+{%- if comments.pingbacks.size > 0 %}
+<div id="pingbacks" class="well-global">
+    <h3 class="well-global-title">Pingbacks / trackbacks ({{ comments.pingbacks.size }})</h3>
+    <ul>
+        {%- for pingback in comments.pingbacks %}
+        <li>{% if pingback.website != '' %}<a href="{{ pingback.website }}" rel="nofollow">{{ pingback.author }}</a>{% else %}{{ pingback.author }}{% endif %}</li>
+        {%- endfor %}
+    </ul>
+</div>
+{%- endif %}
+{%- if comments.is_open %}
+<div id="comment-form">
+    <img src="{{ 'Content/images/blog/ajax-loader.gif' | app_url }}" width="24" height="24" alt="Saving the comment" style="display: none" id="ajaxLoader" />
+    <span id="status"></span>
+    {% include 'comment-form' %}
+    <input type="hidden" id="hiddenReplyTo" value="" />
+    {%- if comments.nesting_enabled %}
+    <p id="cancelReply" style="display: none;"><a href="javascript:void(0);" onclick="BlogEngine.cancelReply();">{{ 'cancelReply' | t }}</a></p>
+    {%- endif %}
+    <div style="display:none"><input type="text" id="txtHp" tabindex="-1" autocomplete="off" /></div>
+</div>
+<script>
+    BlogEngine.comments.postId = '{{ post.id }}';
+    BlogEngine.comments.postUrl = '{{ comments.post_url }}';
+    BlogEngine.comments.moderation = {% if comments.moderation %}true{% else %}false{% endif %};
+    BlogEngine.comments.init();
+</script>
+{%- elsif post.comments_enabled == false or blog.comments_enabled == false %}
+<span class="lbl-CommentsDisabled">{{ 'commentsAreClosed' | t }}</span>
+{%- endif %}

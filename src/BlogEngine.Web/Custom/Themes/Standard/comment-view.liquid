@@ -1,0 +1,25 @@
+{%- comment -%} Tema Standard: porting di CommentView.ascx. {%- endcomment -%}
+<ul id="id_{{ comment.id }}">
+    <li class="comment-item">
+        <div class="comment-content{% if comment.is_by_post_author %} self{% endif %}">
+            {{ comment.avatar }}
+            <div class="comment-author">
+                {%- if comment.website != '' %}<a href="{{ comment.website }}" rel="nofollow" class="url fn">{{ comment.author }}</a>{% else %}<a class="fn">{{ comment.author }}</a>{% endif %}
+            </div>
+            <div class="comment-text">
+                {{ comment.text }}
+            </div>
+            <div class="comment-replylink">
+                <span>{{ comment.date_created | date_format: 'dd MMMM yyyy' }}</span>{% if comment.reply_link != '' %} - {{ comment.reply_link }}{% endif %}
+            </div>
+            <div class="comment-adminlinks">
+                {{ comment.admin_links }}
+            </div>
+        </div>
+        <div id="replies_{{ comment.id }}"{% if comment.replies.size == 0 or comment.is_pingback %} style="display:none;"{% endif %}>
+            {%- for reply in comment.replies %}
+            {% include 'comment-view', comment: reply %}
+            {%- endfor %}
+        </div>
+    </li>
+</ul>

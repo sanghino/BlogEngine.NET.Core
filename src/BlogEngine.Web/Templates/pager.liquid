@@ -1,0 +1,28 @@
+{%- comment -%}
+  Paginazione (porting di PostPager): pager.newer_url, pager.older_url e l'elenco pager.pages.
+{%- endcomment -%}
+{%- if pager.total_pages > 1 %}
+<div style="clear:both; display:block">
+<ul id="PostPager">
+    {%- if pager.newer_url != '' %}
+    <li class="PagerLink"><a href="{{ pager.newer_url }}">{{ 'nextPosts' | t }}</a></li>
+    {%- else %}
+    <li class="PagerLinkDisabled">{{ 'nextPosts' | t }}</li>
+    {%- endif %}
+    {%- for p in pager.pages %}
+        {%- if p.is_ellipsis %}
+    <li class="PagerEllipses">...</li>
+        {%- elsif p.is_current %}
+    <li class="PagerLinkCurrent">{{ p.number }}</li>
+        {%- else %}
+    <li class="PagerLink"><a href="{{ p.url }}">{{ p.number }}</a></li>
+        {%- endif %}
+    {%- endfor %}
+    {%- if pager.older_url != '' %}
+    <li class="PagerLink"><a href="{{ pager.older_url }}">{{ 'previousPosts' | t }}</a></li>
+    {%- else %}
+    <li class="PagerLinkDisabled">{{ 'previousPosts' | t }}</li>
+    {%- endif %}
+</ul>
+</div>
+{%- endif %}

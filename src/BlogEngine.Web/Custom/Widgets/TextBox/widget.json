@@ -1,0 +1,14 @@
+{
+  "title": "Text Box",
+  "description": "Enter and save any HTML text you want to display",
+  "version": "4.0.0",
+  "authors": "BlogEngine.net",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "content",
+      "type": "html",
+      "label": "content"
+    }
+  ]
+}

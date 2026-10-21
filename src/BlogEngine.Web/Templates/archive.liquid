@@ -1,0 +1,40 @@
+{%- comment -%} Archivio dei post per categoria (porting di archive.aspx). Variabili: categories, totals. {%- endcomment -%}
+<div id="archive" class="archive-page page-global">
+    <h2 class="archive-page-title page-global-title">{{ 'archive' | t }}</h2>
+    <ul class="archive-page-menu">
+        {%- for category in categories %}
+        <li><a href="#{{ category.anchor }}">{{ category.title }}</a> ({{ category.posts.size }})</li>
+        {%- endfor %}
+    </ul>
+    <div class="archive-page-content">
+        {%- for category in categories %}
+        <h3 id="{{ category.anchor }}">
+            {%- if category.feed_url != '' %}<a href="{{ category.feed_url }}" class="archive-feed" rel="nofollow"><img src="{{ 'Content/images/blog/rssButton.png' | app_url }}" alt="RSS" /></a> {% endif -%}
+            {%- if category.url != '' %}<a href="{{ category.url }}">{{ category.title }}</a>{% else %}{{ category.title }}{% endif -%}
+        </h3>
+        <table class="archive">
+            <tr>
+                <th class="date">{{ 'date' | t }}</th>
+                <th class="title">{{ 'title' | t }}</th>
+                <th class="comments">{{ 'comments' | t }}</th>
+                {%- if blog.rating_enabled %}<th class="rating">{{ 'rating' | t }}</th>{% endif %}
+            </tr>
+            {%- for post in category.posts %}
+            <tr>
+                <td class="date">{{ post.date_created | date_format: 'yyyy-MM-dd' }}</td>
+                <td class="title"><a href="{{ post.url }}">{{ post.title }}</a></td>
+                <td class="comments">{{ post.comments_count }}</td>
+                {%- if blog.rating_enabled %}<td class="rating">{% if post.raters > 0 %}{{ post.rating }} / {{ post.raters }}{% else %}-{% endif %}</td>{% endif %}
+            </tr>
+            {%- endfor %}
+        </table>
+        {%- endfor %}
+    </div>
+    <br />
+    <div id="totals" class="archive-page-total">
+        <h3>{{ 'total' | t }}</h3>
+        <span>{{ totals.posts }} {{ 'posts' | t | downcase }}</span><br />
+        <span>{{ totals.comments }} {{ 'comments' | t | downcase }}</span><br />
+        {%- if blog.rating_enabled %}<span>{{ totals.raters }} {{ 'raters' | t | downcase }}</span>{% endif %}
+    </div>
+</div>

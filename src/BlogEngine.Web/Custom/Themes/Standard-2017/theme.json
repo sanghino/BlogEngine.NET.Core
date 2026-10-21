@@ -1,0 +1,10 @@
+{
+  "title": "Standard 2017",
+  "description": "This is the default theme for BlogEngine.",
+  "authors": "Francis Bio",
+  "website": "http://francis.bio/",
+  "version": "4.0.0",
+  "defaultWidgets": {
+    "be_WIDGET_ZONE": [ "Administration", "Search", "CategoryList", "PostList", "Newsletter", "CommentList", "MonthList" ]
+  }
+}

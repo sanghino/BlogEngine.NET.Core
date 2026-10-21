@@ -12,6 +12,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Fluid.Core" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
     <PackageReference Include="System.ServiceModel.Syndication" />
   </ItemGroup>
@@ -20,6 +21,13 @@
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
     <!-- Elenco delle etichette passate all'amministrazione (admin.res.axd). -->
     <Content Include="Resources\AdminLabels.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Temi, widget e template Liquid: letti dal disco a ogni modifica, vanno pubblicati così come sono. -->
+    <Content Remove="Custom\**;Templates\**" />
+    <None Remove="Custom\**;Templates\**" />
+    <Content Include="Custom\**;Templates\**" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

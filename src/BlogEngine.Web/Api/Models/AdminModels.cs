@@ -618,7 +618,30 @@ public sealed class Package
 
 public sealed class WidgetsVM
 {
-    public List<object> AvailableWidgets { get; set; } = [];
+    public List<WidgetItem> AvailableWidgets { get; set; } = [];
 
-    public List<object> WidgetZones { get; set; } = [];
+    public List<WidgetZoneItem> WidgetZones { get; set; } = [];
+}
+
+/// <summary>Zona dei widget di un tema (Id = nome della zona).</summary>
+public sealed class WidgetZoneItem
+{
+    public string? Id { get; set; }
+
+    public List<WidgetItem> Widgets { get; set; } = [];
+}
+
+/// <summary>Widget disponibile o inserito in una zona. I widget nuovi arrivano con un Id numerico provvisorio.</summary>
+public sealed class WidgetItem
+{
+    public string? Id { get; set; }
+
+    public string? Name { get; set; }
+
+    public string? Title { get; set; }
+
+    public bool ShowTitle { get; set; }
+
+    /// <summary>Nome con l'errore di battitura della versione originale, letto dal JavaScript dell'amministrazione.</summary>
+    public bool ShowUnistall { get; set; }
 }

@@ -2,6 +2,7 @@ using BlogEngine.Security;
 using BlogEngine.Services;
 using BlogEngine.Web.Api.Models;
 using BlogEngine.Web.Hosting;
+using BlogEngine.Web.Themes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogEngine.Web.Api;
@@ -9,10 +10,10 @@ namespace BlogEngine.Web.Api;
 /// <summary>
 /// Temi, estensioni e widget installati. La galleria online non esiste più: "install", "rate" e l'elenco
 /// "all" (la galleria) non sono disponibili; temi ed estensioni si installano copiando una cartella.
-/// Estensioni e widget arriveranno con le fasi dedicate del porting.
+/// Le estensioni arriveranno con la fase dedicata del porting.
 /// </summary>
 [Route("api/packages")]
-public sealed class PackagesController(ThemeCatalog themes, ISettingsService settings, IRightsService rights) : AdminApiController
+public sealed class PackagesController(ThemeCatalog themes, WidgetCatalog widgetCatalog, ISettingsService settings, IRightsService rights) : AdminApiController
 {
     [HttpGet("")]
     public async Task<IEnumerable<Package>> Get(int take = 10, int skip = 0, string filter = "", string order = "")
@@ -30,7 +31,7 @@ public sealed class PackagesController(ThemeCatalog themes, ISettingsService set
                 break;
             case "widgets":
                 await DemandAsync(Rights.ManageWidgets);
-                packages = [];
+                packages = Widgets();
                 break;
             default:
                 await DemandAsync(Rights.ManagePackages);
@@ -45,7 +46,7 @@ public sealed class PackagesController(ThemeCatalog themes, ISettingsService set
     public async Task<IActionResult> Get(string id)
     {
         await DemandAsync(Rights.ManagePackages);
-        return (await ThemesAsync()).FirstOrDefault(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase)) is { } package
+        return (await ThemesAsync()).Concat(Widgets()).FirstOrDefault(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase)) is { } package
             ? Ok(package)
             : NotFound();
     }
@@ -100,6 +101,20 @@ public sealed class PackagesController(ThemeCatalog themes, ISettingsService set
         });
     }
 
+    private IEnumerable<Package> Widgets() => widgetCatalog.GetWidgets().Select(w => new Package
+    {
+        Id = w.Name,
+        PackageType = "Widget",
+        Title = w.Title,
+        Description = w.Description,
+        LocalVersion = w.Version,
+        Authors = w.Authors,
+        Website = w.Website,
+        IconUrl = $"/Custom/Widgets/{Uri.EscapeDataString(w.Name)}/screenshot.png",
+        Enabled = true,
+        LastUpdated = string.Empty,
+    });
+
     private async Task DemandAsync(Rights right)
     {
         if (!await rights.IsAuthorizedAsync(right))
@@ -119,22 +134,81 @@ public sealed class PackageExtraController : AdminApiController
     public IActionResult Get(string id) => Ok();
 }
 
-/// <summary>Zone dei widget dei temi: disponibili con il motore dei temi (Fase 5).</summary>
+/// <summary>
+/// Widget disponibili e zone del tema attivo (porting di WidgetsRepository). Le zone sono quelle in cui
+/// i template del tema usano il tag widget_zone.
+/// </summary>
 [Route("api/widgets")]
-public sealed class WidgetsController(IRightsService rights) : AdminApiController
+public sealed class WidgetsController(IRightsService rights, ISettingsService settings, ThemeCatalog themes, WidgetCatalog catalog, WidgetService widgets) : AdminApiController
 {
     [HttpGet("")]
     public async Task<WidgetsVM> Get()
+    {
+        await DemandAsync();
+        var theme = themes.FindOrFallback((await settings.GetAsync()).Theme);
+        var vm = new WidgetsVM
+        {
+            AvailableWidgets = catalog.GetWidgets()
+                .Select(w => new WidgetItem { Id = w.Name, Name = w.Name, Title = w.Title, ShowTitle = false, ShowUnistall = false })
+                .ToList(),
+        };
+
+        if (theme is null)
+        {
+            return vm;
+        }
+
+        foreach (var zone in WidgetService.FindZones(theme))
+        {
+            var defaults = theme.DefaultWidgets.TryGetValue(zone, out var list) ? list : null;
+            vm.WidgetZones.Add(new WidgetZoneItem
+            {
+                Id = zone,
+                Widgets = (await widgets.GetZoneAsync(zone, defaults))
+                    .Select(w => new WidgetItem { Id = w.Id, Name = w.Name, Title = w.Title, ShowTitle = w.ShowTitle })
+                    .ToList(),
+            });
+        }
+
+        return vm;
+    }
+
+    /// <summary>
+    /// Salva tutte le zone. I widget appena aggiunti (Id numerico provvisorio assegnato dal JavaScript)
+    /// ricevono un Id definitivo; gli altri lo conservano, così restano collegati alle loro impostazioni.
+    /// </summary>
+    [HttpPut("update/{id?}")]
+    public async Task<IActionResult> Update([FromBody] List<WidgetZoneItem> zones)
+    {
+        await DemandAsync();
+        foreach (var zone in zones ?? [])
+        {
+            if (string.IsNullOrWhiteSpace(zone.Id))
+            {
+                continue;
+            }
+
+            var placements = zone.Widgets
+                .Where(w => !string.IsNullOrWhiteSpace(w.Name) && catalog.Find(w.Name!) is not null)
+                .Select(w => new WidgetPlacement
+                {
+                    Id = string.IsNullOrEmpty(w.Id) || int.TryParse(w.Id, out _) ? Guid.NewGuid().ToString() : w.Id,
+                    Name = w.Name!,
+                    Title = string.IsNullOrWhiteSpace(w.Title) ? w.Name! : w.Title.Trim(),
+                    ShowTitle = true,
+                });
+
+            await widgets.SaveZoneAsync(zone.Id, placements);
+        }
+
+        return Ok(true);
+    }
+
+    private async Task DemandAsync()
     {
         if (!await rights.IsAuthorizedAsync(Rights.ManageWidgets))
         {
             throw new UnauthorizedAccessException();
         }
-
-        return new WidgetsVM();
     }
-
-    [HttpPut("update/{id?}")]
-    public IActionResult Update() =>
-        BadRequest(new { Message = "La gestione dei widget sarà disponibile con il motore dei temi." });
 }

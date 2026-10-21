@@ -1,0 +1,17 @@
+{%- comment -%} Menu di amministrazione, visibile solo agli utenti autenticati. {%- endcomment -%}
+{%- if user.is_authenticated %}
+<div class="Widget widget administration">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul class="toprounded" id="uxMenu_ulMenu">
+            {%- if user.can_access_admin %}<li><a href="{{ blog.admin_url }}"><span>{{ 'dashboard' | t }}</span></a></li>{% endif %}
+            {%- if user.can_create_posts %}<li><a href="{{ blog.admin_url }}#/content/posts"><span>{{ 'content' | t }}</span></a></li>{% endif %}
+            {%- if user.can_manage_themes %}<li><a href="{{ blog.admin_url }}#/custom/themes"><span>{{ 'custom' | t }}</span></a></li>{% endif %}
+            {%- if user.can_access_settings %}<li><a href="{{ blog.admin_url }}#/settings/basic"><span>{{ 'settings' | t }}</span></a></li>{% endif %}
+            <li><a href="{{ blog.admin_url }}#/security/profile"><span>{{ 'profile' | t }}</span></a></li>
+            <li><a href="{{ blog.change_password_url }}"><span>{{ 'changePassword' | t }}</span></a></li>
+            <li><form method="post" action="{{ blog.logout_url }}" style="display:inline">{{ antiforgery }}<a href="#" onclick="this.parentNode.submit(); return false;"><span>{{ 'logoff' | t }}</span></a></form></li>
+        </ul>
+    </div>
+</div>
+{%- endif %}

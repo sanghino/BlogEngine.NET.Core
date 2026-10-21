@@ -27,8 +27,20 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseStaticFiles();
+
+// File dei temi e dei widget (CSS, immagini, script) dalle cartelle Custom/ e da quelle caricate in App_Data.
+// I template .liquid non vengono mai serviti: hanno un'estensione sconosciuta ai file statici.
+var paths = app.Services.GetRequiredService<BlogEnginePaths>();
+app.UseCustomFolderFiles("/Custom/Themes", paths.BundledThemes, paths.InstalledThemes);
+app.UseCustomFolderFiles("/Custom/Widgets", paths.BundledWidgets, paths.InstalledWidgets);
+
 app.UseMiddleware<SetupGateMiddleware>();
 app.UseMiddleware<BlogContextMiddleware>();
+
+// Pagine di errore (404...) con il tema del blog, solo per le pagine pubbliche richieste in GET.
+app.UseWhen(
+    http => (HttpMethods.IsGet(http.Request.Method) || HttpMethods.IsHead(http.Request.Method)) && !IsSystemPath(http.Request.Path),
+    branch => branch.UseStatusCodePagesWithReExecute("/error/{0}"));
 
 // L'amministrazione usa indirizzi relativi ("app/..."): va aperta con la barra finale.
 app.Use((http, next) =>
@@ -55,6 +67,11 @@ app.MapFileEndpoints();
 app.MapAdminResources();
 
 app.Run();
+
+// Indirizzi con pagine di errore proprie (API, amministrazione, account, configurazione).
+static bool IsSystemPath(PathString path) =>
+    path.StartsWithSegments("/api") || path.StartsWithSegments("/admin") || path.StartsWithSegments("/account")
+    || path.StartsWithSegments("/setup") || path.StartsWithSegments("/error");
 
 // Rende la classe Program visibile ai test di integrazione (WebApplicationFactory).
 public partial class Program;

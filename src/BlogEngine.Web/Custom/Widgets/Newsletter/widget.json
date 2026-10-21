@@ -1,0 +1,14 @@
+{
+  "title": "Newsletter",
+  "description": "Allows visitors to subscribe to your blog by mail",
+  "version": "4.0.0",
+  "authors": "BlogEngine.NET",
+  "website": "https://blogengine.io",
+  "settings": [
+    {
+      "key": "subscribers",
+      "type": "newsletter",
+      "label": "email"
+    }
+  ]
+}

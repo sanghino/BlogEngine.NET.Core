@@ -1,0 +1,10 @@
+{
+  "title": "Standard",
+  "description": "Premium BlogEngine theme made by Francis",
+  "authors": "Francis",
+  "website": "https://francis.bio/",
+  "version": "4.0.0",
+  "defaultWidgets": {
+    "sidebar": [ "Administration", "Search", "CategoryList", "PostList", "Newsletter", "CommentList", "MonthList" ]
+  }
+}

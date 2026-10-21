@@ -91,6 +91,14 @@ public sealed class ProviderPersistenceTests
         using var host = new TestBlogHost(storage: storage);
         await host.CreatePostAsync("Nel database");
 
-        Assert.IsTrue(File.Exists(Path.Combine(storage.Paths.Data, BlogEngine.Data.Sqlite.ServiceCollectionExtensions.DatabaseFileName)));
+        var file = Path.Combine(storage.Paths.Data, BlogEngine.Data.Sqlite.ServiceCollectionExtensions.DatabaseFileName);
+        Assert.IsTrue(File.Exists(file));
+
+        // Journal classico, non WAL (che EF Core attiverebbe da solo alla creazione del file).
+        using var connection = new Microsoft.Data.Sqlite.SqliteConnection($"Data Source={file};Pooling=False");
+        connection.Open();
+        using var command = connection.CreateCommand();
+        command.CommandText = "PRAGMA journal_mode;";
+        Assert.AreEqual("delete", command.ExecuteScalar() as string);
     }
 }

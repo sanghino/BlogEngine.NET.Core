@@ -1,0 +1,8 @@
+<div class="Widget widget tagcloud">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul>
+            {%- for tag in widget.data.tags %}<li><a href="{{ tag.url }}" class="{{ tag.css_class }}" title="Tag: {{ tag.name }}">{{ tag.name }}</a> </li>{% endfor %}
+        </ul>
+    </div>
+</div>

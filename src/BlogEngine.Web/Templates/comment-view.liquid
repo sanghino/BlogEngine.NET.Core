@@ -1,0 +1,18 @@
+{%- comment -%}
+  Un commento con le sue risposte (porting di CommentView.ascx). Gli id "id_..." e "replies_..."
+  servono a blog.js per inserire le risposte nel punto giusto.
+{%- endcomment -%}
+<div class="comment{% if comment.is_by_post_author %} self{% endif %}" id="id_{{ comment.id }}">
+    {{ comment.avatar }}
+    <p class="author">
+        {%- if comment.website != '' %}<a href="{{ comment.website }}" rel="nofollow" class="url fn">{{ comment.author }}</a>{% else %}<span class="fn">{{ comment.author }}</span>{% endif %}
+        {{ comment.flag }} - {{ comment.date_created | date_format: 'g' }}
+    </p>
+    <div class="content">{{ comment.text }}</div>
+    <p class="comment-links">{{ comment.reply_link }}{% if comment.admin_links != '' %} | {{ comment.admin_links }}{% endif %}</p>
+    <div class="comment-replies" id="replies_{{ comment.id }}"{% if comment.replies.size == 0 %} style="display:none;"{% endif %}>
+        {%- for reply in comment.replies %}
+        {% include 'comment-view', comment: reply %}
+        {%- endfor %}
+    </div>
+</div>

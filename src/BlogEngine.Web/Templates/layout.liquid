@@ -1,0 +1,31 @@
+{%- comment -%}
+  Layout di riserva, usato solo se il tema attivo non ne ha uno. Ogni tema deve fornire il proprio
+  layout.liquid (ed eventualmente layout-post.liquid e layout-page.liquid). Variabili principali:
+  page_title, content_for_header, content_for_layout, content_for_footer, blog, user, theme.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    {{ content_for_header }}
+</head>
+<body class="{{ blog.direction }}">
+    <header>
+        <h1><a href="{{ blog.url }}">{{ blog.name }}</a></h1>
+        <p>{{ blog.description }}</p>
+        <nav>
+            <a href="{{ blog.url }}">{{ 'home' | t }}</a>
+            {%- for p in blog.pages %} | <a href="{{ p.url }}">{{ p.title }}</a>{% endfor %}
+            | <a href="{{ blog.archive_url }}">{{ 'archive' | t }}</a>
+            | <a href="{{ blog.contact_url }}">{{ 'contact' | t }}</a>
+            {%- if user.is_authenticated %} | <a href="{{ blog.admin_url }}">{{ 'admin' | t }}</a>{% else %} | <a href="{{ blog.login_url }}">{{ 'login' | t }}</a>{% endif %}
+        </nav>
+    </header>
+    <main>{{ content_for_layout }}</main>
+    <aside>{% widget_zone 'be_WIDGET_ZONE' %}</aside>
+    <footer>&copy; {{ blog.year }} {{ blog.name }}</footer>
+    {{ content_for_footer }}
+</body>
+</html>

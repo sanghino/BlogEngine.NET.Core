@@ -28,6 +28,24 @@ public sealed class RequestBlogContext : IBlogContext
     public Uri? RequestBaseUri { get; set; }
 
     /// <summary>Opera come amministratore senza un utente reale (configurazione iniziale e attività di sistema).</summary>
+    /// <summary>
+    /// Esegue temporaneamente un'operazione come amministratore (es. un visitatore che si cancella
+    /// dalle notifiche di un post): al termine utente e ruoli tornano quelli della richiesta.
+    /// </summary>
+    public async Task RunElevatedAsync(Func<Task> action)
+    {
+        var (userName, roles) = (UserName, Roles);
+        Roles = [SystemRoles.Administrators];
+        try
+        {
+            await action();
+        }
+        finally
+        {
+            (UserName, Roles) = (userName, roles);
+        }
+    }
+
     public void RunAsSystem(Blog blog)
     {
         Blog = blog;

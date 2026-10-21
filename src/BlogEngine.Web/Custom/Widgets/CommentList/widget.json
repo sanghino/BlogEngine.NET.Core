@@ -1,0 +1,15 @@
+{
+  "title": "Comment List",
+  "description": "List of comments",
+  "version": "4.0.0",
+  "authors": "BlogEngine.NET",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "numberofcomments",
+      "type": "number",
+      "label": "numberOfComments",
+      "default": "10"
+    }
+  ]
+}

@@ -1,0 +1,8 @@
+<div class="Widget widget pagelist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul>
+            {%- for page in widget.data.pages %}<li><a href="{{ page.url }}" title="{{ page.description }}">{{ page.title }}</a></li>{% endfor %}
+        </ul>
+    </div>
+</div>

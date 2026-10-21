@@ -1,0 +1,5 @@
+{%- comment -%} Testo HTML libero inserito dall'amministratore. {%- endcomment -%}
+<div class="Widget widget textbox">
+    {%- if widget.show_title and widget.title != '' %}<h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>{% endif %}
+    {{ widget.settings.content | raw }}
+</div>

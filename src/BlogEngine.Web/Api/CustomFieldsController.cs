@@ -3,6 +3,8 @@ using BlogEngine.Models;
 using BlogEngine.Security;
 using BlogEngine.Services;
 using BlogEngine.Web.Api.Models;
+using BlogEngine.Web.Hosting;
+using BlogEngine.Web.Themes;
 using Microsoft.AspNetCore.Mvc;
 
 namespace BlogEngine.Web.Api;
@@ -12,15 +14,37 @@ public sealed class CustomFieldsController(
     ICustomFieldService fields,
     CustomFieldRepository repository,
     IRightsService rights,
-    IBlogContext context) : AdminApiController
+    IBlogContext context,
+    ThemeCatalog themes) : AdminApiController
 {
     /// <summary>Campi del blog; filtro tipico: CustomType == "THEME" &amp;&amp; ObjectId == "standard".</summary>
     [HttpGet("")]
     public async Task<IEnumerable<CustomFieldItem>> Get(string filter = "")
     {
         await DemandAsync();
+        if (filter.Contains(CustomField.ThemeType, StringComparison.OrdinalIgnoreCase))
+        {
+            await RegisterThemeFieldsAsync();
+        }
+
         var all = (await repository.GetAllAsync(context.Blog.Id, HttpContext.RequestAborted)).Select(ToItem).ToList();
         return ApiQuery.Filter(all, filter).ToList();
+    }
+
+    /// <summary>
+    /// Crea, con il valore predefinito, i campi usati dai template dei temi e non ancora salvati
+    /// (come faceva CustomFieldsParser leggendo i token [CUSTOMFIELD|THEME|...]).
+    /// </summary>
+    private async Task RegisterThemeFieldsAsync()
+    {
+        foreach (var theme in themes.GetThemes())
+        {
+            var existing = (await fields.GetFieldsAsync(CustomField.ThemeType, theme.Id)).Select(f => f.Key).ToHashSet(StringComparer.OrdinalIgnoreCase);
+            foreach (var (key, value) in WidgetService.FindThemeFields(theme).Where(f => !existing.Contains(f.Key)))
+            {
+                await fields.SaveAsync(new CustomField { CustomType = CustomField.ThemeType, ObjectId = theme.Id, Key = key, Value = value });
+            }
+        }
     }
 
     [HttpPost("")]

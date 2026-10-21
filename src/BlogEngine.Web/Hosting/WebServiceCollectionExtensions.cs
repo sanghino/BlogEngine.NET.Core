@@ -4,6 +4,7 @@ using BlogEngine.Core.Configuration;
 using BlogEngine.Services;
 using BlogEngine.Web.Security;
 using BlogEngine.Web.Setup;
+using BlogEngine.Web.Themes;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
@@ -61,6 +62,11 @@ public static class WebServiceCollectionExtensions
             options.AddPolicy(AccountRateLimit, http => RateLimitPartition.GetFixedWindowLimiter(
                 http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                 _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+
+            // Commenti, voti, contatti e newsletter dalle pagine pubbliche.
+            options.AddPolicy(Public.BlogActionsController.FormsRateLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+                http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
         });
 
         services.AddLocalization(options => options.ResourcesPath = "Resources");
@@ -84,6 +90,16 @@ public static class WebServiceCollectionExtensions
         services.AddScoped<Api.TrashService>();
         services.AddScoped<Admin.AdminViewContext>();
         services.AddSingleton<ThemeCatalog>();
+
+        // Temi Liquid, widget e pagine pubbliche.
+        services.AddHttpContextAccessor();
+        services.AddSingleton<Themes.ThemeEngine>();
+        services.AddSingleton<Themes.WidgetCatalog>();
+        services.AddScoped<Themes.WidgetService>();
+        services.AddScoped<Themes.SiteRenderer>();
+        services.AddScoped<Themes.PublicContent>();
+        services.AddScoped<Themes.NewsletterSubscribers>();
+        services.AddBuiltInWidgets();
         services.AddSingleton<FileLog>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 

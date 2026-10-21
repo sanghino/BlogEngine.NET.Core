@@ -1,0 +1,97 @@
+{
+  "title": "Tag Cloud",
+  "description": "List of post tags",
+  "version": "4.0.0",
+  "authors": "BlogEngine.NET",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "minimumposts",
+      "type": "select",
+      "label": "tagMinimumPosts",
+      "default": "1",
+      "options": [
+        {
+          "value": "1",
+          "text": "1 (default)"
+        },
+        {
+          "value": "2",
+          "text": "2"
+        },
+        {
+          "value": "3",
+          "text": "3"
+        },
+        {
+          "value": "4",
+          "text": "4"
+        },
+        {
+          "value": "5",
+          "text": "5"
+        },
+        {
+          "value": "6",
+          "text": "6"
+        },
+        {
+          "value": "7",
+          "text": "7"
+        },
+        {
+          "value": "8",
+          "text": "8"
+        },
+        {
+          "value": "9",
+          "text": "9"
+        },
+        {
+          "value": "10",
+          "text": "10"
+        }
+      ]
+    },
+    {
+      "key": "tagcloudsize",
+      "type": "select",
+      "label": "tagCloudMaxSize",
+      "default": "-1",
+      "options": [
+        {
+          "value": "-1",
+          "text": "Unlimited"
+        },
+        {
+          "value": "10",
+          "text": "10"
+        },
+        {
+          "value": "25",
+          "text": "25"
+        },
+        {
+          "value": "50",
+          "text": "50"
+        },
+        {
+          "value": "75",
+          "text": "75"
+        },
+        {
+          "value": "100",
+          "text": "100"
+        },
+        {
+          "value": "125",
+          "text": "125"
+        },
+        {
+          "value": "150",
+          "text": "150"
+        }
+      ]
+    }
+  ]
+}

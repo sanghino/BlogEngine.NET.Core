@@ -1,0 +1,16 @@
+{%- comment -%}
+  Elenco dei post (home, categoria, tag, autore, data).
+  Variabili: posts, pager, list_title, content_by, show_excerpt.
+{%- endcomment -%}
+{%- if list_title != '' %}
+<h2 class="page-global-title post-list-title">{{ list_title }}</h2>
+{%- endif %}
+<div id="posts" class="posts">
+{%- for post in posts %}
+    {%- assign location = 'list' %}
+    {% include 'post-view' %}
+{%- else %}
+    <p class="no-posts">{{ 'noPostsMatchedYourCriteria' | t }}</p>
+{%- endfor %}
+</div>
+{% include 'pager' %}

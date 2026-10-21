@@ -1,0 +1,84 @@
+{%- comment -%} Tema Standard-2017 (porting di site.master, usato per tutte le pagine). {%- endcomment -%}
+{%- assign color_left = 'background color left' | theme_field: '#232526' -%}
+{%- assign color_right = 'background color right' | theme_field: '#414345' -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}">
+<head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ page_title }}</title>
+    <link href="https://fonts.googleapis.com/css?family=Open+Sans:400,700|Kreon:400,700" rel="stylesheet">
+    <link href="{{ 'src/css/bootstrap.min.css' | theme_url }}" rel="stylesheet" />
+    <link href="{{ 'src/css/font-awesome.min.css' | theme_url }}" rel="stylesheet" />
+    <link href="{{ 'src/css/styles.min.css' | theme_url }}?v=12" rel="stylesheet" />
+    <link href="{{ 'Scripts/syntaxhighlighter/styles/shCore.css' | app_url }}" rel="stylesheet" type="text/css" />
+    <link href="{{ 'Scripts/syntaxhighlighter/styles/shThemeDefault.css' | app_url }}" rel="stylesheet" type="text/css" />
+    {{ content_for_header }}
+    <script src="{{ 'Scripts/syntaxhighlighter/scripts/XRegExp.js' | app_url }}"></script>
+    <script src="{{ 'Scripts/syntaxhighlighter/scripts/shCore.js' | app_url }}"></script>
+    <script src="{{ 'Scripts/syntaxhighlighter/scripts/shAutoloader.js' | app_url }}"></script>
+    <script src="{{ 'Scripts/syntaxhighlighter/shActivator.js' | app_url }}"></script>
+    <link rel="shortcut icon" href="{{ 'Content/images/blog/blogengine.ico' | app_url }}" type="image/x-icon" />
+    <style>
+        body {
+            background: {{ color_left }};
+            background: -webkit-linear-gradient(to left, {{ color_right }}, {{ color_left }});
+            background: linear-gradient(to left, {{ color_right }}, {{ color_left }});
+        }
+    </style>
+</head>
+<body class="{{ 'LangDirection' | t }}">
+    <div class="container">
+        <div class="blog-wrapper">
+            <aside class="blog-sidebar">
+                <header class="blog-header">
+                    <div class="blog-info">
+                        <a class="blog-logo" href="{{ blog.url }}" tabindex="-1">
+                            <img src="{{ 'Logo' | theme_field: 'Custom/Themes/Standard-2017/src/img/logo.png' | app_url }}" alt="{{ blog.name }}" />
+                            {{ blog.name }}
+                        </a>
+                        <div class="blog-author">
+                            {{ 'About Author' | theme_field: '' | raw }}
+                        </div>
+                        <ul class="social-network">
+                            <li><a href="{{ 'Facebook Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="{{ 'Twitter Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-twitter"></i></a></li>
+                            <li><a href="{{ 'Google Plus Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="{{ 'Linkedin Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-linkedin"></i></a></li>
+                            <li><a href="{{ 'Instagramm Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-instagram"></i></a></li>
+                            <li><a href="{{ 'Youtube Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-youtube"></i></a></li>
+                            <li><a href="{{ 'Github Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-git"></i></a></li>
+                            <li><a href="{{ 'Pinterest Account' | theme_field: '' }}" rel="external nofollow"><i class="fa fa-pinterest"></i></a></li>
+                        </ul>
+                    </div>
+                    <nav class="blog-nav">
+                        <ul>
+                            <li><a href="{{ blog.url }}" class="item-home" title="{{ 'home' | t }}"><i class="fa fa-home"></i></a></li>
+                            <li><a href="{{ blog.archive_url }}" class="item-archive" title="{{ 'archive' | t }}"><i class="fa fa-align-left"></i></a></li>
+                            <li><a href="{{ blog.contact_url }}" class="item-contact" title="{{ 'contact' | t }}"><i class="fa fa-envelope"></i></a></li>
+                            {%- if user.is_authenticated %}
+                            <li><a href="{{ blog.admin_url }}" class="item-login" title=""><span>{{ 'admin' | t }}</span></a></li>
+                            {%- else %}
+                            <li><a href="{{ blog.login_url }}" class="item-login" title=""><span>{{ 'login' | t }}</span></a></li>
+                            {%- endif %}
+                        </ul>
+                    </nav>
+                </header>
+                {% widget_zone 'be_WIDGET_ZONE' %}
+                <footer class="blog-footer">
+                    <p>Copyright &copy; {{ blog.year }}</p>
+                    <p>Powered by <a href="https://blogengine.io/" target="_blank" title="{{ blog.version }}">BlogEngine.NET</a></p>
+                    <p>Designed by <a href="http://francis.bio/" rel="nofollow" target="_blank">Francis Bio</a></p>
+                </footer>
+            </aside>
+            <div class="blog-content admin-alerts-{{ 'Home Alert Box (true or false?)' | theme_field: 'true' }}">
+                {{ content_for_layout }}
+            </div>
+        </div>
+    </div>
+    <script src="{{ 'src/js/bootstrap.min.js' | theme_url }}"></script>
+    <script src="{{ 'src/js/custom.js' | theme_url }}"></script>
+    {{ content_for_footer }}
+</body>
+</html>

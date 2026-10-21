@@ -1,0 +1,14 @@
+{
+  "title": "Blog Roll",
+  "description": "List of links to other blogs",
+  "version": "4.0.0",
+  "authors": "BlogEngine.NET",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "",
+      "type": "blogroll",
+      "label": "blogroll"
+    }
+  ]
+}

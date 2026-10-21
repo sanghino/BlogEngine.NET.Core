@@ -1,0 +1,43 @@
+{%- comment -%}
+  Pagina del singolo post (porting di post.aspx).
+  Variabili: post, comments, navigation, related_posts, unsubscribed, trackback_url.
+{%- endcomment -%}
+{%- if unsubscribed %}
+<div id="commentNotificationUnsubscription">
+    <h1>{{ 'commentNotificationUnsubscriptionHeader' | t }}</h1>
+    <div>{{ 'commentNotificationUnsubscriptionText' | t }}</div>
+</div>
+{%- endif %}
+{%- if navigation %}{% include 'post-navigation' %}{% endif %}
+{%- assign location = 'single' %}
+{% include 'post-view' %}
+{%- if related_posts and related_posts.size > 0 %}{% include 'related-posts' %}{% endif %}
+<!--
+<rdf:RDF xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:trackback="http://madskills.com/public/xml/rss/module/trackback/">
+  <rdf:Description rdf:about="{{ post.absolute_url }}" dc:identifier="{{ post.absolute_url }}" dc:title="{{ post.title }}" trackback:ping="{{ trackback_url }}" />
+</rdf:RDF>
+-->
+{%- if comments.provider == 'disqus' %}
+<div id="comment" class="comment-form well-global">
+    <div id="disqus_thread" class="form-horizontal"></div>
+</div>
+<script>
+    var disqus_url = '{{ post.absolute_url }}';
+    var disqus_developer = '{% if comments.disqus_dev_mode %}1{% else %}0{% endif %}';
+    (function () {
+        var dsq = document.createElement('script'); dsq.async = true;
+        dsq.src = 'https://{{ comments.disqus_website_name }}.disqus.com/embed.js';
+        (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+    })();
+</script>
+{%- elsif comments.provider == 'facebook' %}
+<div id="comment" class="comment-form well-global">
+    <div class="form-horizontal">
+        <div class="fb-comments" data-href="{{ post.absolute_url }}" data-width="100%"></div>
+    </div>
+</div>
+<div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/{{ comments.facebook_language }}/sdk.js#xfbml=1&version=v19.0{% if comments.facebook_app_id != '' %}&appId={{ comments.facebook_app_id }}{% endif %}"></script>
+{%- else %}
+{% include 'comments' %}
+{%- endif %}

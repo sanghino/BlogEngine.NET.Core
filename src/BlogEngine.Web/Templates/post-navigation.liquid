@@ -1,0 +1,6 @@
+{%- comment -%} Link al post precedente e al successivo (porting di PostNavigation.ascx). {%- endcomment -%}
+<div id="postnavigation">
+    {%- if navigation.next_url != '' %}<a href="{{ navigation.next_url }}" class="nav-next">{{ navigation.next_title }}</a>{% endif %}
+    {%- if navigation.next_url != '' and navigation.previous_url != '' %} | {% endif %}
+    {%- if navigation.previous_url != '' %}<a href="{{ navigation.previous_url }}" class="nav-prev">{{ navigation.previous_title }}</a>{% endif %}
+</div>

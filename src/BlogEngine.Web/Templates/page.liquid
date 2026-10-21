@@ -1,0 +1,25 @@
+{%- comment -%} Pagina statica (porting di page.aspx). Variabili: page, comments (solo per Disqus). {%- endcomment -%}
+<div id="page" class="page-global">
+    <h2 class="page-global-title">{{ page.title }}</h2>
+    <div>{{ page.content }}</div>
+    {%- if page.children.size > 0 %}
+    <ul class="page-children">
+        {%- for child in page.children %}<li><a href="{{ child.url }}">{{ child.title }}</a></li>{% endfor %}
+    </ul>
+    {%- endif %}
+    {{ page.admin_links }}
+    {%- if comments.provider == 'disqus' and comments.is_open %}
+    <div id="disqus_box">
+        <div id="disqus_thread"></div>
+        <script>
+            var disqus_url = '{{ page.absolute_url }}';
+            var disqus_developer = '{% if comments.disqus_dev_mode %}1{% else %}0{% endif %}';
+            (function () {
+                var dsq = document.createElement('script'); dsq.async = true;
+                dsq.src = 'https://{{ comments.disqus_website_name }}.disqus.com/embed.js';
+                (document.getElementsByTagName('head')[0] || document.getElementsByTagName('body')[0]).appendChild(dsq);
+            })();
+        </script>
+    </div>
+    {%- endif %}
+</div>

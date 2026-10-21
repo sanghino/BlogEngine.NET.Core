@@ -47,10 +47,16 @@ public sealed class BlogEnginePaths
     /// <summary>Estensioni incluse nel pacchetto o copiate via FTP.</summary>
     public string BundledExtensions => Path.Combine(ContentRoot, "Custom", "Extensions");
 
+    /// <summary>Widget installati tramite upload dall'amministrazione.</summary>
+    public string InstalledWidgets => Path.Combine(DataRoot, "widgets");
+
+    /// <summary>Widget inclusi nel pacchetto o copiati via FTP.</summary>
+    public string BundledWidgets => Path.Combine(ContentRoot, "Custom", "Widgets");
+
     /// <summary>Crea le cartelle scrivibili che non esistono ancora.</summary>
     public void EnsureDataDirectories()
     {
-        foreach (var dir in new[] { DataRoot, Data, Files, Cache, Keys, Logs, InstalledThemes, InstalledExtensions })
+        foreach (var dir in new[] { DataRoot, Data, Files, Cache, Keys, Logs, InstalledThemes, InstalledExtensions, InstalledWidgets })
         {
             Directory.CreateDirectory(dir);
         }

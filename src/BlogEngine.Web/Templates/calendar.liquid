@@ -1,0 +1,23 @@
+{%- comment -%} Calendario dei post (porting del controllo PostCalendar). Variabili: calendar (title, previous_url, next_url, day_names, weeks). {%- endcomment -%}
+<div id="calendarContainer" class="page-global">
+    <table class="calendar" style="width:100%">
+        <tr class="header">
+            <td><a href="{{ calendar.previous_url }}">&lt;&lt;</a></td>
+            <td colspan="5" style="text-align:center"><h2 class="page-global-title">{{ calendar.title }}</h2></td>
+            <td style="text-align:right"><a href="{{ calendar.next_url }}">&gt;&gt;</a></td>
+        </tr>
+        <tr>
+            {%- for name in calendar.day_names %}<th scope="col">{{ name }}</th>{% endfor %}
+        </tr>
+        {%- for week in calendar.weeks %}
+        <tr>
+            {%- for day in week %}
+            <td class="{% unless day.is_current_month %}other{% endunless %}{% if day.is_weekend %} weekend{% endif %}{% if day.is_today %} today{% endif %}">
+                {%- if day.url != '' %}<a href="{{ day.url }}">{{ day.day }}</a>{% else %}{{ day.day }}{% endif %}
+                {%- for post in day.posts %}<br /><a class="calendar-post" href="{{ post.url }}">{{ post.title }}</a>{% endfor %}
+            </td>
+            {%- endfor %}
+        </tr>
+        {%- endfor %}
+    </table>
+</div>

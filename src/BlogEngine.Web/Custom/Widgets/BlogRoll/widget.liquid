@@ -1,0 +1,21 @@
+<div class="Widget widget blogroll">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul class="xoxo">
+            {%- for item in widget.data.items %}
+            <li>
+                {%- if item.feed_url != '' %}<a href="{{ item.feed_url }}" rel="nofollow"><img width="12" height="12" alt="{{ item.description }}" src="{{ 'Content/images/blog/rssButton.png' | app_url }}" /></a>{% endif %}
+                <a rel="{{ item.xfn }}" href="{{ item.url }}" title="{{ item.description }}">{{ item.title }}</a>
+                {%- if item.posts.size > 0 %}
+                <ul>
+                    {%- for post in item.posts %}<li><a title="{{ post.title }}" href="{{ post.url }}">{{ post.short_title }}</a></li>{% endfor %}
+                </ul>
+                {%- endif %}
+            </li>
+            {%- endfor %}
+        </ul>
+        <a href="{{ 'opml.axd' | blog_url }}" style="display: block; text-align: right" title="{{ 'downloadOPML' | t }}">
+            {{ 'downloadOPML' | t }} <img src="{{ 'Content/images/blog/opml.png' | app_url }}" width="12" height="12" alt="OPML" />
+        </a>
+    </div>
+</div>

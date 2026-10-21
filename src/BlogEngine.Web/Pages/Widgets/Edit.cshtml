@@ -1,0 +1,135 @@
+@page "/Custom/Widgets/{name}/edit.cshtml"
+@model BlogEngine.Web.Pages.Widgets.EditModel
+@{
+    Layout = null;
+    var root = Request.PathBase.Value + "/";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@Model.Widget.Title</title>
+    <link rel="stylesheet" href="@(root)Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="@(root)admin/themes/standard/css/styles.css" />
+</head>
+<body class="widget-edit">
+    @if (Model.Saved)
+    {
+        <script>if (window.parent && window.parent.toastr) { window.parent.toastr.success("Completed"); }</script>
+    }
+    <form method="post">
+        @foreach (var setting in Model.Widget.Settings)
+        {
+            var value = Model.Value(setting);
+            switch (setting.Type.ToLowerInvariant())
+            {
+                case "checkbox":
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="@setting.Key" @(value == "true" ? "checked" : null) /> @L[setting.Label]</label>
+                    </div>
+                    break;
+                case "number":
+                    <div class="form-group">
+                        <label for="@setting.Key">@L[setting.Label]</label>
+                        <input type="number" min="0" max="1000" class="form-control" id="@setting.Key" name="@setting.Key" value="@value" />
+                    </div>
+                    break;
+                case "select":
+                    <div class="form-group">
+                        <label for="@setting.Key">@L[setting.Label]</label>
+                        <select class="form-control" id="@setting.Key" name="@setting.Key">
+                            @foreach (var option in setting.Options)
+                            {
+                                <option value="@option.Value" selected="@(option.Value == value)">@option.Text</option>
+                            }
+                        </select>
+                    </div>
+                    break;
+                case "category":
+                case "author":
+                    var items = setting.Type == "category" ? Model.CategoryTitles : Model.Authors;
+                    <div class="form-group">
+                        <label for="@setting.Key">@L[setting.Label]</label>
+                        <select class="form-control" id="@setting.Key" name="@setting.Key">
+                            <option value="All" selected="@(value == "All")">All</option>
+                            @foreach (var item in items)
+                            {
+                                <option value="@item" selected="@(item == value)">@item</option>
+                            }
+                        </select>
+                    </div>
+                    break;
+                case "html":
+                    <div class="form-group">
+                        <textarea class="form-control" id="@setting.Key" name="@setting.Key" rows="12">@value</textarea>
+                    </div>
+                    <script src="@(root)admin/editors/tinymce/tinymce.min.js"></script>
+                    <script>
+                        tinymce.init({ selector: '#@setting.Key', menubar: false, height: 260, plugins: 'link image code lists', toolbar: 'bold italic | bullist numlist | link image | code', relative_urls: false });
+                    </script>
+                    break;
+                case "links":
+                    <table class="table table-condensed">
+                        <tr><th>@L["title"]</th><th>@L["url"]</th><th></th></tr>
+                        @foreach (var link in Model.Links)
+                        {
+                            <tr>
+                                <td>@link.Title</td>
+                                <td>@link.Url @(link.NewWindow ? "(" + L["newWindow"] + ")" : "")</td>
+                                <td class="text-right" style="white-space:nowrap">
+                                    <button type="submit" class="btn btn-default btn-xs" name="linkAction" value="up|@link.Id">&uarr;</button>
+                                    <button type="submit" class="btn btn-default btn-xs" name="linkAction" value="down|@link.Id">&darr;</button>
+                                    <button type="submit" class="btn btn-danger btn-xs" name="linkAction" value="delete|@link.Id">@L["delete"]</button>
+                                </td>
+                            </tr>
+                        }
+                        @if (Model.Links.Count == 0)
+                        {
+                            <tr><td colspan="3">@L["empty"]</td></tr>
+                        }
+                    </table>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="linkTitle" placeholder="@L["title"]" />
+                    </div>
+                    <div class="form-group">
+                        <input type="text" class="form-control" name="linkUrl" placeholder="https://..." />
+                    </div>
+                    <div class="checkbox">
+                        <label><input type="checkbox" name="linkNewWindow" value="true" /> @L["newWindow"]</label>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn btn-default" name="linkAction" value="add">@L[setting.Label]</button>
+                    </div>
+                    break;
+                case "newsletter":
+                    <table class="table table-condensed">
+                        @foreach (var email in Model.Subscribers)
+                        {
+                            <tr>
+                                <td>@email</td>
+                                <td class="text-right"><button type="submit" class="btn btn-danger btn-xs" name="removeEmail" value="@email">@L["delete"]</button></td>
+                            </tr>
+                        }
+                        @if (Model.Subscribers.Count == 0)
+                        {
+                            <tr><td>@L["empty"]</td></tr>
+                        }
+                    </table>
+                    break;
+                case "blogroll":
+                    <p><a href="@(root)admin/#/settings/controls/blogroll" target="_top">@L["blogroll"]</a></p>
+                    break;
+                default:
+                    <div class="form-group">
+                        <label for="@setting.Key">@L[setting.Label]</label>
+                        <input type="text" class="form-control" id="@setting.Key" name="@setting.Key" value="@value" />
+                    </div>
+                    break;
+            }
+        }
+        <div>
+            <button type="submit" class="btn btn-success">@L["save"]</button>
+        </div>
+    </form>
+</body>
+</html>

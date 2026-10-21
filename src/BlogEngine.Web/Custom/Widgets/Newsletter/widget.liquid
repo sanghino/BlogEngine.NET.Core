@@ -1,0 +1,14 @@
+<div class="Widget widget newsletter">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content" style="padding: 20px">
+        <div id="newsletterform{{ widget.id }}">
+            <p>{{ 'notifiedPublished' | t }}</p>
+            <label style="font-weight:bold" for="txtNewsletterEmail{{ widget.id }}">{{ 'enterEmail' | t }}</label>
+            <input type="email" style="width:98%;" class="form-control" id="txtNewsletterEmail{{ widget.id }}" />
+            <span id="newsletterMessage{{ widget.id }}" style="display:none"></span>
+            <div style="text-align:center; margin-top: 10px">
+                <input type="button" class="btn btn-primary" value="{{ 'notifyMe' | t }}" onclick="return BlogEngine.subscribeNewsletter('{{ widget.id }}');" />
+            </div>
+        </div>
+    </div>
+</div>

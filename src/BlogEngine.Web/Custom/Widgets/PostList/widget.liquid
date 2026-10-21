@@ -1,0 +1,19 @@
+<div class="Widget widget postlist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul>
+            {%- for item in widget.data.posts %}
+            <li class="post-item-list">
+                <a href="{{ item.url }}">
+                    {%- if widget.data.show_image and item.first_image != '' %}<img src="{{ item.first_image }}" class="post-item-img" alt="Post image" />{% endif %}
+                    <h5 class="post-item-title">{{ item.title }}</h5>
+                    {%- if widget.data.show_description %}<p class="post-item-desc">{{ item.description }}</p>{% endif %}
+                    {%- if widget.data.show_date %}<span class="post-item-date">{{ item.date_created | date_format: 'MMMM d, yyyy' }}</span>{% endif %}
+                </a>
+            </li>
+            {%- else %}
+            <li class="post-item-list">{{ 'none' | t }}</li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

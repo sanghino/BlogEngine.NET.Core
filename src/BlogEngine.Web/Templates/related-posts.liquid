@@ -1,0 +1,12 @@
+{%- comment -%} Post correlati (porting di RelatedPosts.ascx): related_posts con title, url e description. {%- endcomment -%}
+<div id="relatedPosts" class="well-global">
+    <h3 class="well-global-title">{{ 'relatedPosts' | t }}</h3>
+    <ul class="related-posts">
+        {%- for item in related_posts %}
+        <li class="related-posts-item">
+            <a href="{{ item.url }}">{{ item.title }}</a>
+            <p>{{ item.description }}</p>
+        </li>
+        {%- endfor %}
+    </ul>
+</div>

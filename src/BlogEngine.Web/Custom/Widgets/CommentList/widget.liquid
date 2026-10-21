@@ -1,0 +1,19 @@
+<style>.recentcomments li a:last-child { display: inline !important; }</style>
+<div class="Widget widget recentcomments">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul id="recentComments" class="recentcomments">
+            {%- for item in widget.data.comments %}
+            <li>
+                <a href="{{ item.post_url }}">{{ item.post_title }}</a> ({{ item.post_comments }})
+                <br />{{ item.author }} {{ 'wrote' | t }}: {{ item.text }}
+            </li>
+            {%- else %}
+            <li>{{ 'none' | t }}</li>
+            {%- endfor %}
+            {%- if widget.data.comments.size > 0 %}
+            <li><a href="{{ widget.data.feed_url }}">Comment RSS <img alt="" src="{{ 'Content/images/blog/rssButton.png' | app_url }}" /></a></li>
+            {%- endif %}
+        </ul>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<div class="Widget widget search">
+    <div class="WidgetContent widget-content">
+        <div id="searchbox">
+            <input type="text" id="txt-{{ widget.id }}" value="{{ request.query }}" placeholder="{{ 'search' | t }}..." onkeypress="if (event.keyCode == 13) { BlogEngine.search('{{ blog.url }}', 'txt-{{ widget.id }}'); return false; }" />
+            <input type="button" onclick="BlogEngine.search('{{ blog.url }}', 'txt-{{ widget.id }}');" id="searchbutton" value="{{ 'search' | t }}" />
+        </div>
+    </div>
+</div>

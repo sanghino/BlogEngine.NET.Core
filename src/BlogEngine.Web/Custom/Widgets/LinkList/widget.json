@@ -1,0 +1,20 @@
+{
+  "title": "Link List",
+  "description": "Editable list of links",
+  "version": "4.0.0",
+  "authors": "BlogEngine.net",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "numberoflinks",
+      "type": "number",
+      "label": "numberOfDisplayedItems",
+      "default": "0"
+    },
+    {
+      "key": "links",
+      "type": "links",
+      "label": "addLink"
+    }
+  ]
+}

@@ -1,0 +1,12 @@
+<div class="Widget widget linklist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul id="linkList" class="linklist">
+            {%- for link in widget.data.links %}
+            <li><a href="{{ link.url }}" title="{{ link.title }}"{% if link.new_window %} target="_blank" rel="noopener"{% endif %}>{{ link.title }}</a></li>
+            {%- else %}
+            <li>{{ 'empty' | t }}</li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

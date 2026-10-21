@@ -2589,4 +2589,10 @@
   <data name="emailSendFailed" xml:space="preserve">
     <value>Non è stato possibile inviare l'email: controlla le impostazioni SMTP.</value>
   </data>
+  <data name="noResults" xml:space="preserve">
+    <value>Nessun risultato trovato.</value>
+  </data>
+  <data name="youMightFindUseful" xml:space="preserve">
+    <value>Potrebbe esserti utile uno dei seguenti link:</value>
+  </data>
 </root>

@@ -1,0 +1,14 @@
+<div class="Widget widget monthlist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul id="monthList">
+            {%- for year in widget.data.years %}
+            <li onclick="BlogEngine.toggleMonth('year{{ year.year }}')" class="year">{{ year.year }}
+                <ul id="year{{ year.year }}" class="{% if forloop.first %}open{% endif %}">
+                    {%- for month in year.months %}<li><a href="{{ month.url }}">{{ month.title }}</a> ({{ month.count }})</li>{% endfor %}
+                </ul>
+            </li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

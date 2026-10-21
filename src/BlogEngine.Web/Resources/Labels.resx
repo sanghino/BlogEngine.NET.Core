@@ -2663,4 +2663,10 @@
   <data name="emailSendFailed" xml:space="preserve">
     <value>The email could not be sent: check the SMTP settings.</value>
   </data>
+  <data name="noResults" xml:space="preserve">
+    <value>No results found.</value>
+  </data>
+  <data name="youMightFindUseful" xml:space="preserve">
+    <value>You might find one of the following links useful:</value>
+  </data>
 </root>

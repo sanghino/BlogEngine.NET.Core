@@ -1,0 +1,19 @@
+{%- comment -%} Pagina di errore (porting di error404.aspx ed error.aspx). Variabili: error (code, title, text, suggestions). {%- endcomment -%}
+<div class="post error404 page-global">
+    <h2 class="page-global-title">{{ error.title }}</h2>
+    {%- if error.code == 404 %}
+    {%- if error.suggestions.size > 0 %}
+    <p>{{ 'youMightFindUseful' | t }}</p>
+    <ul>
+        {%- for item in error.suggestions %}<li><a href="{{ item.url }}">{{ item.title }}</a></li>{% endfor %}
+    </ul>
+    {%- endif %}
+    <ul>
+        <li><a href="{{ blog.archive_url }}">{{ 'archive' | t }}</a></li>
+        <li><a href="{{ blog.url }}">{{ 'home' | t }}</a></li>
+        <li><a href="{{ blog.search_url }}">{{ 'search' | t }}</a></li>
+    </ul>
+    {%- else %}
+    <div>{{ error.text }}</div>
+    {%- endif %}
+</div>

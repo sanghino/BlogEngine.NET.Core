@@ -1,0 +1,10 @@
+<div class="Widget widget bloglist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul>
+            {%- for item in widget.data.blogs %}
+            <li><a title="{{ item.name }}" href="{{ item.url }}">{{ item.name }}</a></li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

@@ -30,6 +30,10 @@ public sealed class SqliteDataStore(IDbContextFactory<BlogDbContext> factory) :
     {
         await using var db = await factory.CreateDbContextAsync(cancellationToken).ConfigureAwait(false);
         await db.Database.MigrateAsync(cancellationToken).ConfigureAwait(false);
+
+        // EF Core attiva il journal WAL quando crea il file: si torna al journal classico, che non
+        // richiede memoria condivisa e funziona anche sulle cartelle di rete degli hosting condivisi.
+        await db.Database.ExecuteSqlRawAsync("PRAGMA journal_mode = DELETE;", cancellationToken).ConfigureAwait(false);
     }
 
     // ---- Blog ----

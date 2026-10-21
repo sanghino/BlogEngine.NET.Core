@@ -1,0 +1,22 @@
+{%- comment -%} Ricerca (porting di search.aspx). Variabili: search, results, pager. {%- endcomment -%}
+<div class="searchpage post search-page page-global">
+    <h2 class="page-global-title">{{ search.title }}</h2>
+    <form id="searchpage" class="search-page-searchbox clearfix" method="get" action="{{ blog.search_url }}">
+        <input type="text" name="q" id="q" value="{{ search.query }}" />
+        <input type="submit" value="{{ 'search' | t }}" class="btn btn-primary" />
+        {%- if search.show_comments_option %}
+        <input type="checkbox" name="comment" id="comment" value="true"{% if search.include_comments %} checked="checked"{% endif %} /><label for="comment">{{ search.comments_label }}</label>
+        {%- endif %}
+    </form>
+    {%- for result in results %}
+    <div class="searchresult">
+        <a href="{{ result.url }}">{{ result.title }}</a>
+        <span class="text">{{ result.text }}</span>
+        <span class="type">{{ result.type }}</span>
+        <span class="url">{{ result.absolute_url }}</span>
+    </div>
+    {%- else %}
+        {%- if search.query != '' %}<p>{{ 'noResults' | t }}</p>{% endif %}
+    {%- endfor %}
+    {% include 'pager' %}
+</div>

@@ -1,0 +1,65 @@
+{
+  "title": "Post List",
+  "description": "List of blog posts",
+  "version": "4.0.0",
+  "authors": "BlogEngine.NET",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "numberofposts",
+      "type": "number",
+      "label": "numberOfPosts",
+      "default": "10"
+    },
+    {
+      "key": "cutegory",
+      "type": "category",
+      "label": "category",
+      "default": "All"
+    },
+    {
+      "key": "author",
+      "type": "author",
+      "label": "author",
+      "default": "All"
+    },
+    {
+      "key": "sortorder",
+      "type": "select",
+      "label": "sortOrder",
+      "default": "Published",
+      "options": [
+        {
+          "value": "Published",
+          "text": "Published"
+        },
+        {
+          "value": "Alphabetical",
+          "text": "Alphabetical"
+        },
+        {
+          "value": "Comments",
+          "text": "Comments"
+        }
+      ]
+    },
+    {
+      "key": "showimg",
+      "type": "checkbox",
+      "label": "Show image",
+      "default": "false"
+    },
+    {
+      "key": "showdesc",
+      "type": "checkbox",
+      "label": "Show description",
+      "default": "false"
+    },
+    {
+      "key": "showdate",
+      "type": "checkbox",
+      "label": "Show date",
+      "default": "false"
+    }
+  ]
+}

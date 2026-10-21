@@ -1,0 +1,21 @@
+{
+  "title": "Category List",
+  "description": "List of post categories",
+  "version": "4.0.0",
+  "authors": "BlogEngine.NET",
+  "website": "https://blogengine.io/",
+  "settings": [
+    {
+      "key": "showrssicon",
+      "type": "checkbox",
+      "label": "showRssIcon",
+      "default": "true"
+    },
+    {
+      "key": "showpostcount",
+      "type": "checkbox",
+      "label": "showPostCount",
+      "default": "true"
+    }
+  ]
+}

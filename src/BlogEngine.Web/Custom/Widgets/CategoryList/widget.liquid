@@ -1,0 +1,14 @@
+<div class="Widget widget categorylist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul id="categorylist">
+            {%- for category in widget.data.categories %}
+            <li>
+                {%- if category.level > 0 %}<a>{{ category.indent }}</a>{% endif %}
+                {%- if widget.data.show_rss_icon %}<a rel="nofollow" href="{{ category.feed_url }}"><img class="rssButton" alt="RSS feed" src="{{ 'Content/images/blog/rssButton.png' | app_url }}" /></a>{% endif %}
+                <a title="Category: {{ category.title }}" href="{{ category.url }}">{{ category.title }}{% if widget.data.show_post_count %} <span>({{ category.count }})</span>{% endif %}</a>
+            </li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

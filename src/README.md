@@ -43,6 +43,13 @@ dotnet ef migrations add NomeModifica --project BlogEngine.Data.Sqlite --startup
 I test in `BlogEngine.Tests/Data` verificano che i due provider (e lo store in memoria dei test) si comportino
 allo stesso modo: un nuovo provider deve superare la stessa suite (`StoreContractTests`).
 
+## Temi e widget
+
+I temi sono template Liquid letti dal disco a ogni modifica: si installano copiando la cartella in
+`Custom/Themes` (o in `App_Data/themes`), i widget in `Custom/Widgets` (o in `App_Data/widgets`).
+I template predefiniti, usati quando un tema non ridefinisce una pagina, sono in `Templates/`.
+Guide: `BlogEngine.Web/Custom/Themes/README.md` e `BlogEngine.Web/Custom/Widgets/README.md`.
+
 ## Pubblicazione su Aruba
 
 ```
@@ -51,8 +58,8 @@ dotnet publish BlogEngine.Web -c Release -o publish
 
 Caricare via FTP il contenuto di `publish` nella cartella `public` del sito. In produzione i dati vanno in
 `../App_Data`, cioè la cartella `App_Data` allo stesso livello di `public` (impostazione `BlogEngine:DataPath`
-in `appsettings.json`). L'applicazione crea da sola le sottocartelle `files`, `cache`, `keys`, `logs`, `themes`
-ed `extensions`.
+in `appsettings.json`). L'applicazione crea da sola le sottocartelle `files`, `cache`, `keys`, `logs`, `themes`,
+`widgets` ed `extensions`.
 
 Nel pannello Aruba il sito va impostato su .NET Core (al posto di "Framework .NET 4.0") solo al momento del
 passaggio alla nuova versione. Per aggiornare un sito già online caricare prima un file `app_offline.htm`,

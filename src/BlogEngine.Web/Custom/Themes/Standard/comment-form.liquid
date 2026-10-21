@@ -1,0 +1,24 @@
+{%- comment -%} Tema Standard: porting di CommentForm.ascx. {%- endcomment -%}
+<div class="comment-form well-global">
+    <h3 class="well-global-title" id="addcomment">{{ 'addComment' | t }}</h3>
+    <div class="form-group">
+        <input type="text" class="form-control" placeholder="{{ 'name' | t }}" name="txtName" id="txtName" maxlength="100" />
+    </div>
+    <div class="form-group">
+        <input type="email" placeholder="{{ 'email' | t }}" class="form-control" id="txtEmail" maxlength="200" />
+    </div>
+    {%- if comments.show_website %}
+    <div class="form-group">
+        <input type="text" placeholder="{{ 'website' | t }} (optional)" class="form-control" id="txtWebsite" maxlength="300" />
+    </div>
+    {%- endif %}
+    <div class="form-group" id="commentCompose">
+        <textarea class="form-control" id="txtContent" placeholder="{{ 'comment' | t }}" cols="50" rows="7" name="txtContent"></textarea>
+    </div>
+    <div class="form-group form-check">
+        <input type="checkbox" id="cbNotify" class="form-check-input" />
+        <label for="cbNotify" class="form-check-label">{{ 'notifyOnNewComments' | t }}</label>
+    </div>
+    <div id="commentCaptcha" class="form-group"></div>
+    <input type="button" id="btnSaveAjax" value="{{ 'saveComment' | t }}" class="btn btn-primary btn-block" onclick="return BlogEngine.validateAndSubmitCommentForm()" />
+</div>

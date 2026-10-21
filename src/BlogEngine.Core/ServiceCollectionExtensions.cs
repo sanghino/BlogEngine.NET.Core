@@ -54,9 +54,12 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<IEmailSender, SmtpEmailSender>();
         services.TryAddScoped<IAvatarService, AvatarService>();
         services.TryAddScoped<BlogProvisioningService>();
+        services.TryAddScoped<SearchService>();
         services.TryAddSingleton<BlogEngine.Core.Files.FileStore>();
 
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<CommentChangingEvent>, CommentModerationHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<ServingEvent<Post>>, CustomFieldTokensHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<ServingEvent<Page>>, CustomFieldTokensHandler>());
 
         return services;
     }
