@@ -188,3 +188,6 @@ BlogEngine/.vs/
 BlogEngine/BlogEngine.NET/App_Data/datastore/extensions/*.xml
 /.vs/slnx.sqlite
 /.vs/BlogEngine.NET/config/applicationhost.config
+
+# BlogEngine .NET 8: dati locali di sviluppo
+src/BlogEngine.Web/App_Data/

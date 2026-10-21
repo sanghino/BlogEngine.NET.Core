@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <ItemGroup>
+    <ProjectReference Include="..\BlogEngine.Core\BlogEngine.Core.csproj" />
+    <ProjectReference Include="..\BlogEngine.Data.Xml\BlogEngine.Data.Xml.csproj" />
+    <ProjectReference Include="..\BlogEngine.Data.Sqlite\BlogEngine.Data.Sqlite.csproj" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <!-- Pacchetto "portable": IIS avvia il sito con "dotnet BlogEngine.Web.dll", vale per 32 e 64 bit. -->
+    <UseAppHost>false</UseAppHost>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- I dati locali di sviluppo non vanno pubblicati: in produzione stanno in ../App_Data. -->
+    <Content Remove="App_Data\**" />
+    <None Remove="App_Data\**" />
+  </ItemGroup>
+
+</Project>
