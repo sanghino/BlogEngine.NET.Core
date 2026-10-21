@@ -18,8 +18,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ◐ | Pagine statiche, gerarchia padre/figlio, pagina iniziale personalizzata | `Page.cs`, `PageRepository`, `PagesController` | Core + API |
 | ◐ | Categorie gerarchiche | `Category.cs`, `CategoriesController` | Core + API |
 | ◐ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + widget |
-| ◐ | Campi personalizzati su post, pagine, profili | `CustomFieldRepository`, `CustomFieldsParser` | Core + API |
-| ◐ | Cestino: eliminazione logica, ripristino, svuotamento | `TrashRepository`, `TrashController` | Core + API |
+| ☑ | Campi personalizzati su post, pagine, profili | `CustomFieldRepository`, `CustomFieldsParser` | Core + API |
+| ☑ | Cestino: eliminazione logica, ripristino, svuotamento | `TrashRepository`, `TrashController` | Core + API |
 | ☐ | Allegati / enclosure nei post | `EnableEnclosures` | Core + feed |
 | ☐ | Post correlati | `RelatedPostsBase`, `EnableRelatedPosts` | Core + tema |
 | ◐ | Navigazione post precedente/successivo | `PostNavigationBase` | Tema |
@@ -35,7 +35,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ◐ | Commenti annidati, moderazione, approvazione/rifiuto, spam | `Comment.cs`, `CommentsController` | Core + API |
 | ◐ | Chiusura commenti dopo N giorni, sito web e nazione opzionali | `BlogSettings` | Core |
-| ◐ | Filtri commenti configurabili (IP, email, parole) | `CommentFilterRepository`, `CommentFilterController` | Core + API |
+| ☑ | Filtri commenti configurabili (IP, email, parole) | `CommentFilterRepository`, `CommentFilterController` | Core + API |
 | ◐ | Filtri antispam personalizzati (`ICustomFilter`), segnalazione errori | `Services/Messaging/Protection` | Abstractions (punto di estensione) |
 | ☐ | Avatar (Gravatar, ecc.) | `Data/Services/Avatar.cs` | Core |
 | ☐ | Provider commenti alternativi: Disqus, Facebook | `CommentProvider`, `Disqus*`, `Facebook*` | Tema / impostazioni |
@@ -48,8 +48,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Login, logout, cambio password, recupero password | `Account/*.aspx`, `Logout.cshtml` | Razor Pages + autenticazione via cookie |
 | ☑ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages |
 | ☐ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Razor Pages |
-| ◐ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
-| ◐ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
+| ☑ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
+| ☑ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
 | ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
 | ☐ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | Middleware |
 | ☐ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | Endpoint |
@@ -61,25 +61,25 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ☑ | Più blog nella stessa applicazione (sottocartella o host) | `Blog.cs`, `BlogsController`, `App_Data/blogs` | Core + middleware di risoluzione del blog |
 | ◐ | Blog principale che vede i contenuti dei blog figli | `Blog.cs` | Core |
-| ☐ | Generatore di nuovi blog da modello | `Helpers/BlogGenerator.cs` | Core |
+| ☑ | Generatore di nuovi blog da modello | `Helpers/BlogGenerator.cs` | Core |
 
 ## 5. Amministrazione (AngularJS 1.3, mantenuto nella prima fase)
 
 | Stato | Sezione | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Dashboard e statistiche | `dashboard/`, `DashboardController`, `StatsController` | Contratti JSON invariati |
-| ☐ | Editor di post e pagine (TinyMCE, Summernote, bootstrap-wysiwyg) | `admin/app/editor`, `admin/editors` | Le pagine `.cshtml` dell'editor diventano Razor ASP.NET Core |
-| ☐ | File manager, upload | `FileManagerController`, `UploadController` | File in `App_Data/files` |
-| ☐ | Contenuti: post, pagine, categorie, tag, commenti, blog | `admin/app/content/*` | API |
-| ☐ | Utenti, ruoli, profilo | `admin/app/security/*` | API |
-| ☐ | Impostazioni: base, avanzate, commenti, email, feed, controlli | `admin/app/settings/*`, `SettingsController` | API |
-| ◐ | Blogroll, ping service | `settings/controls`, `BlogRollController`, `PingServicesController` | API |
-| ☐ | Strumenti di verifica (email, permessi cartelle) | `settings/tools`, `ToolsController` | API, integrati con la diagnostica |
-| ☐ | Log | `LogsController`, `UnhandledExceptionLogger` | `App_Data/logs` |
-| ☐ | Gestione temi, widget, estensioni (plugin) | `admin/app/custom/*`, `PackagesController`, `PackageExtraController` | Solo installazioni locali (cartella / upload zip) |
+| ☑ | Dashboard e statistiche | `dashboard/`, `DashboardController`, `StatsController` | Contratti JSON invariati |
+| ☑ | Editor di post e pagine (TinyMCE, Summernote, bootstrap-wysiwyg) | `admin/app/editor`, `admin/editors` | Le pagine `.cshtml` dell'editor diventano Razor ASP.NET Core |
+| ◐ | File manager, upload | `FileManagerController`, `UploadController` | File in `App_Data/files` |
+| ☑ | Contenuti: post, pagine, categorie, tag, commenti, blog | `admin/app/content/*` | API |
+| ☑ | Utenti, ruoli, profilo | `admin/app/security/*` | API |
+| ☑ | Impostazioni: base, avanzate, commenti, email, feed, controlli | `admin/app/settings/*`, `SettingsController` | API |
+| ☑ | Blogroll, ping service | `settings/controls`, `BlogRollController`, `PingServicesController` | API |
+| ☑ | Strumenti di verifica (email, permessi cartelle) | `settings/tools`, `ToolsController` | API, integrati con la diagnostica |
+| ☑ | Log | `LogsController`, `UnhandledExceptionLogger` | `App_Data/logs` |
+| ◐ | Gestione temi, widget, estensioni (plugin) | `admin/app/custom/*`, `PackagesController`, `PackageExtraController` | Solo installazioni locali (cartella / upload zip) |
 | ☐ | Impostazioni delle estensioni | `admin/Extensions/Settings.aspx` | Razor Page o vista AngularJS |
-| ☐ | Lookup (culture, fusi orari, editor…) | `LookupsController` | API |
-| ☐ | News feed BlogEngine in dashboard | `NewsFeedController` | Da verificare: la fonte esterna potrebbe non esistere più |
+| ☑ | Lookup (culture, fusi orari, editor…) | `LookupsController` | API |
+| ☑ | News feed BlogEngine in dashboard | `NewsFeedController` | Da verificare: la fonte esterna potrebbe non esistere più |
 | ✖ | Galleria online di temi ed estensioni | `Services/Packaging/Gallery*`, NuGet.Core | Servizio online non più disponibile |
 
 ## 6. Temi e widget
@@ -110,7 +110,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | AkismetFilter | `Custom/Extensions/AkismetFilter.cs` | Plugin |
 | ☐ | BBCode | `BBCode.cs` | Plugin |
 | ☐ | BreakPost | `BreakPost.cs` | Plugin |
-| ☐ | Logger | `Logger.cs` | Plugin |
+| ☑ | Logger | `Logger.cs` | Plugin |
 | ☐ | MediaElementPlayer | `MediaElementPlayer.cs` | Plugin |
 | ☐ | Recaptcha | `Recaptcha/` | Plugin (API reCAPTCHA attuale) |
 | ☐ | ResolveLinks | `ResolveLinks.cs` | Plugin |
@@ -137,7 +137,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | APML, FOAF, SIOC | `Apml`, `Foaf`, `Sioc` | Endpoint |
 | ☐ | Export BlogML | `BlogMLExportHandler` (`blogml.axd`) | Endpoint |
 | ☐ | Import BlogML | `Services/Syndication/BlogML` | Admin |
-| ☐ | File e immagini serviti con controllo accessi, ridimensionamento | `FileHandler` (`file.axd`), `ImageHandler` (`image.axd`) | Endpoint; immagini con ImageSharp/SkiaSharp |
+| ◐ | File e immagini serviti con controllo accessi, ridimensionamento | `FileHandler` (`file.axd`), `ImageHandler` (`image.axd`) | Endpoint; immagini con ImageSharp/SkiaSharp |
 | ☐ | Risorse localizzate per JavaScript | `ResourceHandler` (`*.res.axd`) | Endpoint |
 | ☐ | JavaScript minificato | `JavaScriptHandler` (`*.js.axd`), AjaxMin | Minificazione in fase di build |
 | ☐ | `robots.txt` | file statico | `wwwroot` |

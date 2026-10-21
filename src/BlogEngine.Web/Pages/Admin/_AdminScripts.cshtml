@@ -1,0 +1,69 @@
+@model string
+@* Stessi script, nello stesso ordine, dei bundle "~/scripts/blogadmin" ed "~/scripts/wysiwyg" della versione originale. *@
+@if (Model == "editor")
+{
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-route.min.js"></script>
+    <script src="~/Scripts/angular-sanitize.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/textext.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/admin/app/app.js" asp-append-version="true"></script>
+    <script src="~/admin/app/grid-helpers.js" asp-append-version="true"></script>
+    <script src="~/admin/app/editor/editor-helpers.js" asp-append-version="true"></script>
+    <script src="~/admin/app/editor/posteditorController.js" asp-append-version="true"></script>
+    <script src="~/admin/app/editor/pageeditorController.js" asp-append-version="true"></script>
+    <script src="~/admin/app/editor/filemanagerController.js" asp-append-version="true"></script>
+    <script src="~/admin/app/common.js" asp-append-version="true"></script>
+    <script src="~/admin/app/data-service.js" asp-append-version="true"></script>
+    @switch (Admin.Options.DefaultEditor)
+    {
+        case "bootstrap-wysiwyg":
+            <script src="~/admin/editors/bootstrap-wysiwyg/jquery.hotkeys.js"></script>
+            <script src="~/admin/editors/bootstrap-wysiwyg/bootstrap-wysiwyg.js"></script>
+            <script src="~/admin/editors/bootstrap-wysiwyg/editor.js"></script>
+            break;
+        case "summernote":
+            <script src="~/admin/editors/summernote/summernote.js"></script>
+            <script src="~/admin/editors/summernote/editor.js"></script>
+            break;
+        default:
+            @* I plugin di TinyMCE non si caricano se compressi insieme agli altri script. *@
+            <script src="~/admin/editors/tinymce/tinymce.min.js"></script>
+            <script src="~/admin/editors/tinymce/editor.js"></script>
+            break;
+    }
+}
+else
+{
+    <script src="~/Scripts/jquery-2.1.4.min.js"></script>
+    <script src="~/Scripts/jquery.form.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery-ui.js"></script>
+    <script src="~/Scripts/toastr.min.js"></script>
+    <script src="~/Scripts/bootstrap.min.js"></script>
+    <script src="~/Scripts/moment.min.js"></script>
+    <script src="~/Scripts/angular.min.js"></script>
+    <script src="~/Scripts/angular-route.min.js"></script>
+    <script src="~/Scripts/angular-sanitize.min.js"></script>
+    @foreach (var script in new[]
+    {
+        "app/app.js", "app/listpager.js", "app/grid-helpers.js", "app/data-service.js", "app/editor/filemanagerController.js",
+        "app/common.js", "app/dashboard/dashboardController.js", "app/content/blogs/blogController.js",
+        "app/content/posts/postController.js", "app/content/pages/pageController.js", "app/content/tags/tagController.js",
+        "app/content/categories/categoryController.js", "app/content/comments/commentController.js",
+        "app/content/comments/commentFilters.js", "app/custom/plugins/pluginController.js",
+        "app/custom/themes/themeController.js", "app/custom/widgets/widgetController.js",
+        "app/custom/widgets/widgetGalleryController.js", "app/security/users/userController.js",
+        "app/security/roles/roleController.js", "app/security/profile/profileController.js",
+        "app/settings/settingController.js", "app/settings/tools/toolController.js",
+        "app/settings/controls/blogrollController.js", "app/settings/controls/pingController.js",
+    })
+    {
+        <script src="~/admin/@script" asp-append-version="true"></script>
+    }
+}

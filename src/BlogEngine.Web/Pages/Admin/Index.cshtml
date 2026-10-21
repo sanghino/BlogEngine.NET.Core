@@ -1,0 +1,8 @@
+@page "/admin/"
+@model BlogEngine.Web.Pages.Admin.IndexModel
+@{
+    Layout = "_AdminLayout";
+}
+<button tabindex="-1" class="sidebar-toggle"><span></span><span></span><span></span></button>
+<div ng-view="" id="ng-view"></div>
+<div class="main-loading" id="global-loading"><div class="loader"></div></div>

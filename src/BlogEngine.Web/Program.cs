@@ -1,5 +1,7 @@
 using BlogEngine.Core.Configuration;
 using BlogEngine.Core.Data;
+using BlogEngine.Web.Admin;
+using BlogEngine.Web.Endpoints;
 using BlogEngine.Web.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -27,6 +29,19 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseMiddleware<SetupGateMiddleware>();
 app.UseMiddleware<BlogContextMiddleware>();
+
+// L'amministrazione usa indirizzi relativi ("app/..."): va aperta con la barra finale.
+app.Use((http, next) =>
+{
+    if (http.Request.Path.Equals("/admin", StringComparison.OrdinalIgnoreCase))
+    {
+        http.Response.Redirect($"{http.Request.PathBase}/admin/{http.Request.QueryString}");
+        return Task.CompletedTask;
+    }
+
+    return next(http);
+});
+
 app.UseRequestLocalization();
 app.UseRouting();
 app.UseRateLimiter();
@@ -35,6 +50,9 @@ app.UseMiddleware<UserContextMiddleware>();
 app.UseAuthorization();
 
 app.MapRazorPages();
+app.MapControllers();
+app.MapFileEndpoints();
+app.MapAdminResources();
 
 app.Run();
 

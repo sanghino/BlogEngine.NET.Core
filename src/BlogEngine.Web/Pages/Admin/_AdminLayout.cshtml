@@ -1,0 +1,45 @@
+@* Porting di admin/themes/standard/layout.cshtml. ViewData["AdminScripts"] = "editor" per gli editor di post e pagine. *@
+<!DOCTYPE html>
+<html ng-app="blogAdmin">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+    <meta name="robots" content="noindex" />
+    <title>@Admin.BlogName (@Admin.UserName)</title>
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,500,700" rel="stylesheet">
+    <partial name="_AdminStyles" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+    <partial name="_AdminVars" />
+</head>
+<body class="@L["LangDirection"]-dir">
+    <div class="main-wrapper">
+        <div class="main-sidebar">
+            <partial name="_AdminSidebar" />
+        </div>
+        <div class="main-content">
+            @RenderBody()
+        </div>
+        <div class="main-overlay"></div>
+    </div>
+    <partial name="_AdminScripts" model="@(ViewData["AdminScripts"] as string ?? "admin")" />
+    <script>
+        $(".sidebar-toggle").click(function () {
+            $(".main-wrapper").toggleClass("sidebar-open");
+        });
+        $(".main-overlay").click(function () {
+            $(".main-wrapper").removeClass("sidebar-open");
+        });
+        $(".sub-nav-sidebar li").click(function () {
+            $(".main-wrapper").removeClass("sidebar-open");
+        });
+        $(window).resize(function () {
+            if ($(window).width() > 1025) {
+                $(".main-wrapper").removeClass("sidebar-open");
+            }
+        });
+    </script>
+</body>
+</html>

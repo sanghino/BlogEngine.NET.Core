@@ -52,6 +52,9 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<ILinkGenerator, LinkGenerator>();
         services.TryAddScoped<IUserService, UserService>();
         services.TryAddScoped<IEmailSender, SmtpEmailSender>();
+        services.TryAddScoped<IAvatarService, AvatarService>();
+        services.TryAddScoped<BlogProvisioningService>();
+        services.TryAddSingleton<BlogEngine.Core.Files.FileStore>();
 
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<CommentChangingEvent>, CommentModerationHandler>());
 

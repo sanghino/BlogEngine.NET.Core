@@ -1,0 +1,14 @@
+@* Editor dei contenuti scelto con BlogEngine:DefaultEditor (porting di admin/editors/*/editor.cshtml). *@
+@switch (Admin.Options.DefaultEditor)
+{
+    case "summernote":
+        <link rel="stylesheet" href="~/admin/editors/summernote/summernote.css">
+        <textarea class="summernote"></textarea>
+        break;
+    case "bootstrap-wysiwyg":
+        <partial name="_EditorBootstrapWysiwyg" />
+        break;
+    default:
+        <textarea style="opacity:0; height:480px; width:100%;" id="txtContent" class="post"></textarea>
+        break;
+}

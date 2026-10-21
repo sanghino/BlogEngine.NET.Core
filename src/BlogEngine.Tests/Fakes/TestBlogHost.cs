@@ -56,6 +56,10 @@ public sealed class TestBlogHost : IDisposable
         if (storage is null)
         {
             TestStorage.RegisterMemory(services, Stores);
+
+            // Percorsi fittizi: con lo store in memoria nessuna cartella viene creata finché un test non scrive file.
+            var dataRoot = Path.Combine(Path.GetTempPath(), "be-tests", Guid.NewGuid().ToString("N"));
+            services.AddSingleton(new BlogEngine.Core.Configuration.BlogEnginePaths(dataRoot, new BlogEngine.Core.Configuration.BlogEngineOptions { DataPath = dataRoot }));
         }
         else
         {

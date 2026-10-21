@@ -1,0 +1,76 @@
+using System.Text.Json;
+using BlogEngine.Core.Configuration;
+
+namespace BlogEngine.Web.Hosting;
+
+/// <summary>Tema disponibile: una cartella con l'eventuale manifest theme.json.</summary>
+public sealed record ThemeInfo(string Id, string Title, string Description, string Version, string Authors, string Website, string Folder, bool IsInstalledByUpload);
+
+/// <summary>
+/// Elenco dei temi: le cartelle di Custom/Themes (pubblicate o copiate via FTP) e di App_Data/themes
+/// (caricate dall'amministrazione). Il motore dei temi Liquid userà lo stesso catalogo.
+/// </summary>
+public sealed class ThemeCatalog(BlogEnginePaths paths)
+{
+    public const string ManifestFileName = "theme.json";
+
+    public IReadOnlyList<ThemeInfo> GetThemes() =>
+        Scan(paths.BundledThemes, uploaded: false)
+            .Concat(Scan(paths.InstalledThemes, uploaded: true))
+            .GroupBy(t => t.Id, StringComparer.OrdinalIgnoreCase)
+            .Select(g => g.First())
+            .OrderBy(t => t.Title, StringComparer.CurrentCultureIgnoreCase)
+            .ToList();
+
+    public ThemeInfo? Find(string id) => GetThemes().FirstOrDefault(t => string.Equals(t.Id, id, StringComparison.OrdinalIgnoreCase));
+
+    private static IEnumerable<ThemeInfo> Scan(string root, bool uploaded)
+    {
+        if (!Directory.Exists(root))
+        {
+            yield break;
+        }
+
+        foreach (var folder in Directory.EnumerateDirectories(root))
+        {
+            var id = Path.GetFileName(folder);
+            var manifest = ReadManifest(Path.Combine(folder, ManifestFileName));
+            yield return new ThemeInfo(
+                id,
+                manifest?.Title ?? id,
+                manifest?.Description ?? string.Empty,
+                manifest?.Version ?? string.Empty,
+                manifest?.Authors ?? string.Empty,
+                manifest?.Website ?? string.Empty,
+                folder,
+                uploaded);
+        }
+    }
+
+    private static ThemeManifest? ReadManifest(string path)
+    {
+        try
+        {
+            return File.Exists(path)
+                ? JsonSerializer.Deserialize<ThemeManifest>(File.ReadAllText(path), new JsonSerializerOptions { PropertyNameCaseInsensitive = true })
+                : null;
+        }
+        catch (JsonException)
+        {
+            return null;
+        }
+    }
+
+    private sealed class ThemeManifest
+    {
+        public string? Title { get; set; }
+
+        public string? Description { get; set; }
+
+        public string? Version { get; set; }
+
+        public string? Authors { get; set; }
+
+        public string? Website { get; set; }
+    }
+}

@@ -1,0 +1,94 @@
+@* Porting di admin/themes/standard/sidebar.cshtml: stessa struttura e stesse classi CSS. *@
+@{
+    var root = Admin.BlogRoot;
+    var scenario = Admin.Options.UsageScenario;
+}
+<div class="nav-user">
+    <div class="nav-user-info">
+        <div class="nav-user-img"><img src="@Admin.AvatarUrl" alt="" /></div>
+        <div class="nav-user-name text-ellipsis">@Admin.DisplayName</div>
+    </div>
+    <ul class="nav-user-actions clearfix">
+        <li title="@L["logoff"]">
+            <form id="admin-logout" method="post" action="@(root)account/logout" style="display:none"></form>
+            <a href="#" onclick="document.getElementById('admin-logout').submit(); return false;"><i class="fa fa-power-off"></i></a>
+        </li>
+        <li title="@L["changePassword"]"><a href="@(root)account/change-password" target="_blank"><i class="fa fa-key"></i></a></li>
+        <li title="@L["profile"]"><a href="@(root)admin/#/security/profile"><i class="fa fa-user"></i></a></li>
+        <li title="@L["viewMyBlog"]"><a href="@root" target="_blank"><i class="fa fa-globe"></i></a></li>
+    </ul>
+</div>
+<div class="nav-sidebar">
+    <ul data-ng-controller="NavController">
+        @if (Admin.Can(Rights.ViewDashboard))
+        {
+            <li id="mu-dashboard" class="active"><a href="@(root)admin/#/dashboard"><i class="fa fa-th-large"></i> @L["dashboard"]</a></li>
+        }
+        <li id="mu-content">
+            <a href="@(root)admin/#/content/posts"><i class="fa fa-align-justify"></i> @L["content"]</a>
+            <ul class="sub-nav-sidebar">
+                <li id="mu-posts" data-ng-class="{ active: isActive('/content/posts')}"><a href="@(root)admin/#/content/posts">@L["posts"]</a></li>
+                @if (Admin.CommentProvider.IsBlogEngine)
+                {
+                    <li id="mu-comments" data-ng-class="{ active: isActive('/content/comments')}"><a href="@(root)admin/#/content/comments">@L["comments"]</a></li>
+                }
+                <li id="mu-pages" data-ng-class="{ active: isActive('/content/pages')}"><a href="@(root)admin/#/content/pages">@L["pages"]</a></li>
+                <li data-ng-class="{ active: isActive('/content/categories')}"><a href="@(root)admin/#/content/categories">@L["categories"]</a></li>
+                <li data-ng-class="{ active: isActive('/content/tags')}"><a href="@(root)admin/#/content/tags">@L["tags"]</a></li>
+                @if (Admin.IsPrimaryBlog && Admin.IsAdministrator && scenario == "multiblogs")
+                {
+                    <li data-ng-class="{ active: isActive('/content/blogs')}"><a href="@(root)admin/#/content/blogs">@L["blogs"]</a></li>
+                }
+            </ul>
+        </li>
+        @if (Admin.Can(Rights.ManageExtensions))
+        {
+            <li id="mu-custom">
+                <a href="@(root)admin/#/custom/themes"><i class="fa fa-sliders"></i> @L["custom"]</a>
+                <ul class="sub-nav-sidebar">
+                    <li data-ng-class="{ active: isActive('/custom/themes')}"><a class="ng-binding" href="@(root)admin/#/custom/themes">@L["themes"]</a></li>
+                    <li data-ng-class="{ active: isActive('/custom/plugins')}"><a class="ng-binding" href="@(root)admin/#/custom/plugins">@L["plugins"]</a></li>
+                    <li data-ng-class="{ active: isActive('/custom/widgets')}"><a class="ng-binding" href="@(root)admin/#/custom/widgets">@L["widgets"]</a></li>
+                </ul>
+            </li>
+        }
+        @if (scenario != "singleblog")
+        {
+            <li id="mu-users">
+                <a href="@(root)admin/#/security/profile"><i class="fa fa-user"></i> @L["users"]</a>
+                <ul class="sub-nav-sidebar">
+                    <li data-ng-class="{ active: isActive('/security/profile')}"><a class="ng-binding" href="@(root)admin/#/security/profile">@L["profile"]</a></li>
+                    @if (Admin.Can(Rights.ViewRoles))
+                    {
+                        <li data-ng-class="{ active: isActive('/security/roles')}"><a class="ng-binding" href="@(root)admin/#/security/roles">@L["roles"]</a></li>
+                    }
+                    @if (Admin.Can(Rights.EditOtherUsers))
+                    {
+                        <li data-ng-class="{ active: isActive('/security/users')}"><a class="ng-binding" href="@(root)admin/#/security/users">@L["users"]</a></li>
+                    }
+                </ul>
+            </li>
+        }
+        @if (Admin.Can(Rights.AccessAdminSettingsPages))
+        {
+            <li id="mu-settings">
+                <a href="@(root)admin/#/settings/basic"><i class="fa fa-cog"></i> @L["settings"]</a>
+                <ul class="sub-nav-sidebar">
+                    <li data-ng-class="{ active: isActive('/settings/basic')}"><a class="ng-binding" href="@(root)admin/#/settings/basic">@L["basic"]</a></li>
+                    <li data-ng-class="{ active: isActive('/settings/email')}"><a class="ng-binding" href="@(root)admin/#/settings/email">@L["email"]</a></li>
+                    <li data-ng-class="{ active: isActive('/settings/feed')}"><a class="ng-binding" href="@(root)admin/#/settings/feed">@L["feed"]</a></li>
+                    <li data-ng-class="{ active: isActive('/settings/comments')}"><a class="ng-binding" href="@(root)admin/#/settings/comments">@L["comments"]</a></li>
+                    <li data-ng-class="{ active: isActive('/settings/controls')}"><a class="ng-binding" href="@(root)admin/#/settings/controls">@L["controls"]</a></li>
+                    @if (scenario != "singleblog" && Admin.IsPrimaryBlog)
+                    {
+                        <li data-ng-class="{ active: isActive('/settings/advanced')}"><a class="ng-binding" href="@(root)admin/#/settings/advanced">@L["advanced"]</a></li>
+                    }
+                </ul>
+            </li>
+        }
+        <li id="mu-about"><a href="@(root)admin/about.cshtml"><i class="fa fa-info-circle"></i>@L["about"]</a></li>
+    </ul>
+</div>
+<div class="logo-sidebar">
+    <a href="https://blogengine.io/" target="_blank" title="@AdminViewContext.Version"><img src="~/admin/themes/standard/img/logo-sidebar.png" alt="BlogEngine.NET" /></a>
+</div>

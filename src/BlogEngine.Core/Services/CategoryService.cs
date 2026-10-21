@@ -9,6 +9,7 @@ namespace BlogEngine.Core.Services;
 
 public sealed class CategoryService(
     EntityRepository<Category> categories,
+    EntityRepository<Post> posts,
     BlogsCache blogs,
     IBlogContext context,
     IRightsService rights,
@@ -73,12 +74,18 @@ public sealed class CategoryService(
     public async Task DeleteAsync(Category category, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(category);
-        if (!rights.IsAdministrator)
-        {
-            throw new UnauthorizedAccessException();
-        }
+
+        // Come nella versione originale (CategoryRepository.Remove) basta il permesso di eliminare i propri post.
+        await DemandAsync(Rights.DeleteOwnPosts, cancellationToken).ConfigureAwait(false);
 
         await events.PublishAsync(new SavingEvent<Category> { BlogId = category.BlogId, Entity = category, Action = SaveAction.Delete }, cancellationToken).ConfigureAwait(false);
+
+        // La categoria viene tolta dai post che la usano.
+        foreach (var post in (await posts.GetAllAsync(category.BlogId, cancellationToken).ConfigureAwait(false)).Where(p => p.Categories.Contains(category.Id)).ToList())
+        {
+            post.Categories = post.Categories.Where(id => id != category.Id).ToList();
+            await posts.SaveAsync(post, cancellationToken).ConfigureAwait(false);
+        }
 
         // Le sottocategorie diventano di primo livello.
         foreach (var child in (await categories.GetAllAsync(category.BlogId, cancellationToken).ConfigureAwait(false)).Where(c => c.Parent == category.Id).ToList())

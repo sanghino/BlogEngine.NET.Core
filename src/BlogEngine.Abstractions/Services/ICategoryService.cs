@@ -18,6 +18,6 @@ public interface ICategoryService
 
     Task SaveAsync(Category category, CancellationToken cancellationToken = default);
 
-    /// <summary>Elimina la categoria; le sottocategorie diventano di primo livello.</summary>
+    /// <summary>Elimina la categoria, togliendola dai post; le sottocategorie diventano di primo livello.</summary>
     Task DeleteAsync(Category category, CancellationToken cancellationToken = default);
 }

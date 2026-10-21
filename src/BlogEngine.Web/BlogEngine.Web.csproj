@@ -12,7 +12,14 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" />
+    <PackageReference Include="System.ServiceModel.Syndication" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    <!-- Elenco delle etichette passate all'amministrazione (admin.res.axd). -->
+    <Content Include="Resources\AdminLabels.txt" CopyToOutputDirectory="PreserveNewest" CopyToPublishDirectory="PreserveNewest" />
   </ItemGroup>
 
   <ItemGroup>

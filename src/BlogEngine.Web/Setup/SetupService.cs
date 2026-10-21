@@ -104,6 +104,12 @@ public sealed class SetupService(InstallationState installation, IServiceScopeFa
             var rights = services.GetRequiredService<RightsCache>();
             await rights.SaveAsync(primary.Id, RightsMatrix.CreateDefault(), cancellationToken);
 
+            // Solo alla prima installazione riuscita: un nuovo tentativo non duplica il post di benvenuto.
+            if ((await services.GetRequiredService<IPostService>().GetPostsAsync(cancellationToken)).Count == 0)
+            {
+                await services.GetRequiredService<BlogProvisioningService>().SeedContentAsync(primary, administrator.UserName, request.BlogName.Trim(), cancellationToken);
+            }
+
             installation.MarkInstalled(time.GetUtcNow().UtcDateTime);
             return (SetupError.None, administrator);
         }
