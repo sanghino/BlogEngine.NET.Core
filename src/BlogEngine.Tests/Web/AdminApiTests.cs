@@ -122,6 +122,32 @@ public sealed partial class AdminApiTests
         Assert.AreEqual(HttpStatusCode.NotFound, (await _admin.GetAsync($"/api/posts/{id}")).StatusCode);
     }
 
+    /// <summary>
+    /// Dati esattamente come li invia l'editor AngularJS per un post o una pagina nuovi: Id vuoto e
+    /// alcuni elenchi inizializzati come stringa vuota (la vecchia Web API li accettava).
+    /// </summary>
+    [TestMethod]
+    public async Task Editor_NewPostAndPage_WithEmptyStringsAreAccepted()
+    {
+        var post = await SendJsonAsync<JsonObject>(HttpMethod.Post, "/api/posts", """
+            { "Id": "", "Title": "Primo post", "Author": "admin", "Content": "<p>Testo</p>", "DateCreated": "2026-10-21 18:00",
+              "Slug": "", "Categories": [], "Tags": [], "Comments": "", "HasCommentsEnabled": true, "IsPublished": true }
+            """, HttpStatusCode.Created);
+        Assert.IsTrue(Guid.TryParse(post["Id"]!.GetValue<string>(), out var id) && id != Guid.Empty);
+
+        var noLists = await _admin.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/posts")
+        {
+            Content = Json("""{ "Id": "", "Title": "Secondo", "Author": "admin", "Content": "x", "DateCreated": "2026-10-21 18:00", "Slug": "", "Categories": "", "Tags": "", "Comments": "", "IsPublished": false }"""),
+        });
+        Assert.AreEqual(HttpStatusCode.Created, noLists.StatusCode, await noLists.Content.ReadAsStringAsync());
+
+        var page = await _admin.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/pages")
+        {
+            Content = Json("""{ "Id": "", "Title": "Chi sono", "Content": "<p>Io</p>", "DateCreated": "2026-10-21 18:00", "Slug": "", "Parent": null, "IsPublished": true, "ShowInList": true }"""),
+        });
+        Assert.AreEqual(HttpStatusCode.Created, page.StatusCode, await page.Content.ReadAsStringAsync());
+    }
+
     [TestMethod]
     public async Task Validation_ErrorsBecomeBadRequestWithMessage()
     {

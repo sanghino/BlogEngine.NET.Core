@@ -83,7 +83,13 @@ public static class WebServiceCollectionExtensions
         // API dell'amministrazione AngularJS: JSON con Newtonsoft e nomi delle proprietà invariati (PascalCase),
         // come la Web API 2 originale, così il JavaScript esistente riceve e invia esattamente lo stesso formato.
         services.AddControllers().AddNewtonsoftJson(options =>
-            options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver());
+        {
+            options.SerializerSettings.ContractResolver = new Newtonsoft.Json.Serialization.DefaultContractResolver();
+
+            // Come la Web API originale: "Id": "" e gli elenchi inviati come "" sono valori vuoti, non errori.
+            options.SerializerSettings.Converters.Add(new Api.LenientGuidConverter());
+            options.SerializerSettings.Converters.Add(new Api.LenientListConverter());
+        });
         services.AddHttpClient();
 
         services.AddScoped<Api.AdminMapper>();
