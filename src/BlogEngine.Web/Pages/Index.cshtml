@@ -1,0 +1,25 @@
+@page
+@model IndexModel
+@{
+    ViewData["Title"] = Model.BlogName;
+}
+<p>@Model.Description</p>
+<p class="help">@L["siteUnderConstruction"]</p>
+<p class="links">
+    @if (Model.UserName is null)
+    {
+        <a asp-page="/Account/Login">@L["login"]</a>
+    }
+    else
+    {
+        <span>@Model.UserName</span>
+        <span> · </span>
+        <a asp-page="/Account/ChangePassword">@L["changePassword"]</a>
+    }
+</p>
+@if (Model.UserName is not null)
+{
+    <form method="post" asp-page="/Account/Logout">
+        <button type="submit">@L["logoff"]</button>
+    </form>
+}

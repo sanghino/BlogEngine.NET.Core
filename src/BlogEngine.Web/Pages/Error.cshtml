@@ -1,0 +1,21 @@
+@page "/error"
+@inject BlogEngine.Services.ISettingsService Settings
+@{
+    // Le impostazioni potrebbero non essere disponibili se l'errore riguarda proprio i dati.
+    var title = "Error";
+    var text = string.Empty;
+    try
+    {
+        var settings = await Settings.GetAsync();
+        title = settings.ErrorTitle;
+        text = settings.ErrorText;
+    }
+    catch
+    {
+    }
+
+    ViewData["Title"] = title;
+    Response.StatusCode = 500;
+}
+<p>@text</p>
+<p class="links"><a href="~/">@L["home"]</a></p>

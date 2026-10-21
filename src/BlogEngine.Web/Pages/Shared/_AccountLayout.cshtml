@@ -1,0 +1,19 @@
+@{
+    var culture = System.Globalization.CultureInfo.CurrentUICulture;
+}
+<!DOCTYPE html>
+<html lang="@culture.TwoLetterISOLanguageName" dir="@L["LangDirection"]">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="robots" content="noindex" />
+    <title>@ViewData["Title"]</title>
+    <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+</head>
+<body>
+    <main class="account">
+        <h1>@ViewData["Title"]</h1>
+        @RenderBody()
+    </main>
+</body>
+</html>

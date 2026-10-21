@@ -45,10 +45,10 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Login, logout, cambio password, recupero password | `Account/*.aspx`, `Logout.cshtml` | Razor Pages + autenticazione via cookie |
-| ☐ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages |
+| ☑ | Login, logout, cambio password, recupero password | `Account/*.aspx`, `Logout.cshtml` | Razor Pages + autenticazione via cookie |
+| ☑ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages |
 | ☐ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Razor Pages |
-| ☐ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
+| ◐ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
 | ◐ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
 | ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
 | ☐ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | Middleware |
@@ -59,7 +59,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ◐ | Più blog nella stessa applicazione (sottocartella o host) | `Blog.cs`, `BlogsController`, `App_Data/blogs` | Core + middleware di risoluzione del blog |
+| ☑ | Più blog nella stessa applicazione (sottocartella o host) | `Blog.cs`, `BlogsController`, `App_Data/blogs` | Core + middleware di risoluzione del blog |
 | ◐ | Blog principale che vede i contenuti dei blog figli | `Blog.cs` | Core |
 | ☐ | Generatore di nuovi blog da modello | `Helpers/BlogGenerator.cs` | Core |
 
@@ -156,7 +156,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Invio email SMTP (SSL, prefisso oggetto) | `Utils.SendMailMessage`, `BlogSettings` | Core (MailKit o `SmtpClient`) |
+| ◐ | Invio email SMTP (SSL, prefisso oggetto) | `Utils.SendMailMessage`, `BlogSettings` | Core (MailKit o `SmtpClient`) |
 | ☐ | Form contatti con allegati e reCAPTCHA | `contact.aspx` | Pagina + tema |
 | ☐ | Notifica email dei commenti | estensione SendCommentMail | Plugin |
 | ☐ | Newsletter | widget Newsletter + estensione SendNewsletters | Plugin + widget |
@@ -165,7 +165,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | Resx in Core + `IStringLocalizer` |
+| ◐ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | Resx in Core + `IStringLocalizer` |
 | ◐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
 | ☐ | Calendario persiano | `AppCode/PersianCulture.cs` | Core |
 | ◐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |
@@ -180,7 +180,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Provider XML | `Providers/XmlProvider` | `BlogEngine.Data.Xml` |
 | ☑ | Provider SQLite | `setup/SQLite` + `DbBlogProvider` | `BlogEngine.Data.Sqlite` (EF Core) |
 | ☐ | File system dei file caricati | `XmlFileSystemProvider` | Disco, in `App_Data/files` |
-| ☐ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
+| ☑ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
 | ☐ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | Razor Page interna |
 | ☑ | Percorso dati configurabile, cartelle create all'avvio | (nuovo) | `BlogEnginePaths` (Fase 1) |
 | ✖ | Provider SQL Server, MySQL, SQL CE | `setup/SQLServer`, `MySQL`, `SQL_CE`, `DbMembershipProvider` | Non richiesti |

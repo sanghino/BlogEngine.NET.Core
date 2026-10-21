@@ -1,0 +1,32 @@
+@page "/account/register"
+@model BlogEngine.Web.Pages.Account.RegisterModel
+@{
+    ViewData["Title"] = L["createAccount"];
+}
+@if (!Model.Enabled)
+{
+    <p class="error">@L["registrationDisabled"]</p>
+}
+else
+{
+    <form method="post">
+        <div asp-validation-summary="All" class="error"></div>
+
+        <label asp-for="UserName">@L["userName"]</label>
+        <input asp-for="UserName" type="text" autocomplete="username" required />
+
+        <label asp-for="Email">@L["email"]</label>
+        <input asp-for="Email" type="email" autocomplete="email" required />
+
+        <label asp-for="Password">@L["passwordMinimumCharacters", Model.MinimumPasswordLength]</label>
+        <input asp-for="Password" type="password" autocomplete="new-password" minlength="@Model.MinimumPasswordLength" required />
+
+        <label asp-for="ConfirmPassword">@L["confirmPassword"]</label>
+        <input asp-for="ConfirmPassword" type="password" autocomplete="new-password" required />
+
+        <button type="submit">@L["createAccount"]</button>
+    </form>
+}
+<p class="links">
+    <span>@L["alreadyHaveAccount"]</span> <a asp-page="/Account/Login">@L["loginNow"]</a>
+</p>

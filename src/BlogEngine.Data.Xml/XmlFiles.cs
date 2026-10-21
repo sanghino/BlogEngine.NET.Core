@@ -52,13 +52,34 @@ internal sealed class XmlFiles
         using var _ = await LockAsync(path, cancellationToken).ConfigureAwait(false);
         var temp = PrepareTemp(path);
         await File.WriteAllTextAsync(temp, text, WriterSettings.Encoding, cancellationToken).ConfigureAwait(false);
-        File.Move(temp, path, overwrite: true);
+        await RetryAsync(() => File.Move(temp, path, overwrite: true), cancellationToken).ConfigureAwait(false);
     }
 
     public async Task DeleteAsync(string path, CancellationToken cancellationToken)
     {
         using var _ = await LockAsync(path, cancellationToken).ConfigureAwait(false);
-        File.Delete(path);
+        await RetryAsync(() => File.Delete(path), cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// Ripete un'operazione sui file che fallisce per un blocco temporaneo: antivirus e indicizzatori
+    /// possono tenere aperto per un istante un file appena scritto, sia su Windows sia sugli hosting condivisi.
+    /// </summary>
+    private static async Task RetryAsync(Action operation, CancellationToken cancellationToken)
+    {
+        const int attempts = 5;
+        for (var attempt = 1; ; attempt++)
+        {
+            try
+            {
+                operation();
+                return;
+            }
+            catch (Exception ex) when (attempt < attempts && ex is IOException or UnauthorizedAccessException)
+            {
+                await Task.Delay(50 * attempt, cancellationToken).ConfigureAwait(false);
+            }
+        }
     }
 
     private static async Task<XDocument?> LoadUnlockedAsync(string path, CancellationToken cancellationToken)
@@ -81,7 +102,7 @@ internal sealed class XmlFiles
             await document.SaveAsync(writer, cancellationToken).ConfigureAwait(false);
         }
 
-        File.Move(temp, path, overwrite: true);
+        await RetryAsync(() => File.Move(temp, path, overwrite: true), cancellationToken).ConfigureAwait(false);
     }
 
     private static string PrepareTemp(string path)

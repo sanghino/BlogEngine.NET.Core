@@ -1,4 +1,5 @@
 using BlogEngine.Core.Caching;
+using BlogEngine.Core.Data;
 using BlogEngine.Core.Events;
 using BlogEngine.Core.Services;
 using BlogEngine.Events;
@@ -30,6 +31,7 @@ public static class ServiceCollectionExtensions
         AddCache<CustomFieldRepository>(services);
         AddCache<SettingsCache>(services);
         AddCache<RightsCache>(services);
+        AddCache<UserRepository>(services);
         services.TryAddSingleton<BlogsCache>();
         services.TryAddSingleton<PostStateTracker>();
 
@@ -48,10 +50,41 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<ICustomFieldService, CustomFieldService>();
         services.TryAddScoped<IReferrerService, ReferrerService>();
         services.TryAddScoped<ILinkGenerator, LinkGenerator>();
+        services.TryAddScoped<IUserService, UserService>();
+        services.TryAddScoped<IEmailSender, SmtpEmailSender>();
 
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<CommentChangingEvent>, CommentModerationHandler>());
 
         return services;
+    }
+
+    /// <summary>
+    /// Collega tutti i contratti di memorizzazione all'oggetto restituito da <paramref name="storeFactory"/>,
+    /// che deve implementarli tutti (come fanno i provider XML e SQLite).
+    /// </summary>
+    public static IServiceCollection AddBlogEngineStores(this IServiceCollection services, Func<IServiceProvider, object> storeFactory)
+    {
+        Map<IDataStoreInitializer>();
+        Map<IBlogStore>();
+        Map<IEntityStore<Post>>();
+        Map<IEntityStore<Page>>();
+        Map<IEntityStore<Category>>();
+        Map<IEntityStore<BlogRollItem>>();
+        Map<IEntityStore<Referrer>>();
+        Map<IProfileStore>();
+        Map<ISettingsStore>();
+        Map<IRightsStore>();
+        Map<ICustomFieldStore>();
+        Map<IStringListStore>();
+        Map<IExtensionDataStore>();
+        Map<IUserStore>();
+        Map<IRoleStore>();
+        Map<ICommentFilterStore>();
+        return services;
+
+        void Map<TContract>()
+            where TContract : class =>
+            services.AddSingleton(sp => (TContract)storeFactory(sp));
     }
 
     private static void AddCache<TCache>(IServiceCollection services)

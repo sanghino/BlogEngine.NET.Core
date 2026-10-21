@@ -1,6 +1,9 @@
 using System.Net;
+using BlogEngine.Core.Configuration;
+using BlogEngine.Models;
+using BlogEngine.Services;
+using BlogEngine.Web.Hosting;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogEngine.Tests.Web;
@@ -8,46 +11,151 @@ namespace BlogEngine.Tests.Web;
 [TestClass]
 public sealed class StartupTests
 {
-    private string _dataRoot = null!;
-    private WebApplicationFactory<Program> _factory = null!;
-
-    [TestInitialize]
-    public void Setup()
+    [TestMethod]
+    public async Task NotInstalled_RedirectsToSetupAndCreatesKey()
     {
-        _dataRoot = Path.Combine(Path.GetTempPath(), "be-tests", Guid.NewGuid().ToString("N"));
-        _factory = new WebApplicationFactory<Program>()
-            .WithWebHostBuilder(builder => builder.UseSetting("BlogEngine:DataPath", _dataRoot));
+        using var factory = new BlogWebFactory();
+        using var browser = factory.CreateBrowser(followRedirects: false);
+
+        var response = await browser.GetAsync("/");
+
+        Assert.AreEqual(HttpStatusCode.Redirect, response.StatusCode);
+        Assert.AreEqual("/setup", response.Headers.Location?.OriginalString);
+        Assert.AreEqual(32, factory.ReadSetupKey().Length);
+        Assert.AreEqual(HttpStatusCode.OK, (await browser.GetAsync("/setup")).StatusCode);
     }
 
-    [TestCleanup]
-    public void Cleanup()
+    [TestMethod]
+    public async Task Setup_WithWrongKey_IsRejected()
     {
-        _factory.Dispose();
-        if (Directory.Exists(_dataRoot))
+        using var factory = new BlogWebFactory();
+        using var browser = factory.CreateBrowser();
+        await browser.GetAsync("/");
+
+        var response = await browser.PostFormAsync("/setup", new()
         {
-            Directory.Delete(_dataRoot, recursive: true);
+            ["Input.SetupKey"] = "chiave-sbagliata",
+            ["Input.DataProvider"] = "Xml",
+            ["Input.BlogName"] = "x",
+            ["Input.UserName"] = "admin",
+            ["Input.Email"] = "a@example.com",
+            ["Input.Password"] = BlogWebFactory.AdminPassword,
+            ["Input.ConfirmPassword"] = BlogWebFactory.AdminPassword,
+        });
+
+        StringAssert.Contains(await response.Content.ReadAsStringAsync(), "setup key is not valid");
+        Assert.IsFalse(File.Exists(Path.Combine(factory.DataRoot, InstallationState.InstallationFileName)));
+    }
+
+    [DataTestMethod]
+    [DataRow(DataProviderKind.Xml)]
+    [DataRow(DataProviderKind.Sqlite)]
+    public async Task Setup_CreatesAdministratorAndSignsIn(DataProviderKind provider)
+    {
+        using var factory = new BlogWebFactory();
+        using var browser = await factory.InstallAsync(provider, "Il mio blog");
+
+        var home = await browser.GetStringAsync("/");
+        StringAssert.Contains(home, "Il mio blog");
+        StringAssert.Contains(home, BlogWebFactory.AdminUser);
+
+        Assert.IsTrue(File.Exists(Path.Combine(factory.DataRoot, InstallationState.InstallationFileName)));
+        Assert.IsFalse(File.Exists(Path.Combine(factory.DataRoot, InstallationState.SetupKeyFileName)), "La chiave viene eliminata.");
+        Assert.AreEqual(HttpStatusCode.NotFound, (await browser.GetAsync("/setup")).StatusCode, "La configurazione non è più raggiungibile.");
+
+        var expectedDataFile = provider == DataProviderKind.Sqlite ? "blogengine.db" : "blogs.xml";
+        Assert.IsTrue(File.Exists(Path.Combine(factory.DataRoot, "data", expectedDataFile)));
+    }
+
+    [TestMethod]
+    public async Task Login_Logout_AndProtectedPages()
+    {
+        using var factory = new BlogWebFactory();
+        (await factory.InstallAsync()).Dispose();
+        using var browser = factory.CreateBrowser(followRedirects: false);
+
+        var protectedPage = await browser.GetAsync("/account/change-password");
+        Assert.AreEqual(HttpStatusCode.Redirect, protectedPage.StatusCode);
+        StringAssert.StartsWith(protectedPage.Headers.Location?.ToString(), "http://localhost/account/login");
+
+        var failed = await browser.PostFormAsync("/account/login", new() { ["UserName"] = "admin", ["Password"] = "sbagliata" });
+        StringAssert.Contains(await failed.Content.ReadAsStringAsync(), "Login failed");
+
+        var ok = await browser.PostFormAsync("/account/login", new() { ["UserName"] = "ADMIN", ["Password"] = BlogWebFactory.AdminPassword, ["ReturnUrl"] = "https://evil.example.com/" });
+        Assert.AreEqual(HttpStatusCode.Redirect, ok.StatusCode);
+        Assert.AreEqual("/", ok.Headers.Location?.OriginalString, "Un returnUrl esterno viene ignorato.");
+        Assert.AreEqual(HttpStatusCode.OK, (await browser.GetAsync("/account/change-password")).StatusCode);
+
+        await browser.PostFormAsync("/account/logout", []);
+        Assert.AreEqual(HttpStatusCode.Redirect, (await browser.GetAsync("/account/change-password")).StatusCode);
+    }
+
+    [TestMethod]
+    public async Task ChangePassword_ThenLoginWithNewPassword()
+    {
+        using var factory = new BlogWebFactory();
+        using var browser = await factory.InstallAsync();
+
+        var changed = await browser.PostFormAsync("/account/change-password", new()
+        {
+            ["OldPassword"] = BlogWebFactory.AdminPassword,
+            ["NewPassword"] = "Nuova-Password-2",
+            ["ConfirmPassword"] = "Nuova-Password-2",
+        });
+        StringAssert.Contains(await changed.Content.ReadAsStringAsync(), "changed successfully");
+
+        using var other = factory.CreateBrowser(followRedirects: false);
+        var login = await other.PostFormAsync("/account/login", new() { ["UserName"] = "admin", ["Password"] = "Nuova-Password-2" });
+        Assert.AreEqual(HttpStatusCode.Redirect, login.StatusCode);
+    }
+
+    [TestMethod]
+    public async Task ChildBlog_IsServedUnderItsPathWithOwnSettingsAndUsers()
+    {
+        using var factory = new BlogWebFactory();
+        using var browser = await factory.InstallAsync(blogName: "Principale");
+
+        await factory.RunAsSystemAsync(async services =>
+        {
+            var child = new Blog { Name = "Figlio", VirtualPath = "~/figlio" };
+            await services.GetRequiredService<IBlogService>().SaveAsync(child);
+            var settings = services.GetRequiredService<ISettingsService>();
+            var childSettings = await settings.GetAsync(child.Id);
+            childSettings.Name = "Blog figlio";
+            await settings.SaveAsync(childSettings, child.Id);
+        });
+
+        var childHome = await browser.GetStringAsync("/figlio/");
+        StringAssert.Contains(childHome, "Blog figlio");
+        Assert.IsFalse(childHome.Contains(BlogWebFactory.AdminUser), "L'amministratore del principale è un visitatore nel blog figlio.");
+        StringAssert.Contains(childHome, "href=\"/figlio/account/login\"", "I link del blog figlio includono il suo percorso.");
+
+        StringAssert.Contains(await browser.GetStringAsync("/"), "Principale");
+    }
+
+    [TestMethod]
+    public async Task Login_IsRateLimited()
+    {
+        using var factory = new BlogWebFactory();
+        (await factory.InstallAsync()).Dispose();
+        using var browser = factory.CreateBrowser();
+
+        var statuses = new List<HttpStatusCode>();
+        for (var i = 0; i < 12; i++)
+        {
+            statuses.Add((await browser.PostAsync("/account/login", new FormUrlEncodedContent(new Dictionary<string, string>()))).StatusCode);
         }
+
+        CollectionAssert.Contains(statuses, HttpStatusCode.TooManyRequests);
     }
 
     [TestMethod]
-    public async Task HomePage_RespondsOk()
+    public async Task Startup_PersistsDataProtectionKeysInDataFolder()
     {
-        using var client = _factory.CreateClient();
+        using var factory = new BlogWebFactory();
+        factory.Services.GetRequiredService<IDataProtectionProvider>().CreateProtector("test").Protect("ciao"u8.ToArray());
 
-        var response = await client.GetAsync("/");
-
-        Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
-    }
-
-    [TestMethod]
-    public void Startup_CreatesDataFoldersAndPersistsKeys()
-    {
-        // Accedere a Services avvia l'applicazione; proteggere un dato forza la creazione di una chiave.
-        var provider = _factory.Services.GetRequiredService<IDataProtectionProvider>();
-        provider.CreateProtector("test").Protect("ciao"u8.ToArray());
-
-        Assert.IsTrue(Directory.Exists(Path.Combine(_dataRoot, "files")));
-        Assert.IsTrue(Directory.EnumerateFiles(Path.Combine(_dataRoot, "keys"), "key-*.xml").Any(),
-            "Le chiavi di Data Protection devono essere salvate in App_Data/keys.");
+        Assert.IsTrue(Directory.EnumerateFiles(Path.Combine(factory.DataRoot, "keys"), "key-*.xml").Any());
+        await Task.CompletedTask;
     }
 }

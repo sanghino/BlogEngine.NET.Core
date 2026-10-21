@@ -1,0 +1,37 @@
+@page "/setup"
+@model BlogEngine.Web.Pages.Setup.SetupModel
+@using BlogEngine.Core.Configuration
+@{
+    ViewData["Title"] = L["setupTitle"];
+}
+<p>@L["setupIntro"]</p>
+
+<form method="post">
+    <div asp-validation-summary="All" class="error"></div>
+
+    <label asp-for="Input.SetupKey">@L["setupKey"]</label>
+    <input asp-for="Input.SetupKey" type="text" autocomplete="off" required />
+    <p class="help">@L["setupKeyHelp", Model.SetupKeyFile]</p>
+
+    <h2>@L["dataProvider"]</h2>
+    <label class="inline"><input type="radio" asp-for="Input.DataProvider" value="@DataProviderKind.Xml" /> @L["dataProviderXml"]</label>
+    <label class="inline"><input type="radio" asp-for="Input.DataProvider" value="@DataProviderKind.Sqlite" /> @L["dataProviderSqlite"]</label>
+
+    <h2>@L["blogName"]</h2>
+    <input asp-for="Input.BlogName" type="text" required />
+
+    <h2>@L["administratorAccount"]</h2>
+    <label asp-for="Input.UserName">@L["userName"]</label>
+    <input asp-for="Input.UserName" type="text" autocomplete="username" required />
+
+    <label asp-for="Input.Email">@L["email"]</label>
+    <input asp-for="Input.Email" type="email" autocomplete="email" required />
+
+    <label asp-for="Input.Password">@L["passwordMinimumCharacters", Model.MinimumPasswordLength]</label>
+    <input asp-for="Input.Password" type="password" autocomplete="new-password" minlength="@Model.MinimumPasswordLength" required />
+
+    <label asp-for="Input.ConfirmPassword">@L["confirmPassword"]</label>
+    <input asp-for="Input.ConfirmPassword" type="password" autocomplete="new-password" required />
+
+    <button type="submit">@L["install"]</button>
+</form>

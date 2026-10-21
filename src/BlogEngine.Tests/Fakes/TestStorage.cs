@@ -1,3 +1,4 @@
+using BlogEngine.Core;
 using BlogEngine.Core.Configuration;
 using BlogEngine.Core.Data;
 using BlogEngine.Data.Sqlite;
@@ -64,25 +65,8 @@ public sealed class TestStorage : IDisposable
         return (provider, provider.GetRequiredService<IBlogStore>());
     }
 
-    public static void RegisterMemory(IServiceCollection services, InMemoryStores stores)
-    {
-        services.AddSingleton<IDataStoreInitializer>(stores);
-        services.AddSingleton<IBlogStore>(stores);
-        services.AddSingleton<IEntityStore<BlogEngine.Models.Post>>(stores);
-        services.AddSingleton<IEntityStore<BlogEngine.Models.Page>>(stores);
-        services.AddSingleton<IEntityStore<BlogEngine.Models.Category>>(stores);
-        services.AddSingleton<IEntityStore<BlogEngine.Models.BlogRollItem>>(stores);
-        services.AddSingleton<IEntityStore<BlogEngine.Models.Referrer>>(stores);
-        services.AddSingleton<IProfileStore>(stores);
-        services.AddSingleton<ISettingsStore>(stores);
-        services.AddSingleton<IRightsStore>(stores);
-        services.AddSingleton<ICustomFieldStore>(stores);
-        services.AddSingleton<IStringListStore>(stores);
-        services.AddSingleton<IExtensionDataStore>(stores);
-        services.AddSingleton<IUserStore>(stores);
-        services.AddSingleton<IRoleStore>(stores);
-        services.AddSingleton<ICommentFilterStore>(stores);
-    }
+    public static void RegisterMemory(IServiceCollection services, InMemoryStores stores) =>
+        services.AddBlogEngineStores(_ => stores);
 
     public void Dispose()
     {

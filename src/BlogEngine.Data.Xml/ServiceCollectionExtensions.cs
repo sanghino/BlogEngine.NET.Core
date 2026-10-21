@@ -1,34 +1,22 @@
-using BlogEngine.Core.Data;
-using BlogEngine.Models;
+using BlogEngine.Core;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace BlogEngine.Data.Xml;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>Registra solo il provider XML, senza collegarlo ai contratti (per la scelta a runtime).</summary>
+    public static IServiceCollection AddBlogEngineXmlProvider(this IServiceCollection services)
+    {
+        services.TryAddSingleton<XmlDataStore>();
+        return services;
+    }
+
     /// <summary>
     /// Registra il provider XML per tutti i contratti di memorizzazione.
     /// Richiede che <c>BlogEnginePaths</c> sia già registrato.
     /// </summary>
-    public static IServiceCollection AddBlogEngineXmlStorage(this IServiceCollection services)
-    {
-        services.AddSingleton<XmlDataStore>();
-        services.AddSingleton<IDataStoreInitializer>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IBlogStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IEntityStore<Post>>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IEntityStore<Page>>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IEntityStore<Category>>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IEntityStore<BlogRollItem>>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IEntityStore<Referrer>>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IProfileStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<ISettingsStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IRightsStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<ICustomFieldStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IStringListStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IExtensionDataStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IUserStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<IRoleStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        services.AddSingleton<ICommentFilterStore>(sp => sp.GetRequiredService<XmlDataStore>());
-        return services;
-    }
+    public static IServiceCollection AddBlogEngineXmlStorage(this IServiceCollection services) =>
+        services.AddBlogEngineXmlProvider().AddBlogEngineStores(sp => sp.GetRequiredService<XmlDataStore>());
 }

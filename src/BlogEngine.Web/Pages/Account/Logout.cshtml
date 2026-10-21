@@ -1,0 +1,9 @@
+@page "/account/logout"
+@model BlogEngine.Web.Pages.Account.LogoutModel
+@{
+    ViewData["Title"] = L["logoff"];
+}
+<form method="post">
+    <button type="submit">@L["logoff"]</button>
+</form>
+<p class="links"><a href="~/">@L["home"]</a></p>

@@ -1,0 +1,31 @@
+@page "/account/login"
+@model BlogEngine.Web.Pages.Account.LoginModel
+@{
+    ViewData["Title"] = L["login"];
+}
+<form method="post">
+    <div asp-validation-summary="ModelOnly" class="error"></div>
+    <input type="hidden" asp-for="ReturnUrl" />
+
+    <label asp-for="UserName">@L["userName"]</label>
+    <input asp-for="UserName" type="text" autocomplete="username" autofocus required />
+
+    <label asp-for="Password">@L["password"]</label>
+    <input asp-for="Password" type="password" autocomplete="current-password" required />
+
+    <label class="inline"><input asp-for="RememberMe" type="checkbox" /> @L["rememberMe"]</label>
+
+    <button type="submit">@L["login"]</button>
+</form>
+
+<p class="links">
+    @if (Model.ShowPasswordReset)
+    {
+        <a asp-page="/Account/PasswordRetrieval">@L["passwordRetrieval"]</a><br />
+    }
+    @if (Model.ShowRegistration)
+    {
+        <span>@L["dontHaveAccount"]</span> <a asp-page="/Account/Register">@L["createAccount"]</a><br />
+    }
+    <a href="~/">@L["home"]</a>
+</p>

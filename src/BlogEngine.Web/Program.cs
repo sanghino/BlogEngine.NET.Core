@@ -1,28 +1,40 @@
 using BlogEngine.Core.Configuration;
-using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
-using Microsoft.AspNetCore.DataProtection.Repositories;
-using Microsoft.Extensions.Options;
+using BlogEngine.Core.Data;
+using BlogEngine.Web.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.Configure<BlogEngineOptions>(builder.Configuration.GetSection(BlogEngineOptions.SectionName));
-builder.Services.AddSingleton(sp => new BlogEnginePaths(
-    sp.GetRequiredService<IWebHostEnvironment>().ContentRootPath,
-    sp.GetRequiredService<IOptions<BlogEngineOptions>>().Value));
-
-// Su un hosting condiviso non c'è un profilo utente in cui salvare le chiavi: senza questa
-// configurazione resterebbero in memoria e ogni riavvio disconnetterebbe tutti gli utenti.
-builder.Services.AddDataProtection().SetApplicationName("BlogEngine");
-builder.Services.AddOptions<KeyManagementOptions>()
-    .Configure<BlogEnginePaths, ILoggerFactory>((options, paths, loggerFactory) =>
-        options.XmlRepository = new FileSystemXmlRepository(new DirectoryInfo(paths.Keys), loggerFactory));
+builder.Services.AddBlogEngineWeb(builder.Configuration);
 
 var app = builder.Build();
 
 app.Services.GetRequiredService<BlogEnginePaths>().EnsureDataDirectories();
+var installation = app.Services.GetRequiredService<InstallationState>();
+if (installation.IsInstalled)
+{
+    await app.Services.GetRequiredService<IDataStoreInitializer>().InitializeAsync();
+}
+else
+{
+    installation.EnsureSetupKey();
+    app.Logger.LogWarning("Il blog non è ancora configurato: apri /setup e inserisci la chiave contenuta in {SetupKeyPath}.", installation.SetupKeyPath);
+}
 
-app.MapGet("/", () => "BlogEngine.NET su .NET 8: in costruzione.");
+if (!app.Environment.IsDevelopment())
+{
+    app.UseExceptionHandler("/error");
+}
+
+app.UseStaticFiles();
+app.UseMiddleware<SetupGateMiddleware>();
+app.UseMiddleware<BlogContextMiddleware>();
+app.UseRequestLocalization();
+app.UseRouting();
+app.UseRateLimiter();
+app.UseAuthentication();
+app.UseMiddleware<UserContextMiddleware>();
+app.UseAuthorization();
+
+app.MapRazorPages();
 
 app.Run();
 
