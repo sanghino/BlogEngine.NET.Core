@@ -13,4 +13,13 @@ public sealed class BlogEngineOptions
     /// Su Aruba vale "../App_Data", cioè la cartella accanto a "public".
     /// </summary>
     public string DataPath { get; set; } = "App_Data";
+
+    /// <summary>Provider dei dati: "Xml" (file nella cartella dati) oppure "Sqlite" (un unico database).</summary>
+    public DataProviderKind DataProvider { get; set; } = DataProviderKind.Xml;
+}
+
+public enum DataProviderKind
+{
+    Xml,
+    Sqlite,
 }

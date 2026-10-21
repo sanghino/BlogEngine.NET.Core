@@ -24,6 +24,25 @@ dotnet run --project BlogEngine.Web
 
 In sviluppo i dati vengono scritti in `BlogEngine.Web/App_Data` (escluso da git e dal publish).
 
+## Provider dati
+
+Si sceglie con `BlogEngine:DataProvider` in `appsettings.json`: `Xml` (predefinito) oppure `Sqlite`.
+Entrambi scrivono nella sottocartella `data` della cartella dati:
+
+- **Xml**: un file per post (commenti inclusi) e per pagina in `data/blogs/{id blog}/`, più file singoli per
+  categorie, impostazioni, permessi, utenti, ecc. Le scritture sono atomiche (file temporaneo poi sostituito).
+- **Sqlite**: un unico database `data/blogengine.db`, aggiornato automaticamente all'avvio con le migrazioni.
+
+Ogni modifica allo schema SQLite (`BlogDbContext`) richiede una nuova migrazione:
+
+```
+dotnet tool restore
+dotnet ef migrations add NomeModifica --project BlogEngine.Data.Sqlite --startup-project BlogEngine.Data.Sqlite --output-dir Migrations
+```
+
+I test in `BlogEngine.Tests/Data` verificano che i due provider (e lo store in memoria dei test) si comportino
+allo stesso modo: un nuovo provider deve superare la stessa suite (`StoreContractTests`).
+
 ## Pubblicazione su Aruba
 
 ```

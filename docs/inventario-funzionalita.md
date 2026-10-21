@@ -120,7 +120,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☐ | SimpleCaptcha | `SimpleCaptcha/` | Plugin |
 | ☐ | Smilies | `Smilies.cs` | Plugin |
 | ☐ | StopForumSpam | `StopForumSpam.cs` | Plugin |
-| ☐ | Datastore delle impostazioni delle estensioni | `Web/Extensions/DataStore`, `XmlProvider/DataStore.cs` | Provider dati |
+| ◐ | Datastore delle impostazioni delle estensioni | `Web/Extensions/DataStore`, `XmlProvider/DataStore.cs` | Provider dati |
 
 ## 8. Endpoint pubblici e protocolli (URL `*.axd` invariati)
 
@@ -177,8 +177,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Provider XML | `Providers/XmlProvider` | `BlogEngine.Data.Xml` |
-| ☐ | Provider SQLite | `setup/SQLite` + `DbBlogProvider` | `BlogEngine.Data.Sqlite` (EF Core) |
+| ☑ | Provider XML | `Providers/XmlProvider` | `BlogEngine.Data.Xml` |
+| ☑ | Provider SQLite | `setup/SQLite` + `DbBlogProvider` | `BlogEngine.Data.Sqlite` (EF Core) |
 | ☐ | File system dei file caricati | `XmlFileSystemProvider` | Disco, in `App_Data/files` |
 | ☐ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
 | ☐ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | Razor Page interna |

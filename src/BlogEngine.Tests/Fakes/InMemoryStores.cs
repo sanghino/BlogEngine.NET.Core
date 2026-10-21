@@ -6,6 +6,11 @@ namespace BlogEngine.Tests.Fakes;
 
 /// <summary>Store in memoria che implementa tutti i contratti dei provider, per i test del Core.</summary>
 public sealed class InMemoryStores :
+    IDataStoreInitializer,
+    IStringListStore,
+    IExtensionDataStore,
+    IUserStore,
+    IRoleStore,
     IBlogStore,
     IEntityStore<Post>,
     IEntityStore<Page>,
@@ -43,6 +48,14 @@ public sealed class InMemoryStores :
     Task IBlogStore.DeleteAsync(Guid blogId, CancellationToken cancellationToken)
     {
         _blogs.TryRemove(blogId, out _);
+        foreach (var key in _entities.Where(e => ((IBlogItem)e.Value).BlogId == blogId).Select(e => e.Key).ToList())
+        {
+            _entities.TryRemove(key, out _);
+        }
+
+        _settings.TryRemove(blogId, out _);
+        _rights.TryRemove(blogId, out _);
+        _rules.TryRemove(blogId, out _);
         return Task.CompletedTask;
     }
 
@@ -147,6 +160,69 @@ public sealed class InMemoryStores :
 
     private static (Guid, string, string, string) FieldKey(CustomField f) =>
         (f.BlogId, f.CustomType.ToUpperInvariant(), f.ObjectId.ToLowerInvariant(), f.Key.ToLowerInvariant());
+
+    // ---- Inizializzazione, elenchi, dati delle estensioni, utenti e ruoli ----
+
+    private readonly ConcurrentDictionary<(Guid, StringListKind), IReadOnlyList<string>> _lists = new();
+    private readonly ConcurrentDictionary<(Guid, ExtensionDataKind, string), string> _extensionData = new();
+    private readonly ConcurrentDictionary<(Guid, string), BlogUser> _users = new();
+    private readonly ConcurrentDictionary<(Guid, string), BlogRole> _roles = new();
+
+    Task IDataStoreInitializer.InitializeAsync(CancellationToken cancellationToken) => Task.CompletedTask;
+
+    Task<IReadOnlyList<string>> IStringListStore.LoadAsync(Guid blogId, StringListKind kind, CancellationToken cancellationToken) =>
+        Task.FromResult(_lists.TryGetValue((blogId, kind), out var values) ? values : []);
+
+    Task IStringListStore.SaveAsync(Guid blogId, StringListKind kind, IReadOnlyList<string> values, CancellationToken cancellationToken)
+    {
+        _lists[(blogId, kind)] = values.ToList();
+        return Task.CompletedTask;
+    }
+
+    Task<string?> IExtensionDataStore.LoadAsync(Guid blogId, ExtensionDataKind kind, string id, CancellationToken cancellationToken) =>
+        Task.FromResult(_extensionData.GetValueOrDefault((blogId, kind, id)));
+
+    Task IExtensionDataStore.SaveAsync(Guid blogId, ExtensionDataKind kind, string id, string data, CancellationToken cancellationToken)
+    {
+        _extensionData[(blogId, kind, id)] = data;
+        return Task.CompletedTask;
+    }
+
+    Task IExtensionDataStore.RemoveAsync(Guid blogId, ExtensionDataKind kind, string id, CancellationToken cancellationToken)
+    {
+        _extensionData.TryRemove((blogId, kind, id), out _);
+        return Task.CompletedTask;
+    }
+
+    Task<IReadOnlyList<BlogUser>> IUserStore.GetAllAsync(Guid blogId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<BlogUser>>(_users.Values.Where(u => u.BlogId == blogId).ToList());
+
+    Task IUserStore.SaveAsync(BlogUser user, CancellationToken cancellationToken)
+    {
+        _users[(user.BlogId, user.UserName.ToLowerInvariant())] = user;
+        return Task.CompletedTask;
+    }
+
+    Task IUserStore.DeleteAsync(Guid blogId, string userName, CancellationToken cancellationToken)
+    {
+        _users.TryRemove((blogId, userName.ToLowerInvariant()), out _);
+        return Task.CompletedTask;
+    }
+
+    Task<IReadOnlyList<BlogRole>> IRoleStore.GetAllAsync(Guid blogId, CancellationToken cancellationToken) =>
+        Task.FromResult<IReadOnlyList<BlogRole>>(_roles.Values.Where(r => r.BlogId == blogId).ToList());
+
+    Task IRoleStore.SaveAsync(BlogRole role, CancellationToken cancellationToken)
+    {
+        _roles[(role.BlogId, role.Name.ToLowerInvariant())] = role;
+        return Task.CompletedTask;
+    }
+
+    Task IRoleStore.DeleteAsync(Guid blogId, string roleName, CancellationToken cancellationToken)
+    {
+        _roles.TryRemove((blogId, roleName.ToLowerInvariant()), out _);
+        return Task.CompletedTask;
+    }
 
     // ---- Filtri dei commenti ----
 

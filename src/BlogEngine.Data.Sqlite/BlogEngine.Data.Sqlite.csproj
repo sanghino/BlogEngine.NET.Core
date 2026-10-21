@@ -1,5 +1,15 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
+  <PropertyGroup>
+    <!-- Permette agli strumenti "dotnet ef" di usare questa libreria come progetto di avvio. -->
+    <GenerateRuntimeConfigurationFiles>true</GenerateRuntimeConfigurationFiles>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" PrivateAssets="all" />
+  </ItemGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\BlogEngine.Core\BlogEngine.Core.csproj" />
   </ItemGroup>

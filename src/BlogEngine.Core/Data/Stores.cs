@@ -6,6 +6,15 @@ namespace BlogEngine.Core.Data;
 // I servizi del Core tengono in memoria i dati di ogni blog, quindi i provider devono solo leggere
 // tutto l'insieme di un blog e salvare o eliminare un elemento alla volta.
 
+/// <summary>
+/// Prepara lo spazio di memorizzazione all'avvio dell'applicazione: crea le cartelle (XML)
+/// o applica le migrazioni dello schema (SQLite). Deve poter essere eseguito più volte.
+/// </summary>
+public interface IDataStoreInitializer
+{
+    Task InitializeAsync(CancellationToken cancellationToken = default);
+}
+
 /// <summary>Elenco dei blog del multi-blog.</summary>
 public interface IBlogStore
 {

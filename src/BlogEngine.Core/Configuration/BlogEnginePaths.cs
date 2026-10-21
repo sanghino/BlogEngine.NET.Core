@@ -21,6 +21,9 @@ public sealed class BlogEnginePaths
     /// <summary>Cartella dati scrivibile (su Aruba: "App_Data" accanto a "public").</summary>
     public string DataRoot { get; }
 
+    /// <summary>Dati del blog gestiti dal provider (file XML o database SQLite).</summary>
+    public string Data => Path.Combine(DataRoot, "data");
+
     /// <summary>File e immagini caricati dall'amministrazione.</summary>
     public string Files => Path.Combine(DataRoot, "files");
 
@@ -47,7 +50,7 @@ public sealed class BlogEnginePaths
     /// <summary>Crea le cartelle scrivibili che non esistono ancora.</summary>
     public void EnsureDataDirectories()
     {
-        foreach (var dir in new[] { DataRoot, Files, Cache, Keys, Logs, InstalledThemes, InstalledExtensions })
+        foreach (var dir in new[] { DataRoot, Data, Files, Cache, Keys, Logs, InstalledThemes, InstalledExtensions })
         {
             Directory.CreateDirectory(dir);
         }

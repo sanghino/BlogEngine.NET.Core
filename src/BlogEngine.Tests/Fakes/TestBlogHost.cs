@@ -38,36 +38,47 @@ public sealed class TestBlogHost : IDisposable
     private readonly ServiceProvider _provider;
     private readonly IServiceScope _scope;
 
-    public TestBlogHost(Action<IServiceCollection>? configure = null)
+    /// <param name="configure">Registrazioni aggiuntive (gestori di eventi, filtri antispam...).</param>
+    /// <param name="storage">
+    /// Provider dati; se omesso si usa uno store in memoria. Passando la stessa istanza a un nuovo host
+    /// si simula il riavvio dell'applicazione sugli stessi dati.
+    /// </param>
+    public TestBlogHost(Action<IServiceCollection>? configure = null, TestStorage? storage = null)
     {
-        Stores = new InMemoryStores();
+        Stores = storage?.Memory ?? new InMemoryStores();
         Clock = new ManualTimeProvider(StartTime);
-        PrimaryBlog = new Blog { Name = "Primary", IsPrimary = true, VirtualPath = "~/" };
-        ((IBlogStore)Stores).SaveAsync(PrimaryBlog).GetAwaiter().GetResult();
-        Context = new TestBlogContext { Blog = PrimaryBlog };
+        Context = new TestBlogContext { Blog = new Blog() };
 
         var services = new ServiceCollection();
         services.AddLogging();
         services.AddSingleton<TimeProvider>(Clock);
         services.AddBlogEngineCore();
-        services.AddSingleton<IBlogContext>(Context);
-        services.AddSingleton<IBlogStore>(Stores);
-        services.AddSingleton<IEntityStore<Post>>(Stores);
-        services.AddSingleton<IEntityStore<Page>>(Stores);
-        services.AddSingleton<IEntityStore<Category>>(Stores);
-        services.AddSingleton<IEntityStore<BlogRollItem>>(Stores);
-        services.AddSingleton<IEntityStore<Referrer>>(Stores);
-        services.AddSingleton<IProfileStore>(Stores);
-        services.AddSingleton<ISettingsStore>(Stores);
-        services.AddSingleton<IRightsStore>(Stores);
-        services.AddSingleton<ICustomFieldStore>(Stores);
-        services.AddSingleton<ICommentFilterStore>(Stores);
+        if (storage is null)
+        {
+            TestStorage.RegisterMemory(services, Stores);
+        }
+        else
+        {
+            storage.Register(services);
+        }
+
         configure?.Invoke(services);
+        services.AddSingleton<IBlogContext>(Context);
 
         _provider = services.BuildServiceProvider(new ServiceProviderOptions { ValidateScopes = true, ValidateOnBuild = true });
+        _provider.GetRequiredService<IDataStoreInitializer>().InitializeAsync().GetAwaiter().GetResult();
+
+        // Il blog principale viene creato alla prima apertura dei dati e ritrovato alle successive.
+        var blogStore = _provider.GetRequiredService<IBlogStore>();
+        PrimaryBlog = blogStore.GetAllAsync().GetAwaiter().GetResult().FirstOrDefault(b => b.IsPrimary)
+            ?? new Blog { Name = "Primary", IsPrimary = true, VirtualPath = "~/" };
+        blogStore.SaveAsync(PrimaryBlog).GetAwaiter().GetResult();
+        Context.Blog = PrimaryBlog;
+
         _scope = _provider.CreateScope();
     }
 
+    /// <summary>Store in memoria (vuoto e inutilizzato se si usa un provider XML o SQLite).</summary>
     public InMemoryStores Stores { get; }
 
     public ManualTimeProvider Clock { get; }

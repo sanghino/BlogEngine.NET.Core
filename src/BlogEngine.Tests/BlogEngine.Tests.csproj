@@ -16,6 +16,8 @@
 
   <ItemGroup>
     <ProjectReference Include="..\BlogEngine.Core\BlogEngine.Core.csproj" />
+    <ProjectReference Include="..\BlogEngine.Data.Sqlite\BlogEngine.Data.Sqlite.csproj" />
+    <ProjectReference Include="..\BlogEngine.Data.Xml\BlogEngine.Data.Xml.csproj" />
     <ProjectReference Include="..\BlogEngine.Web\BlogEngine.Web.csproj" />
   </ItemGroup>
 
