@@ -55,6 +55,15 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<IAvatarService, AvatarService>();
         services.TryAddScoped<BlogProvisioningService>();
         services.TryAddScoped<SearchService>();
+
+        // Estensioni: elenco, stato (attiva/priorità) e impostazioni. Il sito web aggiunge quelle compilate.
+        services.TryAddSingleton<Extensions.ExtensionRegistry>();
+        services.TryAddSingleton<Extensions.ExtensionStates>();
+        services.TryAddSingleton<Extensions.IExtensionGate, Extensions.ExtensionGate>();
+        services.TryAddScoped<BlogEngine.Extensions.IExtensionSettingsService, Extensions.ExtensionSettingsService>();
+        services.TryAddScoped<NewsletterSubscribers>();
+        services.TryAddScoped<IEmailQueue, ImmediateEmailQueue>();
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<CommentChangedEvent>, CommentNotificationHandler>());
         services.TryAddSingleton<BlogEngine.Core.Files.FileStore>();
 
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<CommentChangingEvent>, CommentModerationHandler>());

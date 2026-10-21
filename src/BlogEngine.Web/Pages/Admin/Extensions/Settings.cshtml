@@ -1,0 +1,124 @@
+@page "/admin/extensions/settings"
+@model BlogEngine.Web.Pages.Admin.Extensions.SettingsModel
+@using BlogEngine.Extensions
+@using BlogEngine.Web.Pages.Admin.Extensions
+@{
+    Layout = null;
+    var root = Request.PathBase.Value + "/";
+}
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>@Model.Extension.Name</title>
+    <link rel="stylesheet" href="@(root)Content/bootstrap.min.css" />
+    <link rel="stylesheet" href="@(root)admin/themes/standard/css/styles.css" />
+    <style>
+        body { padding: 15px; }
+        .extension-group { margin-bottom: 30px; }
+        .extension-help { margin-bottom: 15px; }
+    </style>
+</head>
+<body class="extension-settings">
+    @if (Model.Saved is not null)
+    {
+        <script>if (window.parent && window.parent.toastr) { window.parent.toastr.success("Completed"); }</script>
+    }
+    @if (Model.Extension.Error is not null)
+    {
+        <div class="alert alert-danger"><pre>@Model.Extension.Error</pre></div>
+    }
+    @foreach (var group in Model.VisibleSettings)
+    {
+        var values = Model.Values[group.Name];
+        <div class="extension-group">
+            @if (Model.VisibleSettings.Count() > 1)
+            {
+                <h4>@group.Name</h4>
+            }
+            @if (!string.IsNullOrEmpty(group.Help))
+            {
+                <div class="extension-help">@Html.Raw(group.Help)</div>
+            }
+            @if (Model.Errors.TryGetValue(group.Name, out var errors))
+            {
+                <div class="alert alert-danger">@foreach (var error in errors) { <div>@error</div> }</div>
+            }
+
+            @if (!group.IsScalar)
+            {
+                <table class="table table-condensed table-striped">
+                    <tr>
+                        @foreach (var parameter in group.Parameters) { <th>@parameter.Label</th> }
+                        <th></th>
+                    </tr>
+                    @for (var i = 0; i < values.Rows.Count; i++)
+                    {
+                        <tr>
+                            @foreach (var parameter in group.Parameters) { <td>@SettingsModel.Display(parameter, values.Rows[i].GetValueOrDefault(parameter.Name))</td> }
+                            <td class="text-right">
+                                <form method="post" asp-page-handler="Delete" asp-route-ext="@Model.Extension.Name" asp-route-group="@group.Name" asp-route-index="@i" style="display:inline">
+                                    <button type="submit" class="btn btn-danger btn-xs">@L["delete"]</button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+
+            <form method="post" asp-page-handler="@(group.IsScalar ? "Save" : "Add")" asp-route-ext="@Model.Extension.Name" asp-route-group="@group.Name">
+                @foreach (var parameter in group.Parameters)
+                {
+                    var field = $"{group.Name}.{parameter.Name}";
+                    var value = group.IsScalar ? values.Get(parameter.Name) : string.Empty;
+                    switch (parameter.Type)
+                    {
+                        case ExtensionParameterType.Boolean:
+                            <div class="checkbox"><label><input type="checkbox" name="@field" checked="@(value == "true" || value == "True")" /> @parameter.Label</label></div>
+                            break;
+                        case ExtensionParameterType.DropDown:
+                            <div class="form-group">
+                                <label>@parameter.Label</label>
+                                <select class="form-control" name="@field">
+                                    @foreach (var option in parameter.Options.Select(SettingsModel.Option))
+                                    {
+                                        <option value="@option.Value" selected="@(option.Value == value)">@option.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            break;
+                        case ExtensionParameterType.ListBox:
+                            var selected = value.Split(',');
+                            <div class="form-group">
+                                <label>@parameter.Label</label>
+                                <select class="form-control" name="@field" multiple="multiple">
+                                    @foreach (var option in parameter.Options.Select(SettingsModel.Option))
+                                    {
+                                        <option value="@option.Value" selected="@selected.Contains(option.Value)">@option.Text</option>
+                                    }
+                                </select>
+                            </div>
+                            break;
+                        case ExtensionParameterType.RadioGroup:
+                            <div class="form-group">
+                                <label>@parameter.Label</label>
+                                @foreach (var option in parameter.Options.Select(SettingsModel.Option))
+                                {
+                                    <div class="radio"><label><input type="radio" name="@field" value="@option.Value" checked="@(option.Value == value)" /> @option.Text</label></div>
+                                }
+                            </div>
+                            break;
+                        default:
+                            <div class="form-group">
+                                <label>@parameter.Label@(parameter.Required ? " *" : "")</label>
+                                <input type="text" class="form-control" name="@field" value="@value" maxlength="@parameter.MaxLength" />
+                            </div>
+                            break;
+                    }
+                }
+                <button type="submit" class="btn btn-success">@(group.IsScalar ? L["save"] : L["add"])</button>
+            </form>
+        </div>
+    }
+</body>
+</html>

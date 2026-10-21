@@ -99,3 +99,7 @@ con il valore predefinito indicato nel template (sostituiscono i vecchi `[CUSTOM
 `commentlist`, `comment-form`, `status`, `txtName`, `txtEmail`, `txtWebsite`, `txtContent`,
 `cbNotify`, `btnSaveAjax`, `cancelReply`, `id_<commento>` e `replies_<commento>`. Un tema che
 ridefinisce `comment-form.liquid` o `comment-view.liquid` deve mantenere questi id.
+
+I captcha delle estensioni attive vanno inseriti con `<div id="commentCaptcha">{{ comments.captcha }}</div>`
+nel modulo dei commenti e con `{{ contact.captcha }}` nel modulo dei contatti: blog.js invia i campi
+che si trovano dentro `commentCaptcha`.

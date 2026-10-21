@@ -1,3 +1,4 @@
+using BlogEngine.Core.Extensions;
 using BlogEngine.Events;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -5,16 +6,22 @@ using Microsoft.Extensions.Logging;
 namespace BlogEngine.Core.Events;
 
 /// <summary>
-/// Distribuisce gli eventi ai gestori registrati nel contenitore dei servizi, in ordine di <c>Order</c>.
+/// Distribuisce gli eventi ai gestori registrati nel contenitore dei servizi, in ordine di <c>Order</c>
+/// e poi di priorità dell'estensione. I gestori delle estensioni disattivate vengono saltati.
 /// </summary>
-public sealed class EventPublisher(IServiceProvider services, ILogger<EventPublisher> logger) : IEventPublisher
+public sealed class EventPublisher(IServiceProvider services, IExtensionGate gate, ILogger<EventPublisher> logger) : IEventPublisher
 {
     public async Task PublishAsync<TEvent>(TEvent blogEvent, CancellationToken cancellationToken = default)
         where TEvent : BlogEvent
     {
         ArgumentNullException.ThrowIfNull(blogEvent);
 
-        foreach (var handler in services.GetServices<IEventHandler<TEvent>>().OrderBy(h => h.Order))
+        var handlers = services.GetServices<IEventHandler<TEvent>>()
+            .Where(h => gate.IsActive(h))
+            .OrderBy(h => h.Order)
+            .ThenBy(gate.PriorityOf);
+
+        foreach (var handler in handlers)
         {
             try
             {

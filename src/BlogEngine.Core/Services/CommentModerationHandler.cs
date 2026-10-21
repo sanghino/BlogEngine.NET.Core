@@ -1,5 +1,6 @@
 using BlogEngine.Core.Caching;
 using BlogEngine.Core.Data;
+using BlogEngine.Core.Extensions;
 using BlogEngine.Events;
 using BlogEngine.Models;
 using BlogEngine.Services;
@@ -22,6 +23,7 @@ public sealed class CommentModerationHandler(
     IBlogContext context,
     ISettingsService settings,
     IEnumerable<ICommentSpamFilter> spamFilters,
+    IExtensionGate gate,
     ILogger<CommentModerationHandler> logger) : IEventHandler<CommentChangingEvent>
 {
     public const string AutoModerator = "Auto";
@@ -78,7 +80,7 @@ public sealed class CommentModerationHandler(
             return;
         }
 
-        foreach (var filter in spamFilters.OrderBy(f => f.Priority).ThenBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
+        foreach (var filter in spamFilters.Where(gate.IsActive).OrderBy(f => f.Priority).ThenBy(f => f.Name, StringComparer.OrdinalIgnoreCase))
         {
             if (await filter.CheckAsync(blogEvent.Post, comment, cancellationToken).ConfigureAwait(false) == SpamCheckResult.Spam)
             {

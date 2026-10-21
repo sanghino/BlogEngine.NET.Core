@@ -8,7 +8,7 @@ namespace BlogEngine.Web.Endpoints;
 /// <summary>
 /// File e immagini caricati, con gli stessi indirizzi della versione originale:
 /// "file.axd?file=/2025/03/documento.pdf" e "image.axd?picture=/2025/03/foto.jpg".
-/// I file stanno fuori dalla cartella pubblicata e passano sempre da qui.
+/// I file stanno fuori dalla cartella pubblicata e passano sempre da qui. Video e audio usano "/media/nome.mp4".
 /// </summary>
 public static class FileEndpoints
 {
@@ -19,16 +19,28 @@ public static class FileEndpoints
         "image/jpeg", "image/png", "image/gif", "image/bmp", "image/tiff", "image/webp", "image/svg+xml", "image/x-icon",
     };
 
+    /// <summary>Cartella dei file del blog con video e audio (estensione MediaElementPlayer).</summary>
+    public const string MediaFolder = "/media";
+
+    private static readonly HashSet<string> MediaTypes = new(StringComparer.OrdinalIgnoreCase)
+    {
+        "video/mp4", "video/webm", "video/ogg", "audio/mpeg", "audio/mp4", "audio/ogg", "audio/wav", "audio/webm",
+        "image/jpeg", "image/png", "image/gif", "image/webp",
+    };
+
     public static IEndpointRouteBuilder MapFileEndpoints(this IEndpointRouteBuilder endpoints)
     {
+        // Video e audio (con le immagini di anteprima): /media/nome.mp4, riproducibili anche a salti.
+        endpoints.MapGet("/media/{**path}", (string path, HttpContext http, FileStore files, IBlogContext context) =>
+            Serve(http, files, context, $"{MediaFolder}/{path}", imagesOnly: false, mediaOnly: true));
         endpoints.MapGet("/file.axd", (string? file, HttpContext http, FileStore files, IBlogContext context) =>
-            Serve(http, files, context, file, imagesOnly: false));
+            Serve(http, files, context, file, imagesOnly: false, mediaOnly: false));
         endpoints.MapGet("/image.axd", (string? picture, HttpContext http, FileStore files, IBlogContext context) =>
-            Serve(http, files, context, picture, imagesOnly: true));
+            Serve(http, files, context, picture, imagesOnly: true, mediaOnly: false));
         return endpoints;
     }
 
-    private static IResult Serve(HttpContext http, FileStore files, IBlogContext context, string? relativePath, bool imagesOnly)
+    private static IResult Serve(HttpContext http, FileStore files, IBlogContext context, string? relativePath, bool imagesOnly, bool mediaOnly)
     {
         if (string.IsNullOrWhiteSpace(relativePath))
         {
@@ -51,7 +63,7 @@ public static class FileEndpoints
         }
 
         var contentType = ContentTypes.TryGetContentType(path, out var type) ? type : "application/octet-stream";
-        if (imagesOnly && !ImageTypes.Contains(contentType))
+        if ((imagesOnly && !ImageTypes.Contains(contentType)) || (mediaOnly && !MediaTypes.Contains(contentType)))
         {
             return Results.NotFound();
         }
@@ -65,7 +77,7 @@ public static class FileEndpoints
         return Results.File(
             path,
             contentType,
-            fileDownloadName: imagesOnly ? null : info.Name,
+            fileDownloadName: imagesOnly || mediaOnly ? null : info.Name,
             lastModified: info.LastWriteTimeUtc,
             enableRangeProcessing: true);
     }

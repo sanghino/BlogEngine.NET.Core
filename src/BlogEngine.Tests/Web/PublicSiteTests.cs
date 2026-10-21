@@ -66,6 +66,14 @@ public sealed partial class PublicSiteTests
         }
 
         var postId = Regex.Match(page, @"BlogEngine\.comments\.postId = '(?<id>[0-9a-f-]+)'").Groups["id"].Value;
+        // SimpleCaptcha è attiva per default, come nella versione originale: domanda "5+5 =" e risposta "10".
+        StringAssert.Contains(page, "name=\"simpleCaptchaValue\"");
+        var wrong = await PostActionAsync(visitor, page, "/comment", new()
+        {
+            ["postId"] = postId, ["author"] = "Mario", ["email"] = "mario@example.com", ["content"] = "Spam", ["simpleCaptchaValue"] = "7",
+        });
+        Assert.AreEqual(HttpStatusCode.BadRequest, wrong.StatusCode);
+
         var response = await PostActionAsync(visitor, page, "/comment", new()
         {
             ["postId"] = postId,
@@ -73,6 +81,7 @@ public sealed partial class PublicSiteTests
             ["email"] = "mario@example.com",
             ["content"] = "Primo commento\nseconda riga <script>alert(1)</script>",
             ["notify"] = "true",
+            ["simpleCaptchaValue"] = "10",
         });
 
         var body = await response.Content.ReadAsStringAsync();

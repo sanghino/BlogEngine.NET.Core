@@ -1,3 +1,4 @@
+using BlogEngine.Core.Extensions;
 using BlogEngine.Security;
 using BlogEngine.Services;
 using BlogEngine.Web.Api.Models;
@@ -10,10 +11,19 @@ namespace BlogEngine.Web.Api;
 /// <summary>
 /// Temi, estensioni e widget installati. La galleria online non esiste più: "install", "rate" e l'elenco
 /// "all" (la galleria) non sono disponibili; temi ed estensioni si installano copiando una cartella.
-/// Le estensioni arriveranno con la fase dedicata del porting.
+/// Per le estensioni: attivazione, disattivazione e priorità (valide per tutti i blog) e rimozione di
+/// quelle caricate in App_Data/extensions.
 /// </summary>
 [Route("api/packages")]
-public sealed class PackagesController(ThemeCatalog themes, WidgetCatalog widgetCatalog, ISettingsService settings, IRightsService rights) : AdminApiController
+public sealed class PackagesController(
+    ThemeCatalog themes,
+    WidgetCatalog widgetCatalog,
+    ExtensionRegistry extensions,
+    ExtensionStates extensionStates,
+    ISettingsService settings,
+    IRightsService rights,
+    IBlogContext context,
+    IHostApplicationLifetime lifetime) : AdminApiController
 {
     [HttpGet("")]
     public async Task<IEnumerable<Package>> Get(int take = 10, int skip = 0, string filter = "", string order = "")
@@ -27,7 +37,7 @@ public sealed class PackagesController(ThemeCatalog themes, WidgetCatalog widget
                 break;
             case "extensions":
                 await DemandAsync(Rights.ManageExtensions);
-                packages = [];
+                packages = Extensions();
                 break;
             case "widgets":
                 await DemandAsync(Rights.ManageWidgets);
@@ -46,7 +56,7 @@ public sealed class PackagesController(ThemeCatalog themes, WidgetCatalog widget
     public async Task<IActionResult> Get(string id)
     {
         await DemandAsync(Rights.ManagePackages);
-        return (await ThemesAsync()).Concat(Widgets()).FirstOrDefault(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase)) is { } package
+        return (await ThemesAsync()).Concat(Widgets()).Concat(Extensions()).FirstOrDefault(p => string.Equals(p.Id, id, StringComparison.OrdinalIgnoreCase)) is { } package
             ? Ok(package)
             : NotFound();
     }
@@ -66,10 +76,45 @@ public sealed class PackagesController(ThemeCatalog themes, WidgetCatalog widget
         return Ok();
     }
 
-    [HttpPut("install/{id}")]
-    [HttpPut("uninstall/{id}")]
-    [HttpPut("rate/{id}")]
+    /// <summary>Comandi sulle estensioni selezionate: "enable", "disable" e "uninstall".</summary>
     [HttpPut("processchecked/{id}")]
+    public async Task<IActionResult> ProcessChecked(string id, [FromBody] List<Package> items)
+    {
+        await DemandExtensionsAsync();
+        foreach (var item in (items ?? []).Where(i => i.IsChecked && extensions.Find(i.Id ?? string.Empty) is not null))
+        {
+            var state = extensionStates.Get(item.Id!);
+            switch (id.ToLowerInvariant())
+            {
+                case "enable":
+                    await extensionStates.SetAsync(item.Id!, true, state.Priority);
+                    break;
+                case "disable":
+                    await extensionStates.SetAsync(item.Id!, false, state.Priority);
+                    break;
+                case "uninstall":
+                    var result = Uninstall(item.Id!);
+                    if (result is not OkResult)
+                    {
+                        return result;
+                    }
+
+                    break;
+            }
+        }
+
+        return Ok();
+    }
+
+    [HttpPut("uninstall/{id}")]
+    public async Task<IActionResult> UninstallOne(string id)
+    {
+        await DemandExtensionsAsync();
+        return Uninstall(id);
+    }
+
+    [HttpPut("install/{id}")]
+    [HttpPut("rate/{id}")]
     public IActionResult GalleryNotAvailable() =>
         BadRequest(new { Message = "La galleria online non è più disponibile: temi ed estensioni si installano copiando la loro cartella sul server." });
 
@@ -77,7 +122,60 @@ public sealed class PackagesController(ThemeCatalog themes, WidgetCatalog widget
     public async Task<bool> Update([FromBody] Package item)
     {
         await DemandAsync(Rights.ManagePackages);
+        if (string.Equals(item.PackageType, "Extension", StringComparison.OrdinalIgnoreCase) && extensions.Find(item.Id ?? string.Empty) is { } extension)
+        {
+            await DemandExtensionsAsync();
+            await extensionStates.SetAsync(extension.Name, item.Enabled, item.Priority);
+        }
+
         return true;
+    }
+
+    /// <summary>
+    /// Rimuove un'estensione caricata in App_Data/extensions; quelle del pacchetto (Custom/Extensions)
+    /// si tolgono via FTP o si disattivano. Il sito si riavvia per scaricarla dalla memoria.
+    /// </summary>
+    private IActionResult Uninstall(string name)
+    {
+        if (extensions.Find(name) is not { } extension)
+        {
+            return NotFound();
+        }
+
+        if (!extension.IsUploaded)
+        {
+            return BadRequest(new { Message = "Le estensioni incluse nel sito non si eliminano: disattivale oppure togli la loro cartella da Custom/Extensions via FTP." });
+        }
+
+        Directory.Delete(extension.Folder, recursive: true);
+        lifetime.StopApplication();
+        return Ok();
+    }
+
+    private IEnumerable<Package> Extensions() => extensions.All.Select(e => new Package
+    {
+        Id = e.Name,
+        PackageType = "Extension",
+        Title = e.Name,
+        Description = e.Error is null ? e.Description : $"Errore: {e.Error}",
+        LocalVersion = e.Version,
+        Authors = e.Author,
+        Website = string.Empty,
+        IconUrl = "/Content/images/blog/ext.png",
+        Enabled = extensionStates.IsEnabled(e.Name),
+        Priority = extensionStates.Get(e.Name).Priority,
+        SettingsUrl = e.AdminPage ?? (e.Settings.Any(s => !s.Hidden) ? $"~/admin/extensions/settings?ext={Uri.EscapeDataString(e.Name)}" : null),
+        LastUpdated = string.Empty,
+    });
+
+    /// <summary>Lo stato delle estensioni vale per tutti i blog: si cambia solo dal blog principale.</summary>
+    private async Task DemandExtensionsAsync()
+    {
+        await DemandAsync(Rights.ManageExtensions);
+        if (!context.Blog.IsPrimary)
+        {
+            throw new UnauthorizedAccessException();
+        }
     }
 
     [HttpPut("refresh/{id?}")]

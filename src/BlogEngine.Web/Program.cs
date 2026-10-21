@@ -5,7 +5,7 @@ using BlogEngine.Web.Endpoints;
 using BlogEngine.Web.Hosting;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddBlogEngineWeb(builder.Configuration);
+builder.Services.AddBlogEngineWeb(builder.Configuration, builder.Environment);
 
 var app = builder.Build();
 
@@ -14,6 +14,7 @@ var installation = app.Services.GetRequiredService<InstallationState>();
 if (installation.IsInstalled)
 {
     await app.Services.GetRequiredService<IDataStoreInitializer>().InitializeAsync();
+    await app.Services.GetRequiredService<BlogEngine.Core.Extensions.ExtensionStates>().LoadAsync();
 }
 else
 {

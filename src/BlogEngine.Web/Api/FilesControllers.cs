@@ -100,7 +100,8 @@ public sealed class UploadController(
 
     /// <summary>
     /// Caricamento di file dagli editor. action: "image" o "file" (nella cartella aaaa/mm), "filemgr" (nella
-    /// cartella del file manager), "profile" (foto del profilo). Restituisce l'indirizzo del file caricato.
+    /// cartella del file manager), "profile" (foto del profilo), "video" (nella cartella /media, per i tag
+    /// [video] e [audio]). Restituisce l'indirizzo o il nome del file caricato.
     /// </summary>
     [HttpPost("")]
     [RequestSizeLimit(64 * 1024 * 1024)]
@@ -151,7 +152,17 @@ public sealed class UploadController(
             case "import":
                 return BadRequest(new { Message = "L'importazione BlogML sarà disponibile in una fase successiva del porting." });
             case "video":
-                return BadRequest(new { Message = "Il caricamento dei video arriverà con l'estensione MediaElementPlayer." });
+                // Come in origine: il file va nella cartella dei video e l'editor inserisce [video src=nome].
+                if (!await rights.IsAuthorizedAsync(Rights.EditOwnPosts))
+                {
+                    return Unauthorized();
+                }
+
+                await using (var stream = file.OpenReadStream())
+                {
+                    var saved = await files.SaveAsync(context.Blog.Id, Endpoints.FileEndpoints.MediaFolder, fileName, stream, HttpContext.RequestAborted);
+                    return StatusCode(StatusCodes.Status201Created, Path.GetFileName(saved));
+                }
             default:
                 return BadRequest();
         }

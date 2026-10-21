@@ -1,5 +1,6 @@
 using System.Net.Mail;
 using BlogEngine.Models;
+using BlogEngine.Core.Services;
 using BlogEngine.Security;
 using BlogEngine.Services;
 using BlogEngine.Web.Api;
@@ -49,6 +50,7 @@ public sealed class BlogActionsController(
     IBlogContext context,
     NewsletterSubscribers newsletter,
     ILinkGenerator links,
+    Extensions.CaptchaService captcha,
     ILogger<BlogActionsController> logger) : Controller
 {
     public const string FormsRateLimit = "forms";
@@ -96,6 +98,11 @@ public sealed class BlogActionsController(
         if (!await comments.AreCommentsOpenAsync(post) || !await content.CanAsync(Rights.CreateComments))
         {
             return BadRequest(new { message = site.T("commentsAreClosed") });
+        }
+
+        if (!await captcha.ValidateAsync(CaptchaForm.Comment, Request.Form))
+        {
+            return BadRequest(new { message = site.T("incorrectSimpleCaptcha"), captcha = true });
         }
 
         var blogSettings = await site.GetSettingsAsync();

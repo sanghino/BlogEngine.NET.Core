@@ -4,6 +4,7 @@ using BlogEngine.Core.Configuration;
 using BlogEngine.Services;
 using BlogEngine.Web.Security;
 using BlogEngine.Web.Setup;
+using BlogEngine.Web.Extensions;
 using BlogEngine.Web.Themes;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.DataProtection;
@@ -19,9 +20,13 @@ public static class WebServiceCollectionExtensions
     /// <summary>Limite di tentativi per login, registrazione, recupero password e configurazione.</summary>
     public const string AccountRateLimit = "account";
 
-    public static IServiceCollection AddBlogEngineWeb(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddBlogEngineWeb(this IServiceCollection services, IConfiguration configuration, IWebHostEnvironment environment)
     {
         services.Configure<BlogEngineOptions>(configuration.GetSection(BlogEngineOptions.SectionName));
+
+        // Le estensioni vanno compilate prima di creare il contenitore dei servizi, in cui registrano i loro componenti.
+        var options = configuration.GetSection(BlogEngineOptions.SectionName).Get<BlogEngineOptions>() ?? new BlogEngineOptions();
+        services.AddBlogEngineExtensions(new BlogEnginePaths(environment.ContentRootPath, options), configuration["BlogEngine:ExtensionCachePath"]);
         services.AddSingleton(sp => new BlogEnginePaths(
             sp.GetRequiredService<IWebHostEnvironment>().ContentRootPath,
             sp.GetRequiredService<IOptions<BlogEngineOptions>>().Value));
@@ -80,6 +85,10 @@ public static class WebServiceCollectionExtensions
 
         services.AddRazorPages();
 
+        // Le pagine Razor scrivono le lettere accentate così come sono (non come &#xE0;), come i temi.
+        services.Configure<Microsoft.Extensions.WebEncoders.WebEncoderOptions>(options =>
+            options.TextEncoderSettings = new System.Text.Encodings.Web.TextEncoderSettings(System.Text.Unicode.UnicodeRanges.All));
+
         // API dell'amministrazione AngularJS: JSON con Newtonsoft e nomi delle proprietà invariati (PascalCase),
         // come la Web API 2 originale, così il JavaScript esistente riceve e invia esattamente lo stesso formato.
         services.AddControllers().AddNewtonsoftJson(options =>
@@ -104,8 +113,17 @@ public static class WebServiceCollectionExtensions
         services.AddScoped<Themes.WidgetService>();
         services.AddScoped<Themes.SiteRenderer>();
         services.AddScoped<Themes.PublicContent>();
-        services.AddScoped<Themes.NewsletterSubscribers>();
         services.AddBuiltInWidgets();
+
+        // Servizi per le estensioni: risorse della pagina, email in background, riavvio quando cambiano.
+        services.AddScoped<PageResources>();
+        services.AddScoped<IPageResources>(sp => sp.GetRequiredService<PageResources>());
+        services.AddScoped<CaptchaService>();
+        services.AddScoped<ILabels, LabelsAdapter>();
+        services.AddSingleton<EmailChannel>();
+        services.AddScoped<IEmailQueue, BackgroundEmailQueue>();
+        services.AddHostedService<EmailSenderService>();
+        services.AddHostedService<ExtensionWatcher>();
         services.AddSingleton<FileLog>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 

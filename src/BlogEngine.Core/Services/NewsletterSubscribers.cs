@@ -2,7 +2,7 @@ using System.Text.Json;
 using BlogEngine.Core.Data;
 using BlogEngine.Services;
 
-namespace BlogEngine.Web.Themes;
+namespace BlogEngine.Core.Services;
 
 /// <summary>
 /// Indirizzi iscritti alla newsletter del widget Newsletter (porting di newsletter.xml). L'invio

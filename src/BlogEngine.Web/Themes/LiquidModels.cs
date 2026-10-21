@@ -231,6 +231,9 @@ public sealed class CommentsModel
     /// <summary>Anteprima del commento mentre lo si scrive.</summary>
     public bool ShowLivePreview { get; init; }
 
+    /// <summary>Captcha delle estensioni attive, da inserire nell'elemento commentCaptcha del modulo.</summary>
+    public HtmlString Captcha { get; init; } = HtmlString.Empty;
+
     /// <summary>"blogengine", "disqus" o "facebook".</summary>
     public string Provider { get; init; } = "blogengine";
 
@@ -416,6 +419,9 @@ public sealed class ContactModel
     public HtmlString ErrorMessage { get; init; } = HtmlString.Empty;
 
     public bool AllowAttachments { get; init; }
+
+    /// <summary>Captcha delle estensioni attive, da inserire nel modulo.</summary>
+    public HtmlString Captcha { get; init; } = HtmlString.Empty;
 
     public bool Sent { get; init; }
 

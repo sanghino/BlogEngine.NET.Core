@@ -19,6 +19,6 @@
         <input type="checkbox" id="cbNotify" class="form-check-input" />
         <label for="cbNotify" class="form-check-label">{{ 'notifyOnNewComments' | t }}</label>
     </div>
-    <div id="commentCaptcha" class="form-group"></div>
+    <div id="commentCaptcha" class="form-group">{{ comments.captcha }}</div>
     <input type="button" id="btnSaveAjax" value="{{ 'saveComment' | t }}" class="btn btn-primary btn-block" onclick="return BlogEngine.validateAndSubmitCommentForm()" />
 </div>

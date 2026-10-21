@@ -13,7 +13,7 @@ namespace BlogEngine.Web.Public;
 
 /// <summary>Modulo di contatto (porting di contact.aspx): invia un'email all'indirizzo del blog.</summary>
 [ApiExplorerSettings(IgnoreApi = true)]
-public sealed class ContactController(SiteRenderer site, PublicContent content, IEmailSender mailer) : Controller
+public sealed class ContactController(SiteRenderer site, PublicContent content, IEmailSender mailer, Extensions.CaptchaService captcha) : Controller
 {
     /// <summary>Dimensione massima dell'allegato (5 MB).</summary>
     public const long MaxAttachmentSize = 5 * 1024 * 1024;
@@ -56,6 +56,11 @@ public sealed class ContactController(SiteRenderer site, PublicContent content, 
         if (form.Text.Length is 0 or > 20000)
         {
             errors.Add($"{site.T("message")}: {site.T("required")}");
+        }
+
+        if (!await captcha.ValidateAsync(CaptchaForm.Contact, Request.Form))
+        {
+            errors.Add(site.T("incorrectSimpleCaptcha"));
         }
 
         if (attachment is { Length: > MaxAttachmentSize })
@@ -117,6 +122,7 @@ public sealed class ContactController(SiteRenderer site, PublicContent content, 
             ThankMessage = new HtmlString(blogSettings.ContactThankMessage),
             ErrorMessage = new HtmlString(blogSettings.ContactErrorMessage),
             AllowAttachments = blogSettings.EnableContactAttachments,
+            Captcha = form.Sent ? HtmlString.Empty : await captcha.RenderAsync(CaptchaForm.Contact),
             Sent = form.Sent,
             Failed = form.Failed,
             Name = form.Name,

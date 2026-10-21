@@ -36,7 +36,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Commenti annidati, moderazione, approvazione/rifiuto, spam | `Comment.cs`, `CommentsController`, `CommentList.ascx` | Core + API + `POST /comment` (fetch con token antifalsificazione al posto del callback Web Forms) e comandi rapidi di moderazione dalla pagina |
 | ☑ | Chiusura commenti dopo N giorni, sito web e nazione opzionali, anteprima, notifica e cancellazione dalle notifiche | `BlogSettings`, `post.aspx` | Core + temi (`?unsubscribe-email=`) |
 | ☑ | Filtri commenti configurabili (IP, email, parole) | `CommentFilterRepository`, `CommentFilterController` | Core + API |
-| ◐ | Filtri antispam personalizzati (`ICustomFilter`), segnalazione errori | `Services/Messaging/Protection` | Abstractions (punto di estensione) |
+| ☑ | Filtri antispam personalizzati (`ICustomFilter`), segnalazione errori | `Services/Messaging/Protection` | `ICommentSpamFilter` registrato dalle estensioni (Akismet, StopForumSpam) |
 | ☑ | Avatar (Gravatar, ecc.) | `Data/Services/Avatar.cs` | `AvatarService` + `comment.avatar` |
 | ☑ | Provider commenti alternativi: Disqus, Facebook | `CommentProvider`, `Disqus*`, `Facebook*` | `post.liquid`, `page.liquid` (Disqus anche sulle pagine) |
 | ✖ | CoComment | `IsCoCommentEnabled` | Servizio esterno chiuso da anni |
@@ -76,8 +76,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Blogroll, ping service | `settings/controls`, `BlogRollController`, `PingServicesController` | API |
 | ☑ | Strumenti di verifica (email, permessi cartelle) | `settings/tools`, `ToolsController` | API, integrati con la diagnostica |
 | ☑ | Log | `LogsController`, `UnhandledExceptionLogger` | `App_Data/logs` |
-| ◐ | Gestione temi, widget, estensioni (plugin) | `admin/app/custom/*`, `PackagesController`, `PackageExtraController` | Solo installazioni locali (cartella / upload zip) |
-| ☐ | Impostazioni delle estensioni | `admin/Extensions/Settings.aspx` | Razor Page o vista AngularJS |
+| ☑ | Gestione temi, widget, estensioni (plugin) | `admin/app/custom/*`, `PackagesController`, `PackageExtraController` | Installazione copiando la cartella; attivazione, priorità, rimozione di quelle caricate in `App_Data` |
+| ☑ | Impostazioni delle estensioni | `admin/Extensions/Settings.aspx` | Razor Page `/admin/extensions/settings` generata dalle impostazioni dichiarate |
 | ☑ | Lookup (culture, fusi orari, editor…) | `LookupsController` | API |
 | ☑ | News feed BlogEngine in dashboard | `NewsFeedController` | Da verificare: la fonte esterna potrebbe non esistere più |
 | ✖ | Galleria online di temi ed estensioni | `Services/Packaging/Gallery*`, NuGet.Core | Servizio online non più disponibile |
@@ -103,24 +103,24 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Gestore estensioni: attivazione, priorità, impostazioni | `Web/Extensions/ExtensionManager.cs`, `ExtensionSettings` | Core + loader |
-| ☐ | Estensioni in sorgente `.cs` compilate a runtime | (nuovo: oggi compilate col sito) | Roslyn, cache in `App_Data/cache` |
-| ☐ | Estensioni in DLL precompilate | (nuovo) | `AssemblyLoadContext` |
-| ◐ | Eventi del ciclo di vita su post, pagine, commenti, categorie, ricerca, email, referrer… | eventi statici (`Serving`, `Saving`, `Saved`, `AddingComment`, `CommentAdded`, `Publishing`, `Searching`, `EmailSent`, `SpamAttack`, …) | Abstractions: eventi/hook stabili |
-| ☐ | AkismetFilter | `Custom/Extensions/AkismetFilter.cs` | Plugin |
-| ☐ | BBCode | `BBCode.cs` | Plugin |
-| ☐ | BreakPost | `BreakPost.cs` | Plugin |
-| ☑ | Logger | `Logger.cs` | Plugin |
-| ☐ | MediaElementPlayer | `MediaElementPlayer.cs` | Plugin |
-| ☐ | Recaptcha | `Recaptcha/` | Plugin (API reCAPTCHA attuale) |
-| ☐ | ResolveLinks | `ResolveLinks.cs` | Plugin |
-| ☐ | SendCommentMail | `SendCommentMail.cs` | Plugin |
-| ☐ | SendNewsletters | `SendNewsletters.cs` | Plugin |
-| ☐ | SendPings | `SendPings.cs` | Plugin |
-| ☐ | SimpleCaptcha | `SimpleCaptcha/` | Plugin |
-| ☐ | Smilies | `Smilies.cs` | Plugin |
-| ☐ | StopForumSpam | `StopForumSpam.cs` | Plugin |
-| ◐ | Datastore delle impostazioni delle estensioni | `Web/Extensions/DataStore`, `XmlProvider/DataStore.cs` | Provider dati |
+| ☑ | Gestore estensioni: attivazione, priorità, impostazioni | `Web/Extensions/ExtensionManager.cs`, `ExtensionSettings` | `ExtensionRegistry`, `ExtensionStates` (stato valido per tutti i blog, senza riavvio), `IExtensionSettingsService`; API `/api/packages` |
+| ☑ | Estensioni in sorgente `.cs` compilate a runtime | (nuovo: oggi compilate col sito) | Roslyn all'avvio, cache in `App_Data/cache/extensions`, riavvio automatico quando i file cambiano; guida in `Custom/Extensions/README.md` |
+| ☑ | Estensioni in DLL precompilate | (nuovo) | `.dll` nella cartella dell'estensione, caricate in un `AssemblyLoadContext` proprio |
+| ☑ | Eventi del ciclo di vita su post, pagine, commenti, categorie, ricerca, email, referrer… | eventi statici (`Serving`, `Saving`, `Saved`, `AddingComment`, `CommentAdded`, `Publishing`, `Searching`, `EmailSent`, `SpamAttack`, …) | `IEventHandler<T>` registrati dalle estensioni; quelli delle estensioni disattivate vengono saltati |
+| ☑ | AkismetFilter | `Custom/Extensions/AkismetFilter.cs` | Convertita (disattivata finché non si inserisce la chiave) |
+| ☑ | BBCode | `BBCode.cs` | Convertita |
+| ☑ | BreakPost | `BreakPost.cs` | Convertita |
+| ✖ | Logger | `Logger.cs` | Il log su file è sempre attivo (`App_Data/logs`), non serve più un'estensione |
+| ☑ | MediaElementPlayer | `MediaElementPlayer.cs` | Convertita; video caricati dall'editor nella cartella `media` del blog, serviti da `/media/...` con riproduzione a salti |
+| ☑ | Recaptcha | `Recaptcha/` | Portata a reCAPTCHA v2 (la v1 non esiste più); commenti e, se attivato, contatti. Il visualizzatore del log dei tentativi è stato tolto |
+| ☑ | ResolveLinks | `ResolveLinks.cs` | Convertita |
+| ☑ | SendCommentMail | `SendCommentMail.cs` | Convertita (email in background) |
+| ☑ | SendNewsletters | `SendNewsletters.cs` | Convertita (usa `newsletter.html` del tema) |
+| ◐ | SendPings | `SendPings.cs` | Ping ai servizi XML-RPC convertiti; invio di trackback e pingback con i protocolli (Fase 7) |
+| ☑ | SimpleCaptcha | `SimpleCaptcha/` | Convertita (attiva per default, come in origine) |
+| ☑ | Smilies | `Smilies.cs` | Convertita |
+| ☑ | StopForumSpam | `StopForumSpam.cs` | Convertita (API JSON attuale) |
+| ☑ | Datastore delle impostazioni delle estensioni | `Web/Extensions/DataStore`, `XmlProvider/DataStore.cs` | Archivio delle estensioni dei provider XML e SQLite; un blog senza impostazioni proprie usa quelle del principale |
 
 ## 8. Endpoint pubblici e protocolli (URL `*.axd` invariati)
 
@@ -157,9 +157,9 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
 | ◐ | Invio email SMTP (SSL, prefisso oggetto) | `Utils.SendMailMessage`, `BlogSettings` | Core (MailKit o `SmtpClient`) |
-| ◐ | Form contatti con allegati e reCAPTCHA | `contact.aspx` | `/contact` con allegati e antispam (campo nascosto + limite di invii); reCAPTCHA con le estensioni (Fase 6) |
-| ☐ | Notifica email dei commenti | estensione SendCommentMail | Plugin |
-| ◐ | Newsletter | widget Newsletter + estensione SendNewsletters | Iscrizione dal widget e gestione degli iscritti pronte; invio alla pubblicazione con l'estensione (Fase 6) |
+| ☑ | Form contatti con allegati e reCAPTCHA | `contact.aspx` | `/contact` con allegati, antispam (campo nascosto + limite di invii) e captcha delle estensioni |
+| ☑ | Notifica email dei commenti | estensione SendCommentMail, `Post.SendNotifications` | Al proprietario con SendCommentMail; agli iscritti dal Core (`CommentNotificationHandler`), con link per cancellarsi |
+| ☑ | Newsletter | widget Newsletter + estensione SendNewsletters | Iscrizione dal widget, gestione degli iscritti, invio alla pubblicazione |
 
 ## 11. Localizzazione e impostazioni generali
 

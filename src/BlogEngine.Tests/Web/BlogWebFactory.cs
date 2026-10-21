@@ -3,6 +3,7 @@ using System.Text.RegularExpressions;
 using BlogEngine.Core.Configuration;
 using BlogEngine.Web.Hosting;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.TestHost;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.Extensions.DependencyInjection;
@@ -17,10 +18,21 @@ public sealed partial class BlogWebFactory : WebApplicationFactory<Program>
 
     public string DataRoot { get; } = Path.Combine(Path.GetTempPath(), "be-tests", Guid.NewGuid().ToString("N"));
 
+    /// <summary>Servizi da sostituire nel sito di prova (es. la coda delle email).</summary>
+    public Action<IServiceCollection>? TestServices { get; init; }
+
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
         builder.UseEnvironment("Testing");
         builder.UseSetting("BlogEngine:DataPath", DataRoot);
+
+        // Estensioni compilate una volta per tutti i test; nessun riavvio automatico durante i test.
+        builder.UseSetting("BlogEngine:ExtensionCachePath", Path.Combine(Path.GetTempPath(), "be-tests-extensions"));
+        builder.UseSetting("BlogEngine:RestartOnExtensionChange", "false");
+        if (TestServices is not null)
+        {
+            builder.ConfigureTestServices(TestServices);
+        }
     }
 
     public HttpClient CreateBrowser(bool followRedirects = true) =>
@@ -56,7 +68,9 @@ public sealed partial class BlogWebFactory : WebApplicationFactory<Program>
     {
         await using var scope = Services.CreateAsyncScope();
         var blogs = await scope.ServiceProvider.GetRequiredService<BlogEngine.Core.Services.BlogsCache>().GetAllAsync();
-        scope.ServiceProvider.GetRequiredService<RequestBlogContext>().RunAsSystem(blogs.First(b => b.IsPrimary));
+        var context = scope.ServiceProvider.GetRequiredService<RequestBlogContext>();
+        context.RunAsSystem(blogs.First(b => b.IsPrimary));
+        context.RequestBaseUri = new Uri("http://localhost/");
         await action(scope.ServiceProvider);
     }
 

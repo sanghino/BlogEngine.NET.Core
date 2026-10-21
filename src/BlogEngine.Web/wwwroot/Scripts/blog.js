@@ -147,6 +147,12 @@ var BlogEngine = {
             hp: honeypot ? honeypot.value : ''
         };
 
+        // Campi dei captcha delle estensioni (es. la risposta di SimpleCaptcha o il token di reCAPTCHA).
+        var captchaFields = document.querySelectorAll('#commentCaptcha input[name], #commentCaptcha textarea[name], #commentCaptcha select[name]');
+        for (var f = 0; f < captchaFields.length; f++) {
+            data[captchaFields[f].name] = captchaFields[f].value;
+        }
+
         BlogEngine.toggleCommentSavingIndicators(true);
         BlogEngine.status(BlogEngine.i18n('savingTheComment'), '');
 
@@ -166,6 +172,9 @@ var BlogEngine = {
             }
         }).catch(function (error) {
             BlogEngine.toggleCommentSavingIndicators(false);
+            if (window.grecaptcha && window.grecaptcha.reset) {
+                window.grecaptcha.reset();
+            }
             BlogEngine.status(error.status === 429 ? 'Too many requests, please try again later.' : error.message, 'warning');
         });
     },

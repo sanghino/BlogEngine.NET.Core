@@ -1,3 +1,4 @@
+using BlogEngine.Core.Extensions;
 using BlogEngine.Core.Caching;
 using BlogEngine.Events;
 using BlogEngine.Models;
@@ -13,6 +14,7 @@ public sealed class CommentService(
     ISettingsService settings,
     IBlogClock clock,
     IEnumerable<ICommentSpamFilter> spamFilters,
+    IExtensionGate gate,
     IEventPublisher events) : ICommentService
 {
     public async Task<bool> AddAsync(Post post, Comment comment, CancellationToken cancellationToken = default)
@@ -228,7 +230,7 @@ public sealed class CommentService(
 
         // Se il commento era stato approvato in automatico hanno sbagliato tutti i filtri.
         var missedByAll = comment.ModeratedBy == CommentModerationHandler.AutoModerator;
-        foreach (var filter in spamFilters.Where(f => missedByAll || f.Name == comment.ModeratedBy))
+        foreach (var filter in spamFilters.Where(f => gate.IsActive(f) && (missedByAll || f.Name == comment.ModeratedBy)))
         {
             await filter.ReportMistakeAsync(post, comment, cancellationToken).ConfigureAwait(false);
         }

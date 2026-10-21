@@ -35,6 +35,7 @@
             <input type="file" id="txtAttachment" name="attachment" />
         </div>
         {%- endif %}
+        <div class="form-group" id="contactCaptcha">{{ contact.captcha }}</div>
         <div style="display:none"><input type="text" name="hp" tabindex="-1" autocomplete="off" /></div>
         <div class="text-right btn-wrapper">
             <button type="submit" id="btnSend" class="btn btn-primary">{{ 'send' | t }}</button>

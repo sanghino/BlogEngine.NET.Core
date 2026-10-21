@@ -56,7 +56,8 @@ public sealed class SiteRenderer(
     ICustomFieldService customFields,
     IStringLocalizer<Labels> labels,
     IAntiforgery antiforgery,
-    IHttpContextAccessor httpAccessor)
+    IHttpContextAccessor httpAccessor,
+    Extensions.PageResources resources)
 {
     /// <summary>Parametro con cui si prova un tema senza attivarlo (?theme=Nome), come in origine.</summary>
     public const string ThemeQueryKey = "theme";
@@ -233,7 +234,7 @@ public sealed class SiteRenderer(
         scope.GlobalValues["template"] = template;
         scope.GlobalValues["meta"] = new { description = meta.Description, keywords = meta.Keywords, author = meta.Author };
         scope.GlobalValues["content_for_header"] = new Microsoft.AspNetCore.Html.HtmlString(BuildHeader(scope, blogSettings, meta));
-        scope.GlobalValues["content_for_footer"] = new Microsoft.AspNetCore.Html.HtmlString(blogSettings.TrackingScript ?? string.Empty);
+        scope.GlobalValues["content_for_footer"] = new Microsoft.AspNetCore.Html.HtmlString(resources.FooterHtml + Environment.NewLine + blogSettings.TrackingScript);
     }
 
     /// <summary>Porting delle aggiunte automatiche di BlogBasePage all'intestazione della pagina.</summary>
@@ -299,6 +300,7 @@ public sealed class SiteRenderer(
         html.AppendLine($"<script>BlogEngineRes = {ResourcesScript(scope)};</script>");
         html.AppendLine($"<script src=\"{E(scope.AppRoot)}Scripts/blog.js\"></script>");
         html.AppendLine(meta.ExtraHead);
+        html.AppendLine(resources.HeadHtml);
         html.AppendLine(blogSettings.HtmlHeader ?? string.Empty);
         return html.ToString();
     }

@@ -26,7 +26,8 @@ public sealed class PublicContent(
     IAvatarService avatars,
     ILinkGenerator links,
     IBlogClock clock,
-    IEventPublisher events)
+    IEventPublisher events,
+    Extensions.CaptchaService captcha)
 {
     private readonly Dictionary<Rights, bool> _rights = [];
 
@@ -192,6 +193,7 @@ public sealed class PublicContent(
             ShowWebsite = blogSettings.EnableWebsiteInComments,
             ShowCountry = blogSettings.EnableCountryInComments,
             ShowLivePreview = blogSettings.ShowLivePreview,
+            Captcha = open ? await captcha.RenderAsync(CaptchaForm.Comment) : HtmlString.Empty,
             Provider = blogSettings.CommentProvider.ToString().ToLowerInvariant(),
             DisqusWebsiteName = blogSettings.DisqusWebsiteName,
             DisqusDevMode = blogSettings.DisqusDevMode,

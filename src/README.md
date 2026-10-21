@@ -43,12 +43,16 @@ dotnet ef migrations add NomeModifica --project BlogEngine.Data.Sqlite --startup
 I test in `BlogEngine.Tests/Data` verificano che i due provider (e lo store in memoria dei test) si comportino
 allo stesso modo: un nuovo provider deve superare la stessa suite (`StoreContractTests`).
 
-## Temi e widget
+## Temi, widget ed estensioni
 
 I temi sono template Liquid letti dal disco a ogni modifica: si installano copiando la cartella in
 `Custom/Themes` (o in `App_Data/themes`), i widget in `Custom/Widgets` (o in `App_Data/widgets`).
 I template predefiniti, usati quando un tema non ridefinisce una pagina, sono in `Templates/`.
-Guide: `BlogEngine.Web/Custom/Themes/README.md` e `BlogEngine.Web/Custom/Widgets/README.md`.
+Le estensioni sono sorgenti C# in `Custom/Extensions/<Nome>` (o `App_Data/extensions/<Nome>`) compilati
+all'avvio con Roslyn; gli assembly restano in `App_Data/cache/extensions` e il sito si riavvia da solo
+quando i file cambiano.
+Guide: `BlogEngine.Web/Custom/Themes/README.md`, `BlogEngine.Web/Custom/Widgets/README.md` e
+`BlogEngine.Web/Custom/Extensions/README.md`.
 
 ## Pubblicazione su Aruba
 

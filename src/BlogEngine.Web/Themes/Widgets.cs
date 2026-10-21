@@ -175,6 +175,7 @@ public sealed partial class WidgetService(
     IBlogContext context,
     WidgetCatalog catalog,
     IEnumerable<IWidgetDataProvider> providers,
+    BlogEngine.Core.Extensions.IExtensionGate gate,
     ILogger<WidgetService> logger)
 {
     private readonly Dictionary<string, IReadOnlyDictionary<string, string>> _settings = new(StringComparer.OrdinalIgnoreCase);
@@ -273,7 +274,7 @@ public sealed partial class WidgetService(
                 Settings = await GetSettingsAsync(placement.Id),
             };
 
-            var provider = providers.FirstOrDefault(p => string.Equals(p.Name, widget.Name, StringComparison.OrdinalIgnoreCase));
+            var provider = providers.FirstOrDefault(p => gate.IsActive(p) && string.Equals(p.Name, widget.Name, StringComparison.OrdinalIgnoreCase));
             if (provider is not null)
             {
                 model = new WidgetModel
