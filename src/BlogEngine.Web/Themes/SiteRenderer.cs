@@ -285,6 +285,7 @@ public sealed class SiteRenderer(
         html.AppendLine($"<link rel=\"contents\" title=\"{E(T("archive"))}\" href=\"{E(links.Archive())}\" />");
         html.AppendLine($"<link rel=\"start\" title=\"{name}\" href=\"{E(scope.BlogRoot)}\" />");
         html.AppendLine($"<link type=\"application/rsd+xml\" rel=\"edituri\" title=\"RSD\" href=\"{E(absolute)}rsd.axd\" />");
+        html.AppendLine($"<link type=\"application/wlwmanifest+xml\" rel=\"wlwmanifest\" href=\"{E(absolute)}wlwmanifest.xml\" />");
         html.AppendLine($"<link type=\"application/rdf+xml\" rel=\"meta\" title=\"SIOC\" href=\"{E(absolute)}sioc.axd\" />");
         html.AppendLine($"<link type=\"application/apml+xml\" rel=\"meta\" title=\"APML\" href=\"{E(absolute)}apml.axd\" />");
         html.AppendLine($"<link type=\"application/rdf+xml\" rel=\"meta\" title=\"FOAF\" href=\"{E(absolute)}foaf.axd\" />");

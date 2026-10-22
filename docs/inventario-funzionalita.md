@@ -27,7 +27,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Ricerca, anche nei commenti, con stop word | `Services/Search/Search.cs`, `search.aspx`, `StopWords.cs` | `SearchService` (Core) + `/search` |
 | ☑ | Paginazione elenchi | `Helpers/Pager.cs`, `PostPager` | `?page=N` + `pager.liquid`, link rel prev/next |
 | ☑ | Rating dei post | `RatingHandler` (`rating.axd`), `EnableRating` | `POST /rating` (un voto per visitatore, cookie) + stelle di `blog.js` |
-| ☐ | Esempio di home page personalizzata | `FrontPageExample.aspx` | Pagina/template di esempio |
+| ✖ | Esempio di home page personalizzata | `FrontPageExample.aspx` | Era solo una pagina di esempio; la home personalizzata si ottiene con una pagina "home" o con un tema |
 
 ## 2. Commenti
 
@@ -52,7 +52,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
 | ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
 | ☑ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | `WwwRedirectMiddleware` (redirect permanente) |
-| ☐ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | Endpoint |
+| ☑ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | `MetaWeblogController` |
 | ☐ | Persistenza chiavi di cifratura su hosting condiviso | (nuovo) | ☑ `App_Data/keys` (Fase 1) |
 
 ## 4. Multi-blog
@@ -129,19 +129,19 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Feed RSS 2.0 / Atom, per categoria, tag, autore, commenti | `SyndicationHandler` (`syndication.axd`), `SyndicationGenerator` | `FeedController`: stessi parametri e estensioni (dc, slash, wfw, pingback, trackback, betag), anche `category/feed/`, `tag/feed/`, `post/feed/`, risposta 304 |
 | ☑ | Feed alternativo (es. FeedBurner), numero voci | `AlternateFeedUrl`, `PostsPerFeed` | Link del feed nelle pagine e `maxitems` |
 | ☑ | Sitemap XML | `SiteMap` (`sitemap.axd`) | `SemanticController` |
-| ☐ | MetaWeblog / XML-RPC (Windows Live Writer, Open Live Writer) | `API/MetaWeblog` (`metaweblog.axd`), `wlwmanifest.xml`, `AppCode/Wlw` | Endpoint |
+| ☑ | MetaWeblog / XML-RPC (Windows Live Writer, Open Live Writer) | `API/MetaWeblog` (`metaweblog.axd`), `wlwmanifest.xml`, `AppCode/Wlw` | `MetaWeblogController`: metaWeblog.*, blogger.*, wp.* (pagine, autori, tag), immagini; tentativi limitati. Tolto il pulsante "Tags" di Live Writer (TagMiniView) |
 | ☑ | RSD | `RsdHandler` (`rsd.axd`) | `SemanticController` |
 | ☑ | Pingback e trackback, in ricezione e invio | `PingbackHandler`, `TrackbackHandler`, `Services/Messaging/Ping` | `LinkbackController` (verifica della pagina d'origine), `LinkbackSender`; le pagine esterne si scaricano solo da indirizzi pubblici |
 | ☑ | OpenSearch | `OpenSearchHandler` (`opensearch.axd`) | `SemanticController` |
 | ☑ | OPML (blogroll) | `OpmlHandler` (`opml.axd`) | `SemanticController` |
 | ☑ | APML, FOAF, SIOC | `Apml`, `Foaf`, `Sioc` | `SemanticController` (`foaf.axd`, `foaf_nome.axd`, `sioc.axd`, `apml.axd`); il filtro dei feed tramite APML remoto è stato tolto |
-| ☐ | Export BlogML | `BlogMLExportHandler` (`blogml.axd`) | Endpoint |
-| ☐ | Import BlogML | `Services/Syndication/BlogML` | Admin |
-| ◐ | File e immagini serviti con controllo accessi, ridimensionamento | `FileHandler` (`file.axd`), `ImageHandler` (`image.axd`) | Endpoint; immagini con ImageSharp/SkiaSharp |
+| ☑ | Export BlogML | `BlogMLExportHandler` (`blogml.axd`) | `BlogMLService` (solo amministratori) |
+| ☑ | Import BlogML | `Services/Syndication/BlogML` | Impostazioni avanzate → Importa; tolto l'importatore ClickOnce (servizio SOAP non più esistente) |
+| ☑ | File e immagini serviti con controllo accessi, ridimensionamento | `FileHandler` (`file.axd`), `ImageHandler` (`image.axd`) | `file.axd`, `image.axd`, `/media/`. Il ridimensionamento non è stato portato: in origine lo usava solo il provider database (non più supportato) e nessuna pagina lo esponeva |
 | ☑ | Risorse localizzate per JavaScript | `ResourceHandler` (`*.res.axd`) | `admin.res.axd` per l'amministrazione, `BlogEngineRes` nelle pagine pubbliche |
 | ✖ | JavaScript minificato | `JavaScriptHandler` (`*.js.axd`), AjaxMin | Gli script inclusi sono già minificati e serviti come file statici |
 | ☑ | `robots.txt` | file statico | Generato, con l'indirizzo della sitemap |
-| ☐ | Download di file remoti da parte del server | `RemoteFile.cs`, `AllowServerToDownloadRemoteFiles` | Core (`HttpClient`) |
+| ☑ | Download di file remoti da parte del server | `RemoteFile.cs`, `AllowServerToDownloadRemoteFiles` | `RemotePages` (solo indirizzi pubblici, dimensione e tempo limitati); usato dall'importazione BlogML per le immagini |
 
 ## 9. URL e routing
 
@@ -167,7 +167,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ◐ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | Resx in Core + `IStringLocalizer` |
 | ◐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
-| ☐ | Calendario persiano | `AppCode/PersianCulture.cs` | Core |
+| ☑ | Calendario persiano | `AppCode/PersianCulture.cs` | Con .NET 8 (ICU) la cultura fa-IR usa già il calendario persiano: la classe di correzione non serve più |
 | ◐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |
 | ☑ | Compressione delle risposte | `CompressionModule`, `CompressWebResource` | gzip/brotli con `EnableHttpCompression` |
 | ✖ | Bundling/minificazione | `EnableOptimization`, System.Web.Optimization | Non necessario: file già minificati, compressione e cache del browser |
@@ -181,7 +181,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Provider SQLite | `setup/SQLite` + `DbBlogProvider` | `BlogEngine.Data.Sqlite` (EF Core) |
 | ☐ | File system dei file caricati | `XmlFileSystemProvider` | Disco, in `App_Data/files` |
 | ☑ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
-| ☐ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | Razor Page interna |
+| ☑ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | `/admin/diagnostics` (link dalla pagina "Informazioni") |
 | ☑ | Percorso dati configurabile, cartelle create all'avvio | (nuovo) | `BlogEnginePaths` (Fase 1) |
 | ✖ | Provider SQL Server, MySQL, SQL CE | `setup/SQLServer`, `MySQL`, `SQL_CE`, `DbMembershipProvider` | Non richiesti |
 | ✖ | File system su database o UNC | `DbFileSystemProvider`, `UNCFileSystemProvider`, LINQ to SQL | Non richiesti |

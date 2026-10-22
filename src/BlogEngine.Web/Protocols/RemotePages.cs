@@ -17,6 +17,9 @@ public interface IRemotePages
 
     /// <summary>Invia un POST a un altro sito (pingback XML-RPC o trackback) e restituisce la risposta.</summary>
     Task<string?> PostAsync(Uri url, HttpContent content, CancellationToken cancellationToken);
+
+    /// <summary>Scarica un file (es. un'immagine), oppure null se non raggiungibile o più grande di <paramref name="maxBytes"/>.</summary>
+    Task<byte[]?> DownloadAsync(Uri url, long maxBytes, TimeSpan timeout, CancellationToken cancellationToken);
 }
 
 public sealed class RemotePages(IHttpClientFactory httpClients) : IRemotePages
@@ -98,6 +101,45 @@ public sealed class RemotePages(IHttpClientFactory httpClients) : IRemotePages
             using var response = await httpClients.CreateClient(ClientName).PostAsync(url, content, cancellationToken);
             var text = await response.Content.ReadAsStringAsync(cancellationToken);
             return text.Length > MaxBytes ? text[..MaxBytes] : text;
+        }
+        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException or InvalidOperationException)
+        {
+            return null;
+        }
+    }
+
+    public async Task<byte[]?> DownloadAsync(Uri url, long maxBytes, TimeSpan timeout, CancellationToken cancellationToken)
+    {
+        if (url.Scheme is not ("http" or "https"))
+        {
+            return null;
+        }
+
+        using var timeoutSource = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
+        timeoutSource.CancelAfter(timeout);
+        try
+        {
+            using var response = await httpClients.CreateClient(ClientName).GetAsync(url, HttpCompletionOption.ResponseHeadersRead, timeoutSource.Token);
+            if (!response.IsSuccessStatusCode || response.Content.Headers.ContentLength > maxBytes)
+            {
+                return null;
+            }
+
+            await using var stream = await response.Content.ReadAsStreamAsync(timeoutSource.Token);
+            using var buffer = new MemoryStream();
+            var chunk = new byte[81920];
+            int read;
+            while ((read = await stream.ReadAsync(chunk, timeoutSource.Token)) > 0)
+            {
+                if (buffer.Length + read > maxBytes)
+                {
+                    return null;
+                }
+
+                buffer.Write(chunk, 0, read);
+            }
+
+            return buffer.ToArray();
         }
         catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or IOException or InvalidOperationException)
         {

@@ -267,7 +267,7 @@ public sealed class ProtocolTests
     }
 
     /// <summary>Siti esterni simulati: nessuna richiesta esce davvero in rete.</summary>
-    private sealed class FakeRemotePages : IRemotePages
+    internal sealed class FakeRemotePages : IRemotePages
     {
         public ConcurrentDictionary<string, string> Pages { get; } = new();
 
@@ -286,6 +286,11 @@ public sealed class ProtocolTests
             using var response = new HttpResponseMessage();
             return Task.FromResult<RemotePage?>(new RemotePage(html, response.Headers, url));
         }
+
+        public ConcurrentDictionary<string, byte[]> Files { get; } = new();
+
+        public Task<byte[]?> DownloadAsync(Uri url, long maxBytes, TimeSpan timeout, CancellationToken cancellationToken) =>
+            Task.FromResult(Files.TryGetValue(url.ToString(), out var bytes) && bytes.Length <= maxBytes ? bytes : null);
 
         public async Task<string?> PostAsync(Uri url, HttpContent content, CancellationToken cancellationToken)
         {

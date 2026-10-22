@@ -68,6 +68,11 @@ public static class WebServiceCollectionExtensions
                 http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
                 _ => new FixedWindowRateLimiterOptions { PermitLimit = 10, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
 
+            // MetaWeblog: ogni chiamata contiene la password, quindi vanno limitati i tentativi.
+            options.AddPolicy(Protocols.MetaWeblogController.RateLimit, http => RateLimitPartition.GetFixedWindowLimiter(
+                http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+                _ => new FixedWindowRateLimiterOptions { PermitLimit = 30, Window = TimeSpan.FromMinutes(1), QueueLimit = 0 }));
+
             // Commenti, voti, contatti e newsletter dalle pagine pubbliche.
             options.AddPolicy(Public.BlogActionsController.FormsRateLimit, http => RateLimitPartition.GetFixedWindowLimiter(
                 http.Connection.RemoteIpAddress?.ToString() ?? "unknown",
@@ -129,6 +134,7 @@ public static class WebServiceCollectionExtensions
         Protocols.RemotePages.Register(services);
         ConditionalCompressionMiddleware.Register(services);
         services.AddSingleton<Protocols.LinkbackSender>();
+        services.AddScoped<Protocols.BlogMLService>();
         services.AddSingleton<FileLog>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 

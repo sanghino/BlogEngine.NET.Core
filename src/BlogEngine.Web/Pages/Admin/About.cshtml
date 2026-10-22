@@ -50,6 +50,12 @@
                 <li class="list-group-item">
                     <span>Blog provider:</span> @Model.DataProvider
                 </li>
+                @if (Admin.IsAdministrator)
+                {
+                    <li class="list-group-item">
+                        <a href="~/admin/diagnostics"><i class="fa fa-stethoscope"></i> Diagnostica (versioni, percorsi, permessi delle cartelle)</a>
+                    </li>
+                }
                 <li class="list-group-item">
                     <span>Membership provider:</span> BlogEngine (@Model.DataProvider)
                 </li>

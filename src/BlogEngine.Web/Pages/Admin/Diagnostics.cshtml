@@ -1,0 +1,39 @@
+@page "/admin/diagnostics"
+@model BlogEngine.Web.Pages.Admin.DiagnosticsModel
+@{
+    Layout = "_AdminLayout";
+}
+<div class="about-view content">
+    <button tabindex="-1" class="sidebar-toggle"><span></span><span></span><span></span></button>
+    <div class="main-header clearfix">
+        <h2 class="page-title pull-left">Diagnostica</h2>
+    </div>
+    <div class="content-inner">
+        @foreach (var (title, items) in Model.Sections)
+        {
+            <div class="panel panel-default">
+                <div class="panel-heading"><div class="panel-title">@title</div></div>
+                <ul class="list-group">
+                    @foreach (var item in items)
+                    {
+                        <li class="list-group-item">
+                            @if (item.Ok == true)
+                            {
+                                <i class="fa fa-check text-success"></i>
+                            }
+                            else if (item.Ok == false)
+                            {
+                                <i class="fa fa-exclamation-triangle text-danger"></i>
+                            }
+                            <span>@item.Name:</span> <span style="word-break: break-all">@item.Value</span>
+                        </li>
+                    }
+                    @if (items.Count == 0)
+                    {
+                        <li class="list-group-item">-</li>
+                    }
+                </ul>
+            </div>
+        }
+    </div>
+</div>

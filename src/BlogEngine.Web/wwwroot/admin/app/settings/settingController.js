@@ -72,7 +72,7 @@
     }
 
     $scope.exportToXml = function () {
-        location.href = SiteVars.ApplicationRelativeWebRoot + 'blogml.axd';
+        location.href = SiteVars.RelativeWebRoot + 'blogml.axd';
     }
 
     $scope.importClickOnce = function () {

@@ -150,7 +150,17 @@ public sealed class UploadController(
                 }
 
             case "import":
-                return BadRequest(new { Message = "L'importazione BlogML sarà disponibile in una fase successiva del porting." });
+                // Importazione di un file BlogML dalle impostazioni avanzate (solo amministratori).
+                if (!rights.IsAdministrator)
+                {
+                    return Unauthorized();
+                }
+
+                await using (var stream = file.OpenReadStream())
+                {
+                    var result = await HttpContext.RequestServices.GetRequiredService<Protocols.BlogMLService>().ImportAsync(stream, HttpContext.RequestAborted);
+                    return Ok(result);
+                }
             case "video":
                 // Come in origine: il file va nella cartella dei video e l'editor inserisce [video src=nome].
                 if (!await rights.IsAuthorizedAsync(Rights.EditOwnPosts))
