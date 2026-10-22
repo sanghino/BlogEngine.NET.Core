@@ -397,9 +397,44 @@ ul, ol {
     margin-bottom: 2.4rem;
 }
 
+/* Nell'elenco ogni post è una piccola finestra a sé: barra col comando, titolo, dati e anteprima. */
 .post-item {
-    padding-bottom: 2rem;
+    border: 1px solid var(--border);
+    background: var(--bg-panel);
+    padding: 0 1.3rem 1.2rem;
+    margin-bottom: 2rem;
+    transition: border-color .15s, box-shadow .15s;
+}
+
+.post-item:hover,
+.post-item:focus-within {
+    border-color: var(--fg-dim);
+    box-shadow: 0 0 0 1px var(--fg-faint), 0 0 18px rgba(51, 255, 102, .08);
+}
+
+.post-item .post-cmd {
+    margin: 0 -1.3rem 1rem;
+    padding: .35rem 1.3rem;
+    background: var(--bg);
+    border-bottom: 1px solid var(--border);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.post-item .post-title {
+    font-size: 1.4rem;
+    margin-top: 0;
+}
+
+.post-item .post-meta {
+    margin-bottom: .9em;
+    padding-bottom: .7em;
     border-bottom: 1px dashed var(--border);
+}
+
+.post-item .post-excerpt {
+    margin: 0 0 1em;
 }
 
 .post-cmd {
