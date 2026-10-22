@@ -1,0 +1,9 @@
+{
+  "title": "Terminal",
+  "description": "Tema in stile terminale: sfondo nero e testo verde fosforo, barra laterale per i widget, menu delle pagine e variante chiara.",
+  "authors": "Francesco Mori",
+  "version": "1.0.0",
+  "defaultWidgets": {
+    "sidebar": [ "Search", "Administration", "CategoryList", "TagCloud", "PostList", "MonthList" ]
+  }
+}

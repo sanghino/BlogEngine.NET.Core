@@ -1,0 +1,53 @@
+{%- comment -%} Tema Terminal: un post nell'elenco (location = 'list') o da solo (location = 'single'). {%- endcomment -%}
+{%- if location != 'single' %}
+<article class="post post-item" id="post{{ post.index }}">
+    <p class="post-cmd"><span class="ps1">$</span> cat {{ post.slug }}.md</p>
+    <h2 class="post-title"><a href="{{ post.url }}">{{ post.title }}</a></h2>
+    <p class="post-meta">
+        <span class="post-perm" aria-hidden="true">-rw-r--r--</span>
+        <a href="{{ post.author_url }}">{{ post.author_name }}</a>
+        <time datetime="{{ post.date_created | date_format: 'yyyy-MM-ddTHH:mm' }}">{{ post.date_created | date_format: 'yyyy-MM-dd HH:mm' }}</time>
+        {%- for c in post.categories %} <a class="post-category" href="{{ c.url }}">[{{ c.title }}]</a>{% endfor %}
+        {%- if post.comments_count > 0 %} <a class="post-comments" href="{{ post.url }}#comment">{{ post.comments_count }} {{ 'comments' | t | downcase }}</a>{% endif %}
+    </p>
+    <p class="post-excerpt">{% if post.description != '' %}{{ post.description }}{% else %}{{ post.plain_description | truncate: 300, '' }}{% endif %}&hellip;</p>
+    <a class="term-link post-more" href="{{ post.url }}">[ {{ 'readMore' | t }} ]</a>
+</article>
+{%- else %}
+<article class="post post-single" id="post{{ post.index }}">
+    <p class="post-cmd"><span class="ps1">$</span> less {{ post.slug }}.md</p>
+    <h1 class="post-title">{{ post.title }}</h1>
+    <p class="post-meta">
+        <span class="post-perm" aria-hidden="true">-rw-r--r--</span>
+        <a href="{{ post.author_url }}">{{ post.author_name }}</a>
+        <time datetime="{{ post.date_created | date_format: 'yyyy-MM-ddTHH:mm' }}">{{ post.date_created | date_format: 'yyyy-MM-dd HH:mm' }}</time>
+        {%- for c in post.categories %} <a class="post-category" href="{{ c.url }}">[{{ c.title }}]</a>{% endfor %}
+    </p>
+    <section class="post-body">
+        {{ post.body }}
+    </section>
+    <footer class="post-footer">
+        {%- if post.tags.size > 0 %}
+        <p class="post-tags">{% for tag in post.tags %}<a href="{{ tag.url }}" rel="tag">#{{ tag.title }}</a>{% unless forloop.last %} {% endunless %}{% endfor %}</p>
+        {%- endif %}
+        {{ post.rating_html }}
+        {%- if post.admin_links != '' %}<div class="post-adminlinks">{{ post.admin_links }}</div>{% endif %}
+    </footer>
+</article>
+<script type="application/ld+json">
+    {
+        "@context": "http://schema.org",
+        "@type": "BlogPosting",
+        "mainEntityOfPage": { "@type": "WebPage", "@id": {{ post.absolute_url | json }} },
+        "headline": {{ post.title | json }},
+        {%- if post.absolute_first_image != '' %}
+        "image": {{ post.absolute_first_image | json }},
+        {%- endif %}
+        "datePublished": "{{ post.date_created | date_format: 'yyyy-MM-dd' }}",
+        "dateModified": "{{ post.date_modified | date_format: 'yyyy-MM-dd' }}",
+        "author": { "@type": "Person", "name": {{ post.author_name | json }} },
+        "publisher": { "@type": "Organization", "name": {{ blog.name | json }} },
+        "description": {{ post.plain_description | json }}
+    }
+</script>
+{%- endif %}

@@ -1,0 +1,117 @@
+{%- comment -%}
+  Tema Terminal: intestazione a prompt, menu delle pagine, contenuto e barra laterale dei widget.
+  Modalità iniziale (campo personalizzato "Default mode"): dark, light oppure auto (segue il sistema);
+  la scelta fatta dal visitatore con il pulsante resta salvata nel suo browser.
+{%- endcomment -%}
+{%- assign default_mode = 'Default mode (dark, light, auto)' | theme_field: 'dark' | downcase | strip -%}
+{%- assign host = blog.name | downcase | strip | replace: ' ', '-' -%}
+{%- if user.is_authenticated %}{% assign prompt_user = user.name | downcase %}{% else %}{% assign prompt_user = 'guest' %}{% endif -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}" data-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    <script>
+        (function () {
+            // ?mode=light o ?mode=dark nell'indirizzo forza la modalità senza salvarla (anteprime).
+            var forced = /[?&]mode=(light|dark)\b/.exec(location.search);
+            var mode = forced ? forced[1] : null;
+            if (!mode) {
+                try { mode = localStorage.getItem('terminal-theme'); } catch (e) { }
+            }
+            if (mode !== 'dark' && mode !== 'light') {
+                mode = {{ default_mode | json }};
+                if (mode === 'auto') {
+                    mode = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark';
+                }
+            }
+            document.documentElement.setAttribute('data-theme', mode === 'light' ? 'light' : 'dark');
+        })();
+    </script>
+    {{ content_for_header }}
+    <link href="{{ 'Scripts/syntaxhighlighter/styles/shCore.css' | app_url }}" rel="stylesheet" />
+    <link href="{{ 'Scripts/syntaxhighlighter/styles/shThemeRDark.css' | app_url }}" rel="stylesheet" />
+    <link href="{{ 'src/terminal.css' | theme_url }}" rel="stylesheet" />
+    <script src="{{ 'Scripts/syntaxhighlighter/scripts/XRegExp.js' | app_url }}"></script>
+    <script src="{{ 'Scripts/syntaxhighlighter/scripts/shCore.js' | app_url }}"></script>
+    <script src="{{ 'Scripts/syntaxhighlighter/scripts/shAutoloader.js' | app_url }}"></script>
+    <script src="{{ 'Scripts/syntaxhighlighter/shActivator.js' | app_url }}"></script>
+</head>
+<body class="template-{{ template }}">
+    <a class="skip-link" href="#main">{{ 'skipToContent' | t }}</a>
+    <div class="term">
+        <header class="term-header">
+            <div class="term-bar">
+                <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="term-title">{{ prompt_user }}@{{ host }}: ~</span>
+                <button type="button" class="term-button theme-toggle" id="themeToggle"
+                        data-label-light="{{ 'lightMode' | t }}" data-label-dark="{{ 'darkMode' | t }}">[ {{ 'lightMode' | t }} ]</button>
+            </div>
+            <div class="term-brand">
+                <p class="prompt"><span class="prompt-user">{{ prompt_user }}@{{ host }}</span>:<span class="prompt-path">~</span>$ <span class="prompt-cmd">cat README</span></p>
+                <h1 class="blog-name"><a href="{{ blog.url }}">{{ blog.name }}</a><span class="cursor" aria-hidden="true"></span></h1>
+                {%- if blog.description != '' %}
+                <p class="blog-description"># {{ blog.description }}</p>
+                {%- endif %}
+            </div>
+            <nav class="term-nav" aria-label="{{ 'menu' | t }}">
+                <button type="button" class="term-button nav-toggle" id="navToggle" aria-expanded="false" aria-controls="navList">[ {{ 'menu' | t }} ]</button>
+                <ul class="nav-list" id="navList">
+                    <li><a href="{{ blog.url }}"{% if template == 'index' %} class="current"{% endif %}>~/{{ 'home' | t | downcase }}</a></li>
+                    {%- for parent in blog.pages %}
+                    <li{% if parent.children.size > 0 %} class="has-children"{% endif %}>
+                        <a href="{{ parent.url }}"{% if parent.is_current %} class="current"{% endif %}>./{{ parent.title }}</a>
+                        {%- if parent.children.size > 0 %}
+                        <ul>
+                            {%- for child in parent.children %}
+                            <li><a href="{{ child.url }}"{% if child.is_current %} class="current"{% endif %}>./{{ child.title }}</a></li>
+                            {%- endfor %}
+                        </ul>
+                        {%- endif %}
+                    </li>
+                    {%- endfor %}
+                    <li><a href="{{ blog.archive_url }}"{% if template == 'archive' %} class="current"{% endif %}>./{{ 'archive' | t | downcase }}</a></li>
+                    <li><a href="{{ blog.contact_url }}"{% if template == 'contact' %} class="current"{% endif %}>./{{ 'contact' | t | downcase }}</a></li>
+                    {%- if user.can_access_admin %}
+                    <li><a href="{{ blog.admin_url }}">sudo {{ 'admin' | t | downcase }}</a></li>
+                    {%- elsif user.is_authenticated == false %}
+                    <li><a href="{{ blog.login_url }}">{{ 'login' | t | downcase }}</a></li>
+                    {%- endif %}
+                </ul>
+            </nav>
+        </header>
+
+        <div class="term-body">
+            <main class="term-main" id="main">
+                {{ content_for_layout }}
+            </main>
+            <aside class="term-side">
+                {% widget_zone 'sidebar' %}
+            </aside>
+        </div>
+
+        <footer class="term-footer">
+            <p>{{ 'Footer text' | theme_field: '' }}</p>
+            <p><span class="prompt-user">{{ prompt_user }}@{{ host }}</span>:<span class="prompt-path">~</span>$ echo "&copy; {{ blog.year }} {{ blog.name }} &middot; powered by BlogEngine.NET"<span class="cursor" aria-hidden="true"></span></p>
+            <p><a href="{{ blog.feed_url }}">rss</a> &middot; <a href="#main">top</a></p>
+        </footer>
+    </div>
+
+    <script src="{{ 'src/terminal.js' | theme_url }}"></script>
+    <script type="application/ld+json">
+        {
+            "@context": "http://schema.org",
+            "@type": "WebSite",
+            "url": "{{ blog.absolute_url }}",
+            "potentialAction": {
+                "@type": "SearchAction",
+                "target": "{{ blog.absolute_url }}search?q={search_term_string}",
+                "query-input": "required name=search_term_string"
+            }
+        }
+    </script>
+    {{ content_for_footer }}
+    <!-- {{ blog.version }} -->
+</body>
+</html>

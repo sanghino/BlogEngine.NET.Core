@@ -2841,4 +2841,19 @@
   <data name="errorCommentRejected" xml:space="preserve">
     <value>Il commento è stato rifiutato.</value>
   </data>
+  <data name="readMore" xml:space="preserve">
+    <value>Continua a leggere</value>
+  </data>
+  <data name="menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="lightMode" xml:space="preserve">
+    <value>chiaro</value>
+  </data>
+  <data name="darkMode" xml:space="preserve">
+    <value>scuro</value>
+  </data>
+  <data name="skipToContent" xml:space="preserve">
+    <value>Vai al contenuto</value>
+  </data>
 </root>

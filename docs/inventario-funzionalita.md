@@ -89,6 +89,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Motore dei temi installabili da cartella | `.master` + `.ascx` in `Custom/Themes` | Fluid: `Custom/Themes` e `App_Data/themes`, riletti a ogni modifica; template predefiniti in `Templates/`; anteprima con `?theme=`, cookie del tema; guida in `Custom/Themes/README.md` |
 | ☑ | Tema `Standard` | `Custom/Themes/Standard` | Convertito in Liquid |
 | ☑ | Tema `Standard-2017` | `Custom/Themes/Standard-2017` | Convertito in Liquid |
+| ☑ | Tema `Terminal` (nuovo) | `Custom/Themes/Terminal` | Stile terminale (nero e verde fosforo), barra laterale, menu delle pagine con sottomenu, variante chiara con pulsante e campo "Default mode" (dark, light, auto); `?mode=light` per le anteprime |
 | ✖ | Tema `RazorHost` | `Custom/Themes/RazorHost` | Non era un tema grafico ma il ponte per scrivere temi in Razor dentro Web Forms: il motore Liquid ne prende il posto |
 | ☑ | Tema dell'amministrazione | `admin/themes/standard` | Statico (Fase 4b) |
 | ✖ | Tema mobile alternativo | `MobileThemeSwitch.cs` | I temi inclusi sono responsive; il cookie `ThemeCookieName` permette comunque di scegliere un altro tema (es. da un'estensione, Fase 6) |

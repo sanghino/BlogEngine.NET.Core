@@ -2915,4 +2915,19 @@
   <data name="errorCommentRejected" xml:space="preserve">
     <value>The comment was rejected.</value>
   </data>
+  <data name="readMore" xml:space="preserve">
+    <value>Read more</value>
+  </data>
+  <data name="menu" xml:space="preserve">
+    <value>Menu</value>
+  </data>
+  <data name="lightMode" xml:space="preserve">
+    <value>light</value>
+  </data>
+  <data name="darkMode" xml:space="preserve">
+    <value>dark</value>
+  </data>
+  <data name="skipToContent" xml:space="preserve">
+    <value>Skip to content</value>
+  </data>
 </root>
