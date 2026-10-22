@@ -109,7 +109,7 @@ public sealed class UserService(
     ISettingsService settings,
     IBlogClock clock) : IUserService
 {
-    private static readonly string[] SystemRoleNames = [SystemRoles.Administrators, SystemRoles.Editors, SystemRoles.Anonymous];
+    private static readonly string[] SystemRoleNames = [SystemRoles.Administrators, SystemRoles.Editors, SystemRoles.Registered, SystemRoles.Anonymous];
 
     private Guid BlogId => context.Blog.Id;
 
@@ -283,7 +283,7 @@ public sealed class UserService(
         var wanted = roles.ToHashSet(StringComparer.OrdinalIgnoreCase);
         var allRoles = await GetRolesAsync(cancellationToken).ConfigureAwait(false);
         var unknown = wanted.Where(w => !allRoles.Any(r => UserRepository.SameName(r.Name, w))).ToList();
-        BlogValidationException.ThrowIfInvalid(("Roles", unknown.Count > 0, $"Ruoli inesistenti: {string.Join(", ", unknown)}."));
+        BlogValidationException.ThrowIfInvalid(("Roles", unknown.Count > 0, Messages.Format(Messages.RolesUnknown, string.Join(", ", unknown))));
 
         var wasAdmin = (await GetRolesForUserAsync(user.UserName, cancellationToken).ConfigureAwait(false)).Contains(SystemRoles.Administrators, StringComparer.OrdinalIgnoreCase);
         if (wasAdmin && !wanted.Contains(SystemRoles.Administrators)

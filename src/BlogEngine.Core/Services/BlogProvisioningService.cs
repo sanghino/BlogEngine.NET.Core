@@ -79,6 +79,7 @@ public sealed partial class BlogProvisioningService(
         await users.SaveUserAsync(new BlogUser { BlogId = blog.Id, UserName = user, Email = email.Trim(), PasswordHash = PasswordHasher.Hash(password) }, cancellationToken).ConfigureAwait(false);
         await users.SaveRoleAsync(new BlogRole { BlogId = blog.Id, Name = SystemRoles.Administrators, Users = [user] }, cancellationToken).ConfigureAwait(false);
         await users.SaveRoleAsync(new BlogRole { BlogId = blog.Id, Name = SystemRoles.Editors }, cancellationToken).ConfigureAwait(false);
+        await users.SaveRoleAsync(new BlogRole { BlogId = blog.Id, Name = SystemRoles.Registered }, cancellationToken).ConfigureAwait(false);
 
         await SeedContentAsync(blog, user, cancellationToken: cancellationToken).ConfigureAwait(false);
         return blog;

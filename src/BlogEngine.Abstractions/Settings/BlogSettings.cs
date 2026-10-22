@@ -205,7 +205,7 @@ public sealed class BlogSettings
 
     public bool EnableSelfRegistration { get; set; }
 
-    public string SelfRegistrationInitialRole { get; set; } = "Editors";
+    public string SelfRegistrationInitialRole { get; set; } = "Registered";
 
     public bool EnablePasswordReset { get; set; } = true;
 

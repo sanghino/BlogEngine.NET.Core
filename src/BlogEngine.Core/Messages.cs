@@ -31,6 +31,7 @@ public static class Messages
     public const string KeyRequired = "validationKeyRequired";
     public const string RoleNameRequired = "validationRoleNameRequired";
     public const string RoleExists = "validationRoleExists";
+    public const string RolesUnknown = "validationRolesUnknown";
 
     public const string CommentsClosed = "errorCommentsClosed";
     public const string PrimaryBlogDelete = "errorPrimaryBlogDelete";

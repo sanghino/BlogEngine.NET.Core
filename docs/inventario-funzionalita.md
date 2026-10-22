@@ -46,7 +46,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
 | ☑ | Login, logout, cambio password, recupero password | `Account/*.aspx`, `Logout.cshtml` | Razor Pages + autenticazione via cookie |
-| ☑ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages |
+| ☑ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages; disattivata di base (Impostazioni → Base). Nuovo ruolo di sistema `Registered` predefinito per chi si registra, con permessi minimi (leggere, commentare, gestire il proprio account); `Administrators` non è mai assegnabile |
 | ✖ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Sostituita dal permesso "CreateNewBlogs": creare blog figli spetta agli amministratori, che possono concederlo ad altri ruoli (Utenti → Ruoli); modifica ed eliminazione restano agli amministratori |
 | ☑ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
 | ☑ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |

@@ -77,6 +77,9 @@
                     <li><a href="{{ blog.admin_url }}">sudo {{ 'admin' | t | downcase }}</a></li>
                     {%- elsif user.is_authenticated == false %}
                     <li><a href="{{ blog.login_url }}">{{ 'login' | t | downcase }}</a></li>
+                    {%- if blog.register_url != '' %}
+                    <li><a href="{{ blog.register_url }}">{{ 'createAccount' | t | downcase }}</a></li>
+                    {%- endif %}
                     {%- endif %}
                 </ul>
             </nav>

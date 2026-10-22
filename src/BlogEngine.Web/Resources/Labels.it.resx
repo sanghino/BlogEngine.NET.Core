@@ -2856,4 +2856,7 @@
   <data name="skipToContent" xml:space="preserve">
     <value>Vai al contenuto</value>
   </data>
+  <data name="validationRolesUnknown" xml:space="preserve">
+    <value>Ruoli inesistenti: {0}.</value>
+  </data>
 </root>

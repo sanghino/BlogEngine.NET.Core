@@ -32,7 +32,9 @@ public sealed class LookupsController(
                 .Concat(BlogCultureProvider.SupportedCultures.Select(c => new SelectOption { OptionName = c.NativeName, OptionValue = c.Name }))
                 .ToList(),
             SelfRegisterRoles = (await users.GetRolesAsync())
-                .Where(r => !string.Equals(r.Name, SystemRoles.Anonymous, StringComparison.OrdinalIgnoreCase))
+                // Chi si registra da solo non può mai diventare amministratore (vedi UserService.RegisterAsync).
+                .Where(r => !string.Equals(r.Name, SystemRoles.Anonymous, StringComparison.OrdinalIgnoreCase)
+                    && !string.Equals(r.Name, SystemRoles.Administrators, StringComparison.OrdinalIgnoreCase))
                 .Select(r => new SelectOption { OptionName = r.Name, OptionValue = r.Name })
                 .ToList(),
             PageList = (await pages.GetPagesAsync()).Select(p => new SelectOption { OptionName = p.Title, OptionValue = p.Id.ToString() }).ToList(),

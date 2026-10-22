@@ -2930,4 +2930,7 @@
   <data name="skipToContent" xml:space="preserve">
     <value>Skip to content</value>
   </data>
+  <data name="validationRolesUnknown" xml:space="preserve">
+    <value>Unknown roles: {0}.</value>
+  </data>
 </root>

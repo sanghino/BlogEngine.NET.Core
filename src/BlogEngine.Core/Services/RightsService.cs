@@ -53,6 +53,11 @@ public sealed class RightsMatrix
         Rights.ViewRatingsOnPosts, Rights.SubmitRatingsOnPosts,
     };
 
+    private static readonly IReadOnlySet<Rights> RegisteredDefaults = new HashSet<Rights>(AnonymousDefaults)
+    {
+        Rights.EditOwnUser,
+    };
+
     private static readonly IReadOnlySet<Rights> EditorDefaults = new HashSet<Rights>(AnonymousDefaults)
     {
         Rights.AccessAdminPages, Rights.ViewUnmoderatedComments, Rights.ModerateComments, Rights.ViewUnpublishedPosts,
@@ -81,6 +86,7 @@ public sealed class RightsMatrix
 
     public static IReadOnlySet<Rights> GetDefaultRights(string role) =>
         string.Equals(role, SystemRoles.Editors, StringComparison.OrdinalIgnoreCase) ? EditorDefaults
+        : string.Equals(role, SystemRoles.Registered, StringComparison.OrdinalIgnoreCase) ? RegisteredDefaults
         : string.Equals(role, SystemRoles.Anonymous, StringComparison.OrdinalIgnoreCase) ? AnonymousDefaults
         : string.Equals(role, SystemRoles.Administrators, StringComparison.OrdinalIgnoreCase) ? AllRights.ToHashSet()
         : new HashSet<Rights>();
@@ -92,6 +98,11 @@ public sealed class RightsMatrix
         foreach (var right in EditorDefaults)
         {
             roles[right].Add(SystemRoles.Editors);
+        }
+
+        foreach (var right in RegisteredDefaults)
+        {
+            roles[right].Add(SystemRoles.Registered);
         }
 
         foreach (var right in AnonymousDefaults)

@@ -118,7 +118,7 @@ public sealed class SettingsController(
         AllowServerToDownloadRemoteFiles = s.AllowServerToDownloadRemoteFiles,
         RemoteFileDownloadTimeout = s.RemoteFileDownloadTimeout,
         RemoteMaxFileSize = s.RemoteMaxFileSize,
-        SelfRegistrationInitialRole = string.IsNullOrEmpty(s.SelfRegistrationInitialRole) ? SystemRoles.Editors : s.SelfRegistrationInitialRole,
+        SelfRegistrationInitialRole = string.IsNullOrEmpty(s.SelfRegistrationInitialRole) ? SystemRoles.Registered : s.SelfRegistrationInitialRole,
         AuthorName = s.AuthorName,
         FeedAuthor = s.FeedAuthor,
         Endorsement = s.Endorsement,

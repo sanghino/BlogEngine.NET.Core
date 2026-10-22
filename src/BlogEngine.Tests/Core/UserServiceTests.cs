@@ -75,6 +75,27 @@ public sealed class UserServiceTests
     }
 
     [TestMethod]
+    public async Task Register_ByDefault_GetsMinimalRegisteredRole()
+    {
+        using var host = new TestBlogHost().AsAdmin();
+        var settings = await host.Settings.GetAsync();
+        settings.EnableSelfRegistration = true;
+        await host.Settings.SaveAsync(settings);
+
+        host.AsAnonymous();
+        var users = host.Get<IUserService>();
+        await users.RegisterAsync("lettore", "l@example.com", "password-1");
+        CollectionAssert.AreEqual(new[] { SystemRoles.Registered }, (await users.GetRolesForUserAsync("lettore")).ToArray());
+
+        var rights = RightsMatrix.CreateDefault().GetRightsForRole(SystemRoles.Registered);
+        Assert.IsTrue(rights.Contains(Rights.CreateComments));
+        Assert.IsTrue(rights.Contains(Rights.EditOwnUser));
+        Assert.IsFalse(rights.Contains(Rights.AccessAdminPages), "Chi si registra non entra nell'amministrazione.");
+        Assert.IsFalse(rights.Contains(Rights.CreateNewPosts), "Chi si registra non pubblica post.");
+        Assert.IsTrue(SystemRoles.IsSystemRole(SystemRoles.Registered), "Il ruolo non si può eliminare.");
+    }
+
+    [TestMethod]
     public async Task TheLastAdministratorCannotBeRemoved()
     {
         using var host = new TestBlogHost().AsAdmin();
