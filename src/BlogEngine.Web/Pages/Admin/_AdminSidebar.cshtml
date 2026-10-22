@@ -10,7 +10,8 @@
     </div>
     <ul class="nav-user-actions clearfix">
         <li title="@L["logoff"]">
-            <form id="admin-logout" method="post" action="@(root)account/logout" style="display:none"></form>
+            @* Con "action" esplicito il tag helper non aggiunge da solo il token antiforgery: va richiesto. *@
+            <form id="admin-logout" method="post" action="@(root)account/logout" asp-antiforgery="true" style="display:none"></form>
             <a href="#" onclick="document.getElementById('admin-logout').submit(); return false;"><i class="fa fa-power-off"></i></a>
         </li>
         <li title="@L["changePassword"]"><a href="@(root)account/change-password" target="_blank"><i class="fa fa-key"></i></a></li>

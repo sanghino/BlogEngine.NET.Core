@@ -371,6 +371,27 @@ public sealed partial class AdminApiTests
         Assert.AreEqual(HttpStatusCode.Unauthorized, (await editor.DeleteAsync($"/api/blogs/{id}")).StatusCode, "Eliminare i blog resta riservato agli amministratori.");
     }
 
+    /// <summary>Il pulsante di uscita del menu dell'amministrazione invia il token antiforgery.</summary>
+    [TestMethod]
+    public async Task AdminLogoutButton_SignsOut()
+    {
+        using var browser = _factory.CreateBrowser(followRedirects: false);
+        await browser.PostFormAsync("/account/login", new() { ["UserName"] = BlogWebFactory.AdminUser, ["Password"] = BlogWebFactory.AdminPassword });
+
+        var shell = await browser.GetStringAsync("/admin/");
+        var form = Regex.Match(shell, "<form id=\"admin-logout\"[^>]*>(?<body>.*?)</form>", RegexOptions.Singleline);
+        Assert.IsTrue(form.Success);
+        var token = Regex.Match(form.Groups["body"].Value, "name=\"__RequestVerificationToken\" type=\"hidden\" value=\"(?<value>[^\"]+)\"");
+        Assert.IsTrue(token.Success, "Il modulo di uscita deve contenere il token antiforgery.");
+
+        var logout = await browser.PostAsync("/account/logout", new FormUrlEncodedContent(new Dictionary<string, string>
+        {
+            ["__RequestVerificationToken"] = System.Net.WebUtility.HtmlDecode(token.Groups["value"].Value),
+        }));
+        Assert.AreEqual(HttpStatusCode.Redirect, logout.StatusCode);
+        Assert.AreEqual(HttpStatusCode.Redirect, (await browser.GetAsync("/admin/")).StatusCode, "Dopo l'uscita l'amministrazione richiede di nuovo l'accesso.");
+    }
+
     [TestMethod]
     public async Task Packages_ListLocalThemesOnly()
     {
