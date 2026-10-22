@@ -4,6 +4,7 @@
   la scelta fatta dal visitatore con il pulsante resta salvata nel suo browser.
 {%- endcomment -%}
 {%- assign default_mode = 'Default mode (dark, light, auto)' | theme_field: 'dark' | downcase | strip -%}
+{%- assign logo_url = 'Logo URL (vuoto = glider)' | theme_field: '' | strip -%}
 {%- assign host = blog.name | downcase | strip | replace: ' ', '-' -%}
 {%- if user.is_authenticated %}{% assign prompt_user = user.name | downcase %}{% else %}{% assign prompt_user = 'guest' %}{% endif -%}
 <!DOCTYPE html>
@@ -12,6 +13,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{{ page_title }}</title>
+    <link rel="icon" href="{% if logo_url != '' %}{{ logo_url }}{% else %}{{ 'src/logo.svg' | theme_url }}{% endif %}"{% if logo_url == '' %} type="image/svg+xml"{% endif %} />
     <script>
         (function () {
             // ?mode=light o ?mode=dark nell'indirizzo forza la modalità senza salvarla (anteprime).
@@ -50,7 +52,12 @@
             </div>
             <div class="term-brand">
                 <p class="prompt"><span class="prompt-user">{{ prompt_user }}@{{ host }}</span>:<span class="prompt-path">~</span>$ <span class="prompt-cmd">cat README</span></p>
-                <h1 class="blog-name"><a href="{{ blog.url }}">{{ blog.name }}</a><span class="cursor" aria-hidden="true"></span></h1>
+                <h1 class="blog-name">
+                    <a href="{{ blog.url }}">
+                        {%- if logo_url != '' %}<img class="blog-logo" src="{{ logo_url }}" alt="" />
+                        {%- else %}<svg class="blog-logo" viewBox="0 0 160 160" aria-hidden="true" focusable="false"><rect x="55" y="0" width="50" height="50"/><rect x="110" y="55" width="50" height="50"/><rect x="0" y="110" width="50" height="50"/><rect x="55" y="110" width="50" height="50"/><rect x="110" y="110" width="50" height="50"/></svg>
+                        {%- endif %}<span class="blog-name-text">{{ blog.name }}</span></a><span class="cursor" aria-hidden="true"></span>
+                </h1>
                 {%- if blog.description != '' %}
                 <p class="blog-description"># {{ blog.description }}</p>
                 {%- endif %}

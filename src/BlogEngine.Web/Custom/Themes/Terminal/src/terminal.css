@@ -273,6 +273,9 @@ ul, ol {
 .prompt-path { color: var(--fg-strong); }
 
 .blog-name {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
     margin: .3em 0 .2em;
     font-size: clamp(1.5rem, 4vw, 2.3rem);
     letter-spacing: .02em;
@@ -286,6 +289,36 @@ ul, ol {
 .blog-name a:hover,
 .blog-name a:focus-visible {
     color: var(--bg);
+}
+
+/* Logo: il glider usa il verde del tema (fosforo o inchiostro); sul link evidenziato si inverte. */
+.blog-name a {
+    display: inline-flex;
+    align-items: center;
+    gap: .55em;
+}
+
+.blog-logo {
+    width: 1.45em;
+    height: 1.45em;
+    flex: none;
+    fill: var(--fg);
+    border: 0;
+    filter: drop-shadow(0 0 4px rgba(51, 255, 102, .35));
+}
+
+:root[data-theme="light"] .blog-logo {
+    filter: none;
+}
+
+.blog-name a:hover .blog-logo,
+.blog-name a:focus-visible .blog-logo {
+    fill: var(--bg);
+    filter: none;
+}
+
+img.blog-logo {
+    object-fit: contain;
 }
 
 .blog-description {

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 160" fill="#2fbf4f">
+  <!-- Glider del Gioco della vita di Conway -->
+  <rect x="55" y="0" width="50" height="50"/>
+  <rect x="110" y="55" width="50" height="50"/>
+  <rect x="0" y="110" width="50" height="50"/>
+  <rect x="55" y="110" width="50" height="50"/>
+  <rect x="110" y="110" width="50" height="50"/>
+</svg>
