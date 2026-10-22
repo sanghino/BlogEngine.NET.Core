@@ -23,6 +23,9 @@
 .widget.advertisement .ad-content { overflow: hidden; text-align: center; }
 .widget.advertisement .ad-content img { max-width: 100%; height: auto; }
 
+/*[ Video embeds: YouTube, Vimeo, Dailymotion a tutta larghezza in 16:9, anche sul telefono ]*/
+iframe[src*="youtube.com/embed"], iframe[src*="youtube-nocookie.com/embed"], iframe[src*="player.vimeo.com"], iframe[src*="dailymotion.com/embed"] { display: block; width: 100%; max-width: 100%; height: auto; aspect-ratio: 16 / 9; margin: 1em 0; border: 0; }
+
 /*[ Cookie consent ]*/
 .be-consent { position: fixed; left: 0; right: 0; bottom: 0; z-index: 1000; padding: 12px; font: 14px/1.5 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
 .be-consent[hidden], .be-consent-reopen[hidden], .be-consent-options[hidden] { display: none; }

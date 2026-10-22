@@ -112,9 +112,14 @@ h4, h5, h6 { font-size: 1rem; }
 
 p { margin: 0 0 1em; }
 
-img, video, iframe {
+img, video {
     max-width: 100%;
     height: auto;
+}
+
+/* Gli iframe tengono l'altezza indicata nel codice (con height: auto tornerebbero alti 150px). */
+iframe {
+    max-width: 100%;
 }
 
 img {
