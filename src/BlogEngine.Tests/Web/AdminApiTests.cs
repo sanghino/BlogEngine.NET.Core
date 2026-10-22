@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using BlogEngine.Web.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace BlogEngine.Tests.Web;
 
@@ -333,6 +334,37 @@ public sealed partial class AdminApiTests
         using var luigi = _factory.CreateBrowser(followRedirects: false);
         var login = await luigi.PostFormAsync("/secondo/account/login", new() { ["UserName"] = "luigi", ["Password"] = "Password-Luigi-1" });
         Assert.AreEqual(HttpStatusCode.Redirect, login.StatusCode, "L'amministratore del nuovo blog può accedere al suo blog.");
+    }
+
+    /// <summary>
+    /// Creare blog figli è riservato agli amministratori, che possono concederlo ad altri ruoli;
+    /// modificare ed eliminare i blog resta comunque solo agli amministratori.
+    /// </summary>
+    [TestMethod]
+    public async Task Blogs_CreationRequiresTheRightGrantedByAdministrators()
+    {
+        await _factory.RunAsSystemAsync(services =>
+            services.GetRequiredService<BlogEngine.Core.Services.IUserService>().CreateUserAsync("redattore", "redattore@example.com", "Password-Redattore-1", ["Editors"]));
+        using var editor = _factory.CreateBrowser();
+        await editor.PostFormAsync("/account/login", new() { ["UserName"] = "redattore", ["Password"] = "Password-Redattore-1" });
+        editor.DefaultRequestHeaders.Add(BlogContextMiddleware.BlogInstanceHeader, Guid.Empty.ToString());
+        var newBlog = """{ "Name": "redazione", "UserName": "redattore", "Email": "redattore@example.com", "Password": "Password-Redattore-1", "ConfirmPassword": "Password-Redattore-1" }""";
+
+        Assert.AreEqual(HttpStatusCode.Unauthorized, (await editor.PostAsync("/api/blogs", Json(newBlog))).StatusCode, "Per default i redattori non creano blog.");
+
+        // L'amministratore concede il permesso al ruolo dei redattori dalla pagina dei ruoli.
+        var rightsJson = await _admin.GetStringAsync("/api/roles/getrights/Editors");
+        var groups = JsonNode.Parse(rightsJson)!.AsArray();
+        var permission = groups.SelectMany(g => g!["Permissions"]!.AsArray()).Single(p => p!["Id"]!.GetValue<string>() == "CreateNewBlogs")!;
+        Assert.IsFalse(permission["IsChecked"]!.GetValue<bool>());
+        permission["IsChecked"] = true;
+        Assert.AreEqual(HttpStatusCode.OK, (await _admin.PutAsync("/api/roles/saverights/Editors", Json(groups.ToJsonString()))).StatusCode);
+
+        var created = await editor.PostAsync("/api/blogs", Json(newBlog));
+        Assert.AreEqual(HttpStatusCode.Created, created.StatusCode, await created.Content.ReadAsStringAsync());
+
+        var id = JsonNode.Parse(await created.Content.ReadAsStringAsync())!["Id"]!.GetValue<string>();
+        Assert.AreEqual(HttpStatusCode.Unauthorized, (await editor.DeleteAsync($"/api/blogs/{id}")).StatusCode, "Eliminare i blog resta riservato agli amministratori.");
     }
 
     [TestMethod]

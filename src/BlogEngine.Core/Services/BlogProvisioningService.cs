@@ -23,7 +23,6 @@ public sealed partial class BlogProvisioningService(
     IStringListStore lists,
     IBlogContext context,
     IRightsService rightsService,
-    ISettingsService settingsService,
     IBlogClock clock)
 {
     /// <summary>Nomi che coincidono con percorsi del sito e non possono diventare blog.</summary>
@@ -35,14 +34,12 @@ public sealed partial class BlogProvisioningService(
     };
 
     /// <summary>
-    /// Crea il blog. Consentito all'amministratore del blog principale, oppure a chiunque se il blog principale
-    /// permette di creare un blog alla registrazione (CreateBlogOnSelfRegistration).
+    /// Crea un blog figlio. Consentito dal blog principale a chi ha il permesso "Crea nuovi blog":
+    /// gli amministratori e i ruoli a cui l'amministratore lo ha concesso.
     /// </summary>
     public async Task<Blog> CreateBlogAsync(string name, string userName, string email, string password, CancellationToken cancellationToken = default)
     {
-        var allowSelfService = context.Blog.IsPrimary
-            && (await settingsService.GetAsync(cancellationToken: cancellationToken).ConfigureAwait(false)).CreateBlogOnSelfRegistration;
-        if (!context.Blog.IsPrimary || !(rightsService.IsAdministrator || allowSelfService))
+        if (!context.Blog.IsPrimary || !await rightsService.IsAuthorizedAsync(Rights.CreateNewBlogs, cancellationToken).ConfigureAwait(false))
         {
             throw new UnauthorizedAccessException();
         }

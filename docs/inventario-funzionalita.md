@@ -47,13 +47,13 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ☑ | Login, logout, cambio password, recupero password | `Account/*.aspx`, `Logout.cshtml` | Razor Pages + autenticazione via cookie |
 | ☑ | Registrazione autonoma con ruolo iniziale | `register.aspx`, `EnableSelfRegistration` | Razor Pages |
-| ☐ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Razor Pages |
+| ✖ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Sostituita dal permesso "CreateNewBlogs": creare blog figli spetta agli amministratori, che possono concederlo ad altri ruoli (Utenti → Ruoli); modifica ed eliminazione restano agli amministratori |
 | ☑ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
 | ☑ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
 | ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
 | ☑ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | `WwwRedirectMiddleware` (redirect permanente) |
 | ☑ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | `MetaWeblogController` |
-| ☐ | Persistenza chiavi di cifratura su hosting condiviso | (nuovo) | ☑ `App_Data/keys` (Fase 1) |
+| ☑ | Persistenza chiavi di cifratura su hosting condiviso | (nuovo) | `App_Data/keys` (Fase 1) |
 
 ## 4. Multi-blog
 

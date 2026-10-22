@@ -7,7 +7,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace BlogEngine.Web.Api;
 
-/// <summary>Gestione dei blog del multi-blog: solo per l'amministratore del blog principale.</summary>
+/// <summary>
+/// Blog del multi-blog, dal blog principale. Elenco e creazione: a chi ha il permesso "Crea nuovi blog";
+/// modifica ed eliminazione: solo agli amministratori.
+/// </summary>
 [Route("api/blogs")]
 public sealed class BlogsController(
     IBlogService blogs,
@@ -19,7 +22,7 @@ public sealed class BlogsController(
     [HttpGet("")]
     public async Task<IEnumerable<BlogDto>> Get(int take = 10, int skip = 0, string filter = "", string order = "Name")
     {
-        DemandPrimaryAdministrator();
+        await DemandBlogCreatorAsync();
         var items = (await blogs.GetBlogsAsync()).Select(ToDto).ToList();
         return ApiQuery.Apply(items, filter, string.IsNullOrEmpty(order) ? "Name" : order, take, skip);
     }
@@ -27,7 +30,7 @@ public sealed class BlogsController(
     [HttpGet("{id:guid}")]
     public async Task<IActionResult> Get(Guid id)
     {
-        DemandPrimaryAdministrator();
+        await DemandBlogCreatorAsync();
         return await blogs.GetByIdAsync(id) is { } blog ? Ok(ToDto(blog)) : NotFound();
     }
 
@@ -102,6 +105,15 @@ public sealed class BlogsController(
         }
 
         return Ok();
+    }
+
+    /// <summary>Dal blog principale, con il permesso di creare blog (gli amministratori lo hanno sempre).</summary>
+    private async Task DemandBlogCreatorAsync()
+    {
+        if (!context.Blog.IsPrimary || !await rights.IsAuthorizedAsync(BlogEngine.Security.Rights.CreateNewBlogs))
+        {
+            throw new UnauthorizedAccessException();
+        }
     }
 
     private void DemandPrimaryAdministrator()

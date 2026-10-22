@@ -207,8 +207,6 @@ public sealed class BlogSettings
 
     public string SelfRegistrationInitialRole { get; set; } = "Editors";
 
-    public bool CreateBlogOnSelfRegistration { get; set; }
-
     public bool EnablePasswordReset { get; set; } = true;
 
     // ---- File remoti ----

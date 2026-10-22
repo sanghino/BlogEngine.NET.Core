@@ -55,7 +55,6 @@ public sealed class SettingsDto
 
     public bool EnableSelfRegistration { get; set; }
 
-    public bool CreateBlogOnSelfRegistration { get; set; }
 
     public bool AllowServerToDownloadRemoteFiles { get; set; }
 

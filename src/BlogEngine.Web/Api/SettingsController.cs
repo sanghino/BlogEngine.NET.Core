@@ -115,7 +115,6 @@ public sealed class SettingsController(
         RequireSslForMetaWeblogApi = s.RequireSslMetaWeblogApi,
         EnablePasswordReset = s.EnablePasswordReset,
         EnableSelfRegistration = s.EnableSelfRegistration,
-        CreateBlogOnSelfRegistration = s.CreateBlogOnSelfRegistration,
         AllowServerToDownloadRemoteFiles = s.AllowServerToDownloadRemoteFiles,
         RemoteFileDownloadTimeout = s.RemoteFileDownloadTimeout,
         RemoteMaxFileSize = s.RemoteMaxFileSize,
@@ -199,7 +198,6 @@ public sealed class SettingsController(
         s.RequireSslMetaWeblogApi = n.RequireSslForMetaWeblogApi;
         s.EnablePasswordReset = n.EnablePasswordReset;
         s.EnableSelfRegistration = n.EnableSelfRegistration;
-        s.CreateBlogOnSelfRegistration = n.CreateBlogOnSelfRegistration;
         s.AllowServerToDownloadRemoteFiles = n.AllowServerToDownloadRemoteFiles;
         s.RemoteFileDownloadTimeout = n.RemoteFileDownloadTimeout;
         s.RemoteMaxFileSize = n.RemoteMaxFileSize;

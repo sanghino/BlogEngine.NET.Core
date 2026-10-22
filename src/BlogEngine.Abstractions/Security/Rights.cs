@@ -53,6 +53,12 @@ public enum Rights
     [RightDetails(RightCategory.Custom)] ManageWidgets,
     [RightDetails(RightCategory.Custom)] ManageThemes,
     [RightDetails(RightCategory.Custom)] ManagePackages,
+
+    /// <summary>
+    /// Creare nuovi blog figli (multi-blog). Per default solo gli amministratori; possono concederlo ad altri
+    /// ruoli dalla pagina dei ruoli. Modificare ed eliminare i blog resta riservato agli amministratori.
+    /// </summary>
+    [RightDetails(RightCategory.Blogs)] CreateNewBlogs,
 }
 
 /// <summary>Raggruppamento dei permessi nell'interfaccia di amministrazione.</summary>
@@ -66,6 +72,7 @@ public enum RightCategory
     Users,
     Roles,
     Custom,
+    Blogs,
 }
 
 [AttributeUsage(AttributeTargets.Field, AllowMultiple = false, Inherited = false)]
