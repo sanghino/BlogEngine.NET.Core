@@ -85,4 +85,58 @@ public sealed class WidgetAdminTests
         using var anonymous = factory.CreateBrowser(followRedirects: false);
         Assert.AreEqual(HttpStatusCode.Redirect, (await anonymous.GetAsync(url)).StatusCode);
     }
+
+    [TestMethod]
+    public async Task Advertisement_InSidebarAndBetweenPostsOfTerminalTheme()
+    {
+        using var factory = new BlogWebFactory();
+        using var admin = await factory.InstallAsync();
+        admin.DefaultRequestHeaders.Add(BlogContextMiddleware.BlogInstanceHeader, Guid.Empty.ToString());
+        await factory.RunAsSystemAsync(async services =>
+        {
+            var settingsService = services.GetRequiredService<BlogEngine.Services.ISettingsService>();
+            var settings = await settingsService.GetAsync();
+            settings.Theme = "Terminal";
+            await settingsService.SaveAsync(settings);
+        });
+
+        for (var i = 1; i <= 3; i++)
+        {
+            var post = await admin.PostAsync("/api/posts", new StringContent(
+                $$"""{ "Title": "Post numero {{i}}", "Content": "<p>Testo {{i}}</p>", "IsPublished": true, "DateCreated": "2026-01-0{{i}} 10:00" }""",
+                Encoding.UTF8, "application/json"));
+            Assert.AreEqual(HttpStatusCode.Created, post.StatusCode);
+        }
+
+        var zones = JsonNode.Parse(await admin.GetStringAsync("/api/widgets"))!["WidgetZones"]!.AsArray()
+            .Select(z => z!["Id"]!.GetValue<string>()).ToList();
+        CollectionAssert.AreEquivalent(new[] { "sidebar", "between-posts" }, zones);
+
+        var body = """
+            [{"Id":"sidebar","Widgets":[{"Id":"1","Name":"Advertisement","Title":"Pubblicità"}]},
+             {"Id":"between-posts","Widgets":[{"Id":"2","Name":"Advertisement","Title":"Pubblicità"}]}]
+            """;
+        Assert.AreEqual(HttpStatusCode.OK, (await admin.PutAsync("/api/widgets/update/item", new StringContent(body, Encoding.UTF8, "application/json"))).StatusCode);
+        var saved = JsonNode.Parse(await admin.GetStringAsync("/api/widgets"))!["WidgetZones"]!.AsArray();
+        string IdOf(string zone) => saved.Single(z => z!["Id"]!.GetValue<string>() == zone)!["Widgets"]![0]!["Id"]!.GetValue<string>();
+
+        var feedUrl = $"/Custom/Widgets/Advertisement/edit.cshtml?id={IdOf("between-posts")}&zone=between-posts";
+        StringAssert.Contains(await admin.GetStringAsync(feedUrl), "name=\"code\"");
+        await admin.PostFormAsync(feedUrl, new() { ["code"] = "<script>window.adFeed = 1;</script><div id=\"ad-feed\">AD</div>", ["show_label"] = "on" });
+        await admin.PostFormAsync($"/Custom/Widgets/Advertisement/edit.cshtml?id={IdOf("sidebar")}&zone=sidebar",
+            new() { ["code"] = "<div id=\"ad-side\">AD</div>", ["show_label"] = "on", ["hide_for_users"] = "on" });
+
+        using var visitor = factory.CreateBrowser();
+        var home = await visitor.GetStringAsync("/");
+        StringAssert.Contains(home, "<script>window.adFeed = 1;</script>", "Il codice dell'annuncio arriva intatto, script compresi.");
+        StringAssert.Contains(home, "id=\"ad-side\"");
+        var ad = home.IndexOf("id=\"ad-feed\"", StringComparison.Ordinal);
+        // Ordine dal più recente: benvenuto (oggi), 3, 2, 1. L'annuncio sta tra il terzo e il quarto.
+        Assert.IsTrue(ad > home.IndexOf("Post numero 2", StringComparison.Ordinal), "L'annuncio segue il terzo post.");
+        Assert.IsTrue(ad < home.IndexOf("Post numero 1", StringComparison.Ordinal), "...e precede il quarto.");
+
+        var asAdmin = await admin.GetStringAsync("/");
+        StringAssert.Contains(asAdmin, "id=\"ad-feed\"");
+        Assert.IsFalse(asAdmin.Contains("id=\"ad-side\""), "Annuncio nascosto agli utenti collegati.");
+    }
 }

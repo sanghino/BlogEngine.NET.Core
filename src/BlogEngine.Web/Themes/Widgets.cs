@@ -297,7 +297,16 @@ public sealed partial class WidgetService(
             try
             {
                 templateContext.SetValue("widget", model);
-                await engine.RenderFileAsync(path, writer, encoder, templateContext);
+
+                // Un widget che non ha nulla da mostrare (annuncio senza codice, menu di amministrazione per
+                // i visitatori) non lascia righe vuote: così una zona senza contenuti resta davvero vuota.
+                using var buffer = new StringWriter();
+                await engine.RenderFileAsync(path, buffer, encoder, templateContext);
+                var html = buffer.ToString();
+                if (!string.IsNullOrWhiteSpace(html))
+                {
+                    await writer.WriteAsync(html);
+                }
             }
             finally
             {

@@ -1,0 +1,11 @@
+{
+  "title": "Advertisement",
+  "description": "Spazio pubblicitario: incolla il codice dell'annuncio (AdSense, banner HTML...) così com'è",
+  "version": "1.0.0",
+  "authors": "Francesco Mori",
+  "settings": [
+    { "key": "code", "type": "code", "label": "adCode" },
+    { "key": "show_label", "type": "checkbox", "label": "adShowLabel", "default": "true" },
+    { "key": "hide_for_users", "type": "checkbox", "label": "adHideForUsers", "default": "false" }
+  ]
+}

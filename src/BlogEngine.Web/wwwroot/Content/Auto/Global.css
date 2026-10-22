@@ -18,6 +18,11 @@
 .small-star { width: 50px; height: 10px; }
 .small-star, .small-star a:hover, .small-star a:active, .small-star a:focus, .small-star .current-rating { background-image: url(../../Content/images/blog/star_small.gif); line-height: 10px; height: 10px; }
 
+/*[ Advertisement widget ]*/
+.widget.advertisement .ad-label { display: block; font-size: 11px; letter-spacing: .05em; text-transform: uppercase; opacity: .6; margin-bottom: 4px; }
+.widget.advertisement .ad-content { overflow: hidden; text-align: center; }
+.widget.advertisement .ad-content img { max-width: 100%; height: auto; }
+
 /*[ Syntax highlighter ]*/
 .code { font-size: 12px; color: #000; font-family: Consolas, "Courier New", Courier, Monospace; background-color: #F1F1F1; line-height: normal; }
 .code p		{ padding: 5px; }

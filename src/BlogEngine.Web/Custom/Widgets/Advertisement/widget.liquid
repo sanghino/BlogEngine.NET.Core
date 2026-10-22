@@ -1,0 +1,13 @@
+{%- comment -%}
+  Spazio pubblicitario: il codice dell'annuncio è scritto così com'è (può contenere script).
+  Si può nascondere agli utenti collegati; senza codice il widget non mostra nulla.
+{%- endcomment -%}
+{%- assign ad_code = widget.settings.code | strip -%}
+{%- assign hidden = false -%}
+{%- if widget.settings.hide_for_users == 'true' and user.is_authenticated %}{% assign hidden = true %}{% endif -%}
+{%- if ad_code != '' and hidden == false %}
+<div class="Widget widget advertisement">
+    {%- if widget.settings.show_label != 'false' %}<span class="ad-label">{{ 'advertisement' | t }}</span>{% endif %}
+    <div class="ad-content">{{ widget.settings.code | raw }}</div>
+</div>
+{%- endif %}

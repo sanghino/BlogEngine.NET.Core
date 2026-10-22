@@ -68,6 +68,14 @@
                         tinymce.init({ selector: '#@setting.Key', menubar: false, height: 260, plugins: 'link image code lists', toolbar: 'bold italic | bullist numlist | link image | code', relative_urls: false });
                     </script>
                     break;
+                case "code":
+                    @* Codice incollato così com'è (script pubblicitari, embed): niente editor, che toglierebbe gli script. *@
+                    <div class="form-group">
+                        <label for="@setting.Key">@L[setting.Label]</label>
+                        <textarea class="form-control" id="@setting.Key" name="@setting.Key" rows="12" spellcheck="false"
+                                  style="font-family: Consolas, monospace; font-size: 12px">@value</textarea>
+                    </div>
+                    break;
                 case "links":
                     <table class="table table-condensed">
                         <tr><th>@L["title"]</th><th>@L["url"]</th><th></th></tr>

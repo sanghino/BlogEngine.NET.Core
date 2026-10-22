@@ -2859,4 +2859,16 @@
   <data name="validationRolesUnknown" xml:space="preserve">
     <value>Ruoli inesistenti: {0}.</value>
   </data>
+  <data name="advertisement" xml:space="preserve">
+    <value>Pubblicità</value>
+  </data>
+  <data name="adCode" xml:space="preserve">
+    <value>Codice dell'annuncio (HTML o script, incollato così com'è)</value>
+  </data>
+  <data name="adShowLabel" xml:space="preserve">
+    <value>Mostra la scritta "Pubblicità"</value>
+  </data>
+  <data name="adHideForUsers" xml:space="preserve">
+    <value>Nascondi agli utenti collegati</value>
+  </data>
 </root>

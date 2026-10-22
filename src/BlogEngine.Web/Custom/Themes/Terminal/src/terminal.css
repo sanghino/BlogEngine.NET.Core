@@ -1021,6 +1021,48 @@ label {
     padding: 0 !important;
 }
 
+/* ---------- Pubblicità ---------- */
+/* Zona tra i post: nascosta se vuota, altrimenti un riquadro tratteggiato distinto dai post. */
+.between-posts .widgetzone:empty,
+.between-posts:has(.widgetzone:empty) {
+    display: none;
+}
+
+.between-posts {
+    margin-bottom: 2rem;
+}
+
+.between-posts .widget {
+    border-style: dashed;
+    background: transparent;
+}
+
+.widget.advertisement .ad-label {
+    color: var(--fg-faint);
+    opacity: 1;
+    text-transform: lowercase;
+    font-size: .78rem;
+}
+
+.widget.advertisement .ad-label::before {
+    content: "/* ";
+}
+
+.widget.advertisement .ad-label::after {
+    content: " */";
+}
+
+/* Gli annunci stanno sopra le righe "scanline", così si vedono puliti. */
+.widget.advertisement .ad-content {
+    position: relative;
+    z-index: 101;
+    text-shadow: none;
+}
+
+.widget.advertisement .ad-content img {
+    border: 0;
+}
+
 /* ---------- Piè di pagina ---------- */
 .term-footer {
     margin-top: 3rem;

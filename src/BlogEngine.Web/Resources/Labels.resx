@@ -2933,4 +2933,16 @@
   <data name="validationRolesUnknown" xml:space="preserve">
     <value>Unknown roles: {0}.</value>
   </data>
+  <data name="advertisement" xml:space="preserve">
+    <value>Advertisement</value>
+  </data>
+  <data name="adCode" xml:space="preserve">
+    <value>Ad code (HTML or script, pasted as is)</value>
+  </data>
+  <data name="adShowLabel" xml:space="preserve">
+    <value>Show the "Advertisement" label</value>
+  </data>
+  <data name="adHideForUsers" xml:space="preserve">
+    <value>Hide for logged-in users</value>
+  </data>
 </root>

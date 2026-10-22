@@ -31,7 +31,8 @@ Le impostazioni descritte nel manifest generano da sole la pagina di modifica de
 }
 ```
 
-Tipi disponibili: `text`, `number`, `checkbox`, `select`, `html` (con editor), `category`, `author`,
+Tipi disponibili: `text`, `number`, `checkbox`, `select`, `html` (con editor), `code` (testo incollato così com'è,
+senza editor: script, codici pubblicitari, embed), `category`, `author`,
 `links` (elenco di link), `newsletter` (iscritti), `blogroll` (rimanda alla pagina del blogroll).
 `label` può essere una chiave delle traduzioni (es. `numberOfPosts`) o un testo libero.
 
