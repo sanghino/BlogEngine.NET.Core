@@ -2,7 +2,13 @@
 
   <!-- Impostazioni comuni a tutti i progetti della soluzione. -->
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
+    <!--
+      Versione di .NET: net8.0 (predefinita) oppure net10.0, scelta con
+      dotnet build -p:BlogEngineTargetFramework=net10.0. Le versioni dei pacchetti
+      corrispondenti sono in Directory.Packages.props.
+    -->
+    <BlogEngineTargetFramework Condition="'$(BlogEngineTargetFramework)' == ''">net8.0</BlogEngineTargetFramework>
+    <TargetFramework>$(BlogEngineTargetFramework)</TargetFramework>
     <LangVersion>latest</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>

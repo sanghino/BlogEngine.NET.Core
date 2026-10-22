@@ -10,7 +10,7 @@ namespace BlogEngine.Tests.Web;
 [TestClass]
 public sealed partial class AdminAssetsTests
 {
-    private static readonly string WebRoot = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "BlogEngine.Web", "wwwroot"));
+    private static readonly string WebRoot = SourcePaths.WebRoot;
 
     [TestMethod]
     public async Task AdminShellAndEditor_ReferenceOnlyExistingFiles()

@@ -183,6 +183,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
 | ☑ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | `/admin/diagnostics` (link dalla pagina "Informazioni") |
 | ☑ | Percorso dati configurabile, cartelle create all'avvio | (nuovo) | `BlogEnginePaths` (Fase 1) |
+| ☑ | Pacchetto e procedura di pubblicazione su Aruba | (nuovo) | `tools/publish-aruba.ps1` (.NET 10 self-contained, out-of-process), `docs/deploy-aruba.md` con backup e rollback, `docs/checklist-collaudo.md` |
+| ☑ | Pronto per .NET 10 | (nuovo) | `-p:BlogEngineTargetFramework=net10.0`: stessa soluzione e stessi test (185/185) su .NET 8 e .NET 10 |
 | ✖ | Provider SQL Server, MySQL, SQL CE | `setup/SQLServer`, `MySQL`, `SQL_CE`, `DbMembershipProvider` | Non richiesti |
 | ✖ | File system su database o UNC | `DbFileSystemProvider`, `UNCFileSystemProvider`, LINQ to SQL | Non richiesti |
 | ✖ | Script di upgrade e supporto Mono | `setup/upgrade`, `setup/Mono` | Installazione nuova; .NET 8 è già multipiattaforma |

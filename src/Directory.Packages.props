@@ -6,18 +6,30 @@
   <ItemGroup>
     <PackageVersion Include="Fluid.Core" Version="2.25.0" />
     <PackageVersion Include="MailKit" Version="4.18.1" />
-    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.32" />
     <PackageVersion Include="Microsoft.CodeAnalysis.CSharp" Version="4.11.0" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
+    <PackageVersion Include="MSTest" Version="3.6.4" />
+    <!-- Versioni corrette di dipendenze indirette con vulnerabilità note (MailKit, EF Core SQLite). -->
+    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
+    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.14" />
+  </ItemGroup>
+  <!-- Pacchetti Microsoft legati alla versione di .NET (vedi BlogEngineTargetFramework in Directory.Build.props). -->
+  <ItemGroup Condition="'$(BlogEngineTargetFramework)' != 'net10.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="8.0.32" />
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="8.0.32" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.32" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.32" />
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
     <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
-    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="17.12.0" />
-    <PackageVersion Include="MSTest" Version="3.6.4" />
     <PackageVersion Include="System.ServiceModel.Syndication" Version="8.0.0" />
-    <!-- Versioni corrette di dipendenze indirette con vulnerabilità note (MailKit, EF Core SQLite). -->
-    <PackageVersion Include="System.Security.Cryptography.Pkcs" Version="10.0.13" />
-    <PackageVersion Include="SQLitePCLRaw.bundle_e_sqlite3" Version="2.1.14" />
+  </ItemGroup>
+  <ItemGroup Condition="'$(BlogEngineTargetFramework)' == 'net10.0'">
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.NewtonsoftJson" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Sqlite" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="10.0.13" />
+    <PackageVersion Include="System.ServiceModel.Syndication" Version="10.0.13" />
   </ItemGroup>
 </Project>

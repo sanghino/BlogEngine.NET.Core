@@ -191,3 +191,6 @@ BlogEngine/BlogEngine.NET/App_Data/datastore/extensions/*.xml
 
 # BlogEngine .NET 8: dati locali di sviluppo
 src/BlogEngine.Web/App_Data/
+
+# Pacchetti per Aruba creati da tools/publish-aruba.ps1
+/artifacts/

@@ -7,8 +7,9 @@
   </ItemGroup>
 
   <PropertyGroup>
-    <!-- Pacchetto "portable": IIS avvia il sito con "dotnet BlogEngine.Web.dll", vale per 32 e 64 bit. -->
-    <UseAppHost>false</UseAppHost>
+    <!-- Pacchetto "portable": IIS avvia il sito con "dotnet BlogEngine.Web.dll", vale per 32 e 64 bit.
+         Il pacchetto self-contained (tools/publish-aruba.ps1) usa invece BlogEngine.Web.exe. -->
+    <UseAppHost Condition="'$(SelfContained)' != 'true'">false</UseAppHost>
     <!-- Solo le traduzioni in inglese e italiano delle librerie (es. i messaggi di Roslyn): pacchetto più leggero. -->
     <SatelliteResourceLanguages>en;it</SatelliteResourceLanguages>
   </PropertyGroup>

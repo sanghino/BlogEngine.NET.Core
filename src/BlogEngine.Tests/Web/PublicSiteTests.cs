@@ -288,7 +288,7 @@ public sealed partial class PublicSiteTests
     {
         using var factory = new BlogWebFactory();
         using var admin = await factory.InstallAsync();
-        var webProject = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "BlogEngine.Web"));
+        var webProject = SourcePaths.WebProject;
 
         var home = await admin.GetStringAsync($"/?theme={theme}");
         var postUrl = PostLinkRegex().Match(home).Groups["url"].Value;
@@ -308,7 +308,7 @@ public sealed partial class PublicSiteTests
     [TestMethod]
     public void ThemeStylesheets_ReferenceExistingFiles()
     {
-        var webProject = Path.GetFullPath(Path.Combine(AppContext.BaseDirectory, "..", "..", "..", "..", "BlogEngine.Web"));
+        var webProject = SourcePaths.WebProject;
         var css = Directory.EnumerateFiles(Path.Combine(webProject, "Custom", "Themes"), "*.css", SearchOption.AllDirectories)
             .Append(Path.Combine(webProject, "wwwroot", "Content", "Auto", "Global.css"));
         foreach (var file in css)
