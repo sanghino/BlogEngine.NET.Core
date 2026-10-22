@@ -100,8 +100,8 @@ public sealed class PostService(
     {
         ArgumentNullException.ThrowIfNull(post);
         BlogValidationException.ThrowIfInvalid(
-            ("Title", string.IsNullOrWhiteSpace(post.Title), "Il titolo è obbligatorio."),
-            ("Content", string.IsNullOrWhiteSpace(post.Content), "Il contenuto è obbligatorio."));
+            ("Title", string.IsNullOrWhiteSpace(post.Title), Messages.TitleRequired),
+            ("Content", string.IsNullOrWhiteSpace(post.Content), Messages.ContentRequired));
 
         if (post.BlogId == Guid.Empty)
         {

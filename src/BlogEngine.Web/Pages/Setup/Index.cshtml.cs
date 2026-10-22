@@ -50,7 +50,7 @@ public sealed class SetupModel(SetupService setup, InstallationState installatio
         {
             foreach (var (field, message) in ex.Errors)
             {
-                ModelState.AddModelError($"Input.{field}", message);
+                ModelState.AddModelError($"Input.{field}", new MessageTranslator(labels).Translate(message));
             }
         }
 

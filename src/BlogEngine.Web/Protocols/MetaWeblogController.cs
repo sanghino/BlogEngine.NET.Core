@@ -75,11 +75,11 @@ public sealed class MetaWeblogController(
         }
         catch (BlogEngine.Core.BlogValidationException ex)
         {
-            return Xml(XmlRpc.Fault(0, string.Join(" ", ex.Errors.Values)));
+            return Xml(XmlRpc.Fault(0, string.Join(" ", HttpContext.RequestServices.GetRequiredService<MessageTranslator>().Translate(ex.Errors).Values)));
         }
         catch (Exception ex) when (ex is InvalidOperationException or ArgumentException or FormatException)
         {
-            return Xml(XmlRpc.Fault(0, ex.Message));
+            return Xml(XmlRpc.Fault(0, HttpContext.RequestServices.GetRequiredService<MessageTranslator>()[ex.Message]));
         }
     }
 

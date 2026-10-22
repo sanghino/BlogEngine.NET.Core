@@ -165,7 +165,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ◐ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | Resx in Core + `IStringLocalizer` |
+| ✔ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | `Resources/Labels.*.resx` + `IStringLocalizer`; anche i messaggi di errore e validazione del Core (chiavi in `Messages`, tradotti da `MessageTranslator`): testi completi in inglese e italiano, per i messaggi nuovi le altre lingue usano il testo inglese |
 | ◐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
 | ☑ | Calendario persiano | `AppCode/PersianCulture.cs` | Con .NET 8 (ICU) la cultura fa-IR usa già il calendario persiano: la classe di correzione non serve più |
 | ◐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |

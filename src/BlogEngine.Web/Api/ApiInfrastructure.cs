@@ -14,6 +14,8 @@ namespace BlogEngine.Web.Api;
 [RequireBlogInstanceHeader]
 public abstract class AdminApiController : ControllerBase
 {
+    /// <summary>Messaggio tradotto nella lingua del blog (chiave di Resources/Labels.*.resx).</summary>
+    protected string T(string key) => HttpContext.RequestServices.GetRequiredService<MessageTranslator>()[key];
 }
 
 /// <summary>Traduce le eccezioni del Core nelle risposte che l'amministrazione AngularJS si aspetta.</summary>
@@ -22,17 +24,22 @@ public sealed class ApiExceptionFilterAttribute : ExceptionFilterAttribute
 {
     public override void OnException(ExceptionContext context)
     {
+        // I messaggi del Core sono chiavi: qui diventano testo nella lingua del blog.
+        var translator = context.HttpContext.RequestServices.GetRequiredService<MessageTranslator>();
         context.Result = context.Exception switch
         {
             UnauthorizedAccessException => new StatusCodeResult(StatusCodes.Status401Unauthorized),
-            BlogValidationException validation => new BadRequestObjectResult(new { Message = validation.Message, validation.Errors }),
+            BlogValidationException validation => Validation(translator.Translate(validation.Errors)),
             KeyNotFoundException => new NotFoundResult(),
-            InvalidOperationException or ArgumentException => new BadRequestObjectResult(new { context.Exception.Message }),
+            InvalidOperationException or ArgumentException => new BadRequestObjectResult(new { Message = translator[context.Exception.Message] }),
             _ => null,
         };
 
         context.ExceptionHandled = context.Result is not null;
     }
+
+    private static BadRequestObjectResult Validation(IReadOnlyDictionary<string, string> errors) =>
+        new(new { Message = string.Join(Environment.NewLine, errors.Values), Errors = errors });
 }
 
 /// <summary>

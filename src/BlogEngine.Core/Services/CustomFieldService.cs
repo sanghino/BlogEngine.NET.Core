@@ -53,8 +53,8 @@ public sealed class CustomFieldService(CustomFieldRepository fields, IBlogContex
         ArgumentNullException.ThrowIfNull(field);
         await DemandAsync(cancellationToken).ConfigureAwait(false);
         BlogValidationException.ThrowIfInvalid(
-            ("CustomType", string.IsNullOrWhiteSpace(field.CustomType), "Il tipo è obbligatorio."),
-            ("Key", string.IsNullOrWhiteSpace(field.Key), "La chiave è obbligatoria."));
+            ("CustomType", string.IsNullOrWhiteSpace(field.CustomType), Messages.TypeRequired),
+            ("Key", string.IsNullOrWhiteSpace(field.Key), Messages.KeyRequired));
 
         if (field.BlogId == Guid.Empty)
         {

@@ -44,9 +44,9 @@ public sealed class CategoryService(
 
         var all = await categories.GetAllAsync(category.BlogId, cancellationToken).ConfigureAwait(false);
         BlogValidationException.ThrowIfInvalid(
-            ("Title", string.IsNullOrWhiteSpace(category.Title), "Il titolo è obbligatorio."),
-            ("Title", all.Any(c => c.Id != category.Id && Slug.AreEquivalent(c.Title, category.Title)), "Esiste già una categoria con questo titolo."),
-            ("Parent", category.Parent == category.Id || CreatesCycle(category, all), "La categoria padre non è valida."));
+            ("Title", string.IsNullOrWhiteSpace(category.Title), Messages.TitleRequired),
+            ("Title", all.Any(c => c.Id != category.Id && Slug.AreEquivalent(c.Title, category.Title)), Messages.CategoryExists),
+            ("Parent", category.Parent == category.Id || CreatesCycle(category, all), Messages.CategoryParentInvalid));
 
         var isNew = all.All(c => c.Id != category.Id);
         var now = clock.UtcNow;

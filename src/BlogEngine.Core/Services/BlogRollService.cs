@@ -18,8 +18,8 @@ public sealed class BlogRollService(EntityRepository<BlogRollItem> items, IBlogC
         ArgumentNullException.ThrowIfNull(item);
         await DemandAsync(cancellationToken).ConfigureAwait(false);
         BlogValidationException.ThrowIfInvalid(
-            ("Title", string.IsNullOrWhiteSpace(item.Title), "Il titolo è obbligatorio."),
-            ("BlogUrl", item.BlogUrl is null, "L'indirizzo del blog è obbligatorio."));
+            ("Title", string.IsNullOrWhiteSpace(item.Title), Messages.TitleRequired),
+            ("BlogUrl", item.BlogUrl is null, Messages.BlogUrlRequired));
 
         if (item.BlogId == Guid.Empty)
         {

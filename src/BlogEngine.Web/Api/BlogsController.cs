@@ -39,7 +39,7 @@ public sealed class BlogsController(
     {
         if (item.Password != item.ConfirmPassword)
         {
-            return BadRequest(new { Message = "Le password non coincidono." });
+            return BadRequest(new { Message = T("passwordsDoNotMatch") });
         }
 
         var blog = await provisioning.CreateBlogAsync(item.Name ?? string.Empty, item.UserName ?? string.Empty, item.Email ?? string.Empty, item.Password ?? string.Empty);

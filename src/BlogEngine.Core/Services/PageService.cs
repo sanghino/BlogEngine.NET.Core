@@ -42,9 +42,9 @@ public sealed class PageService(
     {
         ArgumentNullException.ThrowIfNull(page);
         BlogValidationException.ThrowIfInvalid(
-            ("Title", string.IsNullOrWhiteSpace(page.Title), "Il titolo è obbligatorio."),
-            ("Content", string.IsNullOrWhiteSpace(page.Content), "Il contenuto è obbligatorio."),
-            ("Parent", page.Parent == page.Id, "Una pagina non può essere figlia di se stessa."));
+            ("Title", string.IsNullOrWhiteSpace(page.Title), Messages.TitleRequired),
+            ("Content", string.IsNullOrWhiteSpace(page.Content), Messages.ContentRequired),
+            ("Parent", page.Parent == page.Id, Messages.PageParentSelf));
 
         if (page.BlogId == Guid.Empty)
         {

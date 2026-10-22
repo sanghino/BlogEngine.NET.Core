@@ -11,7 +11,7 @@ namespace BlogEngine.Web.Pages.Admin.Extensions;
 /// Impostazioni di un'estensione (porting di admin/Extensions/Settings.aspx): per ogni gruppo di
 /// impostazioni un modulo (valori singoli) oppure una tabella a cui aggiungere o togliere righe.
 /// </summary>
-public sealed class SettingsModel(ExtensionRegistry registry, IExtensionSettingsService settings) : AdminPageModel(Rights.ManageExtensions)
+public sealed class SettingsModel(ExtensionRegistry registry, IExtensionSettingsService settings, Microsoft.Extensions.Localization.IStringLocalizer<Labels> labels) : AdminPageModel(Rights.ManageExtensions)
 {
     public ExtensionDescriptor Extension { get; private set; } = null!;
 
@@ -57,7 +57,7 @@ public sealed class SettingsModel(ExtensionRegistry registry, IExtensionSettings
         if (definition.Parameters.FirstOrDefault(p => p.KeyField) is { } key
             && current.Rows.Any(r => string.Equals(r.GetValueOrDefault(key.Name), row.GetValueOrDefault(key.Name), StringComparison.OrdinalIgnoreCase)))
         {
-            AddError(group, $"{key.Label}: \"{row.GetValueOrDefault(key.Name)}\" è già presente.");
+            AddError(group, string.Format(CultureInfo.CurrentCulture, labels["validationFieldDuplicate"], key.Label, row.GetValueOrDefault(key.Name)));
         }
 
         if (Errors.ContainsKey(group))
@@ -143,20 +143,20 @@ public sealed class SettingsModel(ExtensionRegistry registry, IExtensionSettings
 
             if (parameter.Required && parameter.Type != ExtensionParameterType.Boolean && value.Length == 0)
             {
-                AddError(group, $"{parameter.Label}: obbligatorio.");
+                AddError(group, string.Format(CultureInfo.CurrentCulture, labels["validationFieldRequired"], parameter.Label));
             }
             else if (value.Length > parameter.MaxLength && parameter.Type is ExtensionParameterType.String)
             {
-                AddError(group, $"{parameter.Label}: massimo {parameter.MaxLength} caratteri.");
+                AddError(group, string.Format(CultureInfo.CurrentCulture, labels["validationFieldMaxLength"], parameter.Label, parameter.MaxLength));
             }
             else if (value.Length > 0 && !IsValidNumber(parameter.Type, value))
             {
-                AddError(group, $"{parameter.Label}: valore numerico non valido.");
+                AddError(group, string.Format(CultureInfo.CurrentCulture, labels["validationFieldNumber"], parameter.Label));
             }
             else if (parameter.Type is ExtensionParameterType.DropDown or ExtensionParameterType.RadioGroup
                      && parameter.Options.Count > 0 && value.Length > 0 && parameter.Options.All(o => Option(o).Value != value))
             {
-                AddError(group, $"{parameter.Label}: valore non ammesso.");
+                AddError(group, string.Format(CultureInfo.CurrentCulture, labels["validationFieldNotAllowed"], parameter.Label));
             }
 
             row[parameter.Name] = value;

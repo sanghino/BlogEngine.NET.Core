@@ -111,13 +111,13 @@ public sealed partial class BlogMLService(
         }
         catch (XmlException ex)
         {
-            throw new InvalidOperationException("Il file non è un documento BlogML valido: " + ex.Message, ex);
+            throw new InvalidOperationException("errorInvalidBlogML", ex);
         }
 
         var blog = document.Root;
         if (blog is null || blog.Name.LocalName != "blog")
         {
-            throw new InvalidOperationException("Il file non è un documento BlogML valido.");
+            throw new InvalidOperationException("errorInvalidBlogML");
         }
 
         var ns = blog.Name.Namespace;

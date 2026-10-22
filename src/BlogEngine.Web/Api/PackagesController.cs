@@ -116,7 +116,7 @@ public sealed class PackagesController(
     [HttpPut("install/{id}")]
     [HttpPut("rate/{id}")]
     public IActionResult GalleryNotAvailable() =>
-        BadRequest(new { Message = "La galleria online non è più disponibile: temi ed estensioni si installano copiando la loro cartella sul server." });
+        BadRequest(new { Message = T("errorGalleryUnavailable") });
 
     [HttpPut("update/{id?}")]
     public async Task<bool> Update([FromBody] Package item)
@@ -144,7 +144,7 @@ public sealed class PackagesController(
 
         if (!extension.IsUploaded)
         {
-            return BadRequest(new { Message = "Le estensioni incluse nel sito non si eliminano: disattivale oppure togli la loro cartella da Custom/Extensions via FTP." });
+            return BadRequest(new { Message = T("errorBundledExtensionDelete") });
         }
 
         Directory.Delete(extension.Folder, recursive: true);

@@ -2595,4 +2595,250 @@
   <data name="youMightFindUseful" xml:space="preserve">
     <value>Potrebbe esserti utile uno dei seguenti link:</value>
   </data>
+  <data name="validationFieldDuplicate" xml:space="preserve">
+    <value>{0}: "{1}" è già presente.</value>
+  </data>
+  <data name="validationFieldRequired" xml:space="preserve">
+    <value>{0}: obbligatorio.</value>
+  </data>
+  <data name="validationFieldMaxLength" xml:space="preserve">
+    <value>{0}: massimo {1} caratteri.</value>
+  </data>
+  <data name="validationFieldNumber" xml:space="preserve">
+    <value>{0}: valore numerico non valido.</value>
+  </data>
+  <data name="validationFieldNotAllowed" xml:space="preserve">
+    <value>{0}: valore non ammesso.</value>
+  </data>
+  <data name="diagSystem" xml:space="preserve">
+    <value>Sistema</value>
+  </data>
+  <data name="diagVersion" xml:space="preserve">
+    <value>Versione</value>
+  </data>
+  <data name="diagOperatingSystem" xml:space="preserve">
+    <value>Sistema operativo</value>
+  </data>
+  <data name="diagProcess" xml:space="preserve">
+    <value>Processo</value>
+  </data>
+  <data name="diagEnvironment" xml:space="preserve">
+    <value>Ambiente</value>
+  </data>
+  <data name="diagStarted" xml:space="preserve">
+    <value>Avviato</value>
+  </data>
+  <data name="diagServerTime" xml:space="preserve">
+    <value>Ora del server (UTC)</value>
+  </data>
+  <data name="diagMemory" xml:space="preserve">
+    <value>Memoria</value>
+  </data>
+  <data name="diagProcessUser" xml:space="preserve">
+    <value>Utente del processo</value>
+  </data>
+  <data name="diagSiteFolder" xml:space="preserve">
+    <value>Cartella del sito</value>
+  </data>
+  <data name="diagDataFolder" xml:space="preserve">
+    <value>Cartella dei dati</value>
+  </data>
+  <data name="diagData" xml:space="preserve">
+    <value>Dati</value>
+  </data>
+  <data name="diagUploadedFiles" xml:space="preserve">
+    <value>File caricati</value>
+  </data>
+  <data name="diagKeys" xml:space="preserve">
+    <value>Chiavi</value>
+  </data>
+  <data name="diagUploadedThemes" xml:space="preserve">
+    <value>Temi caricati</value>
+  </data>
+  <data name="diagUploadedExtensions" xml:space="preserve">
+    <value>Estensioni caricate</value>
+  </data>
+  <data name="diagUploadedWidgets" xml:space="preserve">
+    <value>Widget caricati</value>
+  </data>
+  <data name="diagWritable" xml:space="preserve">
+    <value>Scrittura: {0}</value>
+  </data>
+  <data name="diagFolders" xml:space="preserve">
+    <value>Cartelle e permessi</value>
+  </data>
+  <data name="diagDataProvider" xml:space="preserve">
+    <value>Provider dei dati</value>
+  </data>
+  <data name="diagActiveTheme" xml:space="preserve">
+    <value>Tema attivo</value>
+  </data>
+  <data name="diagThemeMissing" xml:space="preserve">
+    <value>{0} (non trovato, si usa quello di riserva)</value>
+  </data>
+  <data name="diagLanguage" xml:space="preserve">
+    <value>Lingua</value>
+  </data>
+  <data name="diagAutomatic" xml:space="preserve">
+    <value>automatica</value>
+  </data>
+  <data name="diagTimeZone" xml:space="preserve">
+    <value>Fuso orario</value>
+  </data>
+  <data name="diagMailServer" xml:space="preserve">
+    <value>Server di posta</value>
+  </data>
+  <data name="diagNotConfigured" xml:space="preserve">
+    <value>non configurato</value>
+  </data>
+  <data name="diagEncryptionKeys" xml:space="preserve">
+    <value>Chiavi di cifratura</value>
+  </data>
+  <data name="diagLogFile" xml:space="preserve">
+    <value>File di log</value>
+  </data>
+  <data name="diagNotCreated" xml:space="preserve">
+    <value>non ancora creato</value>
+  </data>
+  <data name="diagExtensions" xml:space="preserve">
+    <value>Estensioni</value>
+  </data>
+  <data name="diagEnabled" xml:space="preserve">
+    <value>attiva</value>
+  </data>
+  <data name="diagTimeZoneUnknown" xml:space="preserve">
+    <value>{0} (non riconosciuto dal server)</value>
+  </data>
+  <data name="diagDisabled" xml:space="preserve">
+    <value>disattivata</value>
+  </data>
+  <data name="diagTitle" xml:space="preserve">
+    <value>Diagnostica</value>
+  </data>
+  <data name="diagLink" xml:space="preserve">
+    <value>Diagnostica (versioni, percorsi, permessi delle cartelle)</value>
+  </data>
+  <data name="validationTitleRequired" xml:space="preserve">
+    <value>Il titolo è obbligatorio.</value>
+  </data>
+  <data name="validationContentRequired" xml:space="preserve">
+    <value>Il contenuto è obbligatorio.</value>
+  </data>
+  <data name="validationPageParentSelf" xml:space="preserve">
+    <value>Una pagina non può essere figlia di se stessa.</value>
+  </data>
+  <data name="validationCategoryExists" xml:space="preserve">
+    <value>Esiste già una categoria con questo titolo.</value>
+  </data>
+  <data name="validationCategoryParentInvalid" xml:space="preserve">
+    <value>La categoria padre non è valida.</value>
+  </data>
+  <data name="validationBlogUrlRequired" xml:space="preserve">
+    <value>L'indirizzo del blog è obbligatorio.</value>
+  </data>
+  <data name="validationBlogNameRequired" xml:space="preserve">
+    <value>Il nome del blog è obbligatorio.</value>
+  </data>
+  <data name="validationBlogNameInvalid" xml:space="preserve">
+    <value>Il nome del blog può contenere solo lettere, numeri, '-' e '_'.</value>
+  </data>
+  <data name="validationBlogNameReserved" xml:space="preserve">
+    <value>Questo nome è riservato: scegline un altro.</value>
+  </data>
+  <data name="validationBlogExists" xml:space="preserve">
+    <value>Esiste già un blog con questo nome.</value>
+  </data>
+  <data name="validationUserNameRequired" xml:space="preserve">
+    <value>Il nome utente è obbligatorio.</value>
+  </data>
+  <data name="validationUserNameSimpleChars" xml:space="preserve">
+    <value>Il nome utente può contenere solo lettere, numeri, '-' e '_'.</value>
+  </data>
+  <data name="validationUserNameInvalid" xml:space="preserve">
+    <value>Il nome utente non può contenere spazi o i caratteri / \ &lt; &gt; ".</value>
+  </data>
+  <data name="validationUserNameInUse" xml:space="preserve">
+    <value>Il nome utente è già in uso.</value>
+  </data>
+  <data name="validationEmailInvalid" xml:space="preserve">
+    <value>L'indirizzo email non è valido.</value>
+  </data>
+  <data name="validationEmailInUse" xml:space="preserve">
+    <value>L'indirizzo email è già in uso.</value>
+  </data>
+  <data name="validationPasswordTooShort" xml:space="preserve">
+    <value>La password deve avere almeno {0} caratteri.</value>
+  </data>
+  <data name="validationTypeRequired" xml:space="preserve">
+    <value>Il tipo è obbligatorio.</value>
+  </data>
+  <data name="validationKeyRequired" xml:space="preserve">
+    <value>La chiave è obbligatoria.</value>
+  </data>
+  <data name="validationRoleNameRequired" xml:space="preserve">
+    <value>Il nome del ruolo è obbligatorio.</value>
+  </data>
+  <data name="validationRoleExists" xml:space="preserve">
+    <value>Esiste già un ruolo con questo nome.</value>
+  </data>
+  <data name="errorCommentsClosed" xml:space="preserve">
+    <value>I commenti di questo post sono chiusi.</value>
+  </data>
+  <data name="errorPrimaryBlogDelete" xml:space="preserve">
+    <value>Il blog principale non può essere eliminato.</value>
+  </data>
+  <data name="errorAdministratorRightsReadOnly" xml:space="preserve">
+    <value>I permessi degli amministratori non sono modificabili.</value>
+  </data>
+  <data name="errorLastAdministrator" xml:space="preserve">
+    <value>Non è possibile eliminare l'ultimo amministratore.</value>
+  </data>
+  <data name="errorSystemRolesDelete" xml:space="preserve">
+    <value>I ruoli di sistema non possono essere eliminati.</value>
+  </data>
+  <data name="errorBlogNeedsAdministrator" xml:space="preserve">
+    <value>Il blog deve avere almeno un amministratore.</value>
+  </data>
+  <data name="errorInvalidPath" xml:space="preserve">
+    <value>Percorso non valido.</value>
+  </data>
+  <data name="errorRootFolderDelete" xml:space="preserve">
+    <value>La cartella principale non può essere eliminata.</value>
+  </data>
+  <data name="errorProfilePhotoTooLarge" xml:space="preserve">
+    <value>La foto del profilo deve essere un'immagine di al massimo 1 MB.</value>
+  </data>
+  <data name="errorGalleryUnavailable" xml:space="preserve">
+    <value>La galleria online non è più disponibile: temi ed estensioni si installano copiando la loro cartella sul server.</value>
+  </data>
+  <data name="errorBundledExtensionDelete" xml:space="preserve">
+    <value>Le estensioni incluse nel sito non si eliminano: disattivale oppure togli la loro cartella da Custom/Extensions via FTP.</value>
+  </data>
+  <data name="errorPageHasChildren" xml:space="preserve">
+    <value>La pagina non può essere eliminata perché ha delle pagine figlie.</value>
+  </data>
+  <data name="errorInvalidRoleName" xml:space="preserve">
+    <value>Nome del ruolo non valido.</value>
+  </data>
+  <data name="errorInvalidFilter" xml:space="preserve">
+    <value>Filtro non valido.</value>
+  </data>
+  <data name="errorItemExists" xml:space="preserve">
+    <value>L'elemento esiste già.</value>
+  </data>
+  <data name="errorMissingRequiredFields" xml:space="preserve">
+    <value>Mancano alcuni campi obbligatori.</value>
+  </data>
+  <data name="errorCurrentPasswordWrong" xml:space="preserve">
+    <value>La password attuale non è corretta.</value>
+  </data>
+  <data name="errorInvalidBlogML" xml:space="preserve">
+    <value>Il file non è un documento BlogML valido.</value>
+  </data>
+  <data name="errorInvalidRequest" xml:space="preserve">
+    <value>Richiesta non valida.</value>
+  </data>
+  <data name="errorCommentRejected" xml:space="preserve">
+    <value>Il commento è stato rifiutato.</value>
+  </data>
 </root>

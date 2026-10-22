@@ -129,7 +129,7 @@ public sealed partial class ExtensionTests
         var bbcode = "/admin/extensions/settings?ext=BBCode";
         await admin.PostFormAsync(bbcode + "&handler=Add&group=BBCode", new() { ["BBCode.Code"] = "s", ["BBCode.OpenTag"] = "del", ["BBCode.CloseTag"] = "" });
         var duplicate = await admin.PostFormAsync(bbcode + "&handler=Add&group=BBCode", new() { ["BBCode.Code"] = "s", ["BBCode.OpenTag"] = "del" });
-        StringAssert.Contains(await duplicate.Content.ReadAsStringAsync(), "già presente");
+        StringAssert.Contains(await duplicate.Content.ReadAsStringAsync(), "already exists");
 
         await factory.RunAsSystemAsync(async services =>
         {

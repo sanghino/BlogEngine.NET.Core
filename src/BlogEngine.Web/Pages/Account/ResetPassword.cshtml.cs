@@ -60,7 +60,7 @@ public sealed class ResetPasswordModel(
         {
             foreach (var (field, message) in ex.Errors)
             {
-                ModelState.AddModelError(field, message);
+                ModelState.AddModelError(field, new MessageTranslator(labels).Translate(message));
             }
         }
 

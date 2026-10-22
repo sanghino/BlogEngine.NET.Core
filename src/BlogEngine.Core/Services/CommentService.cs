@@ -24,7 +24,7 @@ public sealed class CommentService(
         await DemandAsync(Rights.CreateComments, cancellationToken).ConfigureAwait(false);
         if (!await AreCommentsOpenAsync(post, cancellationToken).ConfigureAwait(false))
         {
-            throw new InvalidOperationException("I commenti di questo post sono chiusi.");
+            throw new InvalidOperationException(Messages.CommentsClosed);
         }
 
         if (comment.Id == Guid.Empty)

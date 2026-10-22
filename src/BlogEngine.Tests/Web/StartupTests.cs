@@ -158,4 +158,27 @@ public sealed class StartupTests
         Assert.IsTrue(Directory.EnumerateFiles(Path.Combine(factory.DataRoot, "keys"), "key-*.xml").Any());
         await Task.CompletedTask;
     }
+
+    [TestMethod]
+    public void Messages_AreTranslatedInEnglishAndItalian()
+    {
+        using var factory = new BlogWebFactory();
+        using var scope = factory.Services.CreateScope();
+        var translator = scope.ServiceProvider.GetRequiredService<MessageTranslator>();
+        var previous = System.Globalization.CultureInfo.CurrentUICulture;
+        try
+        {
+            System.Globalization.CultureInfo.CurrentUICulture = new("en");
+            Assert.AreEqual("The password must be at least 8 characters long.", translator[BlogEngine.Core.Messages.Format(BlogEngine.Core.Messages.PasswordTooShort, 8)]);
+
+            System.Globalization.CultureInfo.CurrentUICulture = new("it");
+            Assert.AreEqual("La password deve avere almeno 8 caratteri.", translator[BlogEngine.Core.Messages.Format(BlogEngine.Core.Messages.PasswordTooShort, 8)]);
+            Assert.AreEqual("Il titolo è obbligatorio.", translator[BlogEngine.Core.Messages.TitleRequired]);
+            Assert.AreEqual("Testo libero", translator["Testo libero"], "Un testo che non è una chiave resta com'è.");
+        }
+        finally
+        {
+            System.Globalization.CultureInfo.CurrentUICulture = previous;
+        }
+    }
 }

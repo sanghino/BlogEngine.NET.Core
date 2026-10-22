@@ -202,7 +202,7 @@ public sealed class RightsService(RightsCache cache, IBlogContext context) : IRi
 
         if (string.Equals(role, SystemRoles.Administrators, StringComparison.OrdinalIgnoreCase))
         {
-            throw new InvalidOperationException("I permessi degli amministratori non sono modificabili.");
+            throw new InvalidOperationException(Messages.AdministratorRightsReadOnly);
         }
 
         var matrix = await cache.GetAsync(context.Blog.Id, cancellationToken).ConfigureAwait(false);

@@ -181,7 +181,7 @@ public sealed class CommentFilterController(ICommentFilterStore store, IRightsSe
             || !Enum.TryParse<CommentFilterOperator>(item.Operation, true, out var operation)
             || string.IsNullOrWhiteSpace(item.Filter))
         {
-            return BadRequest(new { Message = "Filtro non valido." });
+            return BadRequest(new { Message = T("errorInvalidFilter") });
         }
 
         var rules = (await LoadAsync()).ToList();
@@ -189,7 +189,7 @@ public sealed class CommentFilterController(ICommentFilterStore store, IRightsSe
         if (rules.Any(r => r.Action == rule.Action && r.Subject == rule.Subject && r.Operator == rule.Operator
                            && string.Equals(r.Filter, rule.Filter, StringComparison.OrdinalIgnoreCase)))
         {
-            return BadRequest(new { Message = "Item already exists" });
+            return BadRequest(new { Message = T("errorItemExists") });
         }
 
         rules.Add(rule);

@@ -48,16 +48,16 @@ public sealed partial class BlogProvisioningService(
         var user = userName?.Trim() ?? string.Empty;
         var existing = await blogs.GetAllAsync(cancellationToken).ConfigureAwait(false);
         BlogValidationException.ThrowIfInvalid(
-            ("Name", blogName.Length == 0, "Il nome del blog è obbligatorio."),
-            ("Name", blogName.Length > 0 && !NameRegex().IsMatch(blogName), "Il nome del blog può contenere solo lettere, numeri, '-' e '_'."),
-            ("Name", ReservedNames.Contains(blogName), "Questo nome è riservato: scegline un altro."),
+            ("Name", blogName.Length == 0, Messages.BlogNameRequired),
+            ("Name", blogName.Length > 0 && !NameRegex().IsMatch(blogName), Messages.BlogNameInvalid),
+            ("Name", ReservedNames.Contains(blogName), Messages.BlogNameReserved),
             ("Name", existing.Any(b => string.Equals(b.Name, blogName, StringComparison.OrdinalIgnoreCase)
                                        || string.Equals(BlogResolver.RelativeRoot(b), $"/{blogName}/", StringComparison.OrdinalIgnoreCase)),
-                "Esiste già un blog con questo nome."),
-            ("UserName", user.Length == 0 || !NameRegex().IsMatch(user), "Il nome utente può contenere solo lettere, numeri, '-' e '_'."),
-            ("Email", !MailAddress.TryCreate(email?.Trim() ?? string.Empty, out _), "L'indirizzo email non è valido."),
+                Messages.BlogExists),
+            ("UserName", user.Length == 0 || !NameRegex().IsMatch(user), Messages.UserNameSimpleChars),
+            ("Email", !MailAddress.TryCreate(email?.Trim() ?? string.Empty, out _), Messages.EmailInvalid),
             ("Password", string.IsNullOrEmpty(password) || password.Length < PasswordHasher.MinimumLength,
-                $"La password deve avere almeno {PasswordHasher.MinimumLength} caratteri."));
+                Messages.Format(Messages.PasswordTooShort, PasswordHasher.MinimumLength)));
 
         var now = clock.UtcNow;
         var blog = new Blog

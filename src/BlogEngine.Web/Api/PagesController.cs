@@ -114,7 +114,7 @@ public sealed class PagesController(IPageService pages, IRightsService rights, A
 
         if ((await pages.GetPagesAsync()).Any(p => p.Parent == page.Id))
         {
-            throw new InvalidOperationException("Can not delete; page has child pages");
+            throw new InvalidOperationException("errorPageHasChildren");
         }
 
         await pages.DeleteAsync(page);

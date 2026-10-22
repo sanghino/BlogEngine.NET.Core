@@ -154,7 +154,7 @@ public sealed class PublishingApiTests
 
         var page = await admin.GetStringAsync("/admin/diagnostics");
 
-        StringAssert.Contains(page, "Scrittura: App_Data");
+        StringAssert.Contains(page, "Writable: App_Data");
         StringAssert.Contains(page, ".NET 8");
         Assert.IsFalse(page.Contains("fa-exclamation-triangle text-danger\"></i>\n                            <span>Scrittura"), "Le cartelle dei dati sono scrivibili.");
 

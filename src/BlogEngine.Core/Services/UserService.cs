@@ -219,7 +219,7 @@ public sealed class UserService(
         if (userRoles.Contains(SystemRoles.Administrators, StringComparer.OrdinalIgnoreCase)
             && (await UsersInRoleAsync(SystemRoles.Administrators, cancellationToken).ConfigureAwait(false)) <= 1)
         {
-            throw new InvalidOperationException("Non è possibile eliminare l'ultimo amministratore.");
+            throw new InvalidOperationException(Messages.LastAdministrator);
         }
 
         foreach (var role in (await repository.GetRolesAsync(BlogId, cancellationToken).ConfigureAwait(false)).Where(r => r.Users.Contains(user.UserName, StringComparer.OrdinalIgnoreCase)).ToList())
@@ -253,8 +253,8 @@ public sealed class UserService(
         var name = roleName?.Trim() ?? string.Empty;
         var existing = await GetRolesAsync(cancellationToken).ConfigureAwait(false);
         BlogValidationException.ThrowIfInvalid(
-            ("Name", name.Length == 0, "Il nome del ruolo è obbligatorio."),
-            ("Name", existing.Any(r => UserRepository.SameName(r.Name, name)), "Esiste già un ruolo con questo nome."));
+            ("Name", name.Length == 0, Messages.RoleNameRequired),
+            ("Name", existing.Any(r => UserRepository.SameName(r.Name, name)), Messages.RoleExists));
 
         await repository.SaveRoleAsync(new BlogRole { BlogId = BlogId, Name = name }, cancellationToken).ConfigureAwait(false);
     }
@@ -264,7 +264,7 @@ public sealed class UserService(
         await DemandAsync(Rights.DeleteRoles, cancellationToken).ConfigureAwait(false);
         if (SystemRoles.IsSystemRole(roleName))
         {
-            throw new InvalidOperationException("I ruoli di sistema non possono essere eliminati.");
+            throw new InvalidOperationException(Messages.SystemRolesDelete);
         }
 
         await repository.DeleteRoleAsync(BlogId, roleName, cancellationToken).ConfigureAwait(false);
@@ -289,7 +289,7 @@ public sealed class UserService(
         if (wasAdmin && !wanted.Contains(SystemRoles.Administrators)
             && (await UsersInRoleAsync(SystemRoles.Administrators, cancellationToken).ConfigureAwait(false)) <= 1)
         {
-            throw new InvalidOperationException("Il blog deve avere almeno un amministratore.");
+            throw new InvalidOperationException(Messages.BlogNeedsAdministrator);
         }
 
         foreach (var role in allRoles)
@@ -319,10 +319,10 @@ public sealed class UserService(
         var name = userName?.Trim() ?? string.Empty;
         BlogValidationException.ThrowIfInvalid(
         [
-            ("UserName", name.Length == 0, "Il nome utente è obbligatorio."),
+            ("UserName", name.Length == 0, Messages.UserNameRequired),
             ("UserName", name.Length > 100 || name.Any(c => char.IsWhiteSpace(c) || char.IsControl(c) || c is '/' or '\\' or '<' or '>' or '"'),
-                "Il nome utente non può contenere spazi o i caratteri / \\ < > \"."),
-            ("UserName", name.Length > 0 && await GetUserAsync(name, cancellationToken).ConfigureAwait(false) is not null, "Il nome utente è già in uso."),
+                Messages.UserNameInvalid),
+            ("UserName", name.Length > 0 && await GetUserAsync(name, cancellationToken).ConfigureAwait(false) is not null, Messages.UserNameInUse),
             .. await EmailRulesAsync(email, null, cancellationToken).ConfigureAwait(false),
             PasswordRule(password),
         ]);
@@ -341,8 +341,8 @@ public sealed class UserService(
         var other = address.Length == 0 ? null : await GetUserByEmailAsync(address, cancellationToken).ConfigureAwait(false);
         return
         [
-            ("Email", !MailAddress.TryCreate(address, out _), "L'indirizzo email non è valido."),
-            ("Email", other is not null && (ownerUserName is null || !UserRepository.SameName(other.UserName, ownerUserName)), "L'indirizzo email è già in uso."),
+            ("Email", !MailAddress.TryCreate(address, out _), Messages.EmailInvalid),
+            ("Email", other is not null && (ownerUserName is null || !UserRepository.SameName(other.UserName, ownerUserName)), Messages.EmailInUse),
         ];
     }
 
@@ -350,7 +350,7 @@ public sealed class UserService(
 
     private static (string Field, bool IsInvalid, string Message) PasswordRule(string password) =>
         ("Password", string.IsNullOrEmpty(password) || password.Length < PasswordHasher.MinimumLength,
-            $"La password deve avere almeno {PasswordHasher.MinimumLength} caratteri.");
+            Messages.Format(Messages.PasswordTooShort, PasswordHasher.MinimumLength));
 
     private async Task<int> UsersInRoleAsync(string roleName, CancellationToken cancellationToken) =>
         (await repository.GetRolesAsync(BlogId, cancellationToken).ConfigureAwait(false))

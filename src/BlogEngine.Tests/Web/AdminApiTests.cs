@@ -180,7 +180,7 @@ public sealed partial class AdminApiTests
     {
         var response = await _admin.SendAsync(new HttpRequestMessage(HttpMethod.Post, "/api/posts") { Content = Json("""{ "Title": "", "Content": "" }""") });
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
-        StringAssert.Contains(await response.Content.ReadAsStringAsync(), "Il titolo è obbligatorio");
+        StringAssert.Contains(await response.Content.ReadAsStringAsync(), "The title is required.");
     }
 
     [TestMethod]

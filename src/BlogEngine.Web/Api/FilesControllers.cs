@@ -187,7 +187,7 @@ public sealed class UploadController(
 
         if (!IsImage(fileName) || file.Length > MaxAvatarSize)
         {
-            return BadRequest(new { Message = "La foto del profilo deve essere un'immagine di al massimo 1 MB." });
+            return BadRequest(new { Message = T("errorProfilePhotoTooLarge") });
         }
 
         // Una sola foto per utente: quelle precedenti (anche con un'altra estensione) vengono eliminate.

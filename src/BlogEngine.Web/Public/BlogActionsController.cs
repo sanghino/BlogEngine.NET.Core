@@ -63,7 +63,7 @@ public sealed class BlogActionsController(
     {
         if (!string.IsNullOrEmpty(form.Hp))
         {
-            return BadRequest(new { message = "Invalid request." });
+            return BadRequest(new { message = site.T("errorInvalidRequest") });
         }
 
         var author = form.Author?.Trim() ?? string.Empty;
@@ -126,7 +126,7 @@ public sealed class BlogActionsController(
         if (!await comments.AddAsync(copy, comment))
         {
             // Un'estensione (es. un captcha o un filtro) ha rifiutato il commento.
-            return BadRequest(new { message = "The comment was rejected." });
+            return BadRequest(new { message = site.T("errorCommentRejected") });
         }
 
         var model = await content.CommentAsync(copy, new CommentNode(comment), commentsOpen: true);

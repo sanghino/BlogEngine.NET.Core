@@ -28,8 +28,11 @@ public sealed class DiagnosticsModel(
     IBlogService blogs,
     IPostService posts,
     IRightsService rights,
-    IWebHostEnvironment environment) : AdminPageModel(Rights.AccessAdminSettingsPages)
+    IWebHostEnvironment environment,
+    Microsoft.Extensions.Localization.IStringLocalizer<Labels> labels) : AdminPageModel(Rights.AccessAdminSettingsPages)
 {
+    private string T(string key) => labels[key];
+
     public List<(string Title, List<DiagnosticItem> Items)> Sections { get; } = [];
 
     public async Task<IActionResult> OnGetAsync()
@@ -40,55 +43,55 @@ public sealed class DiagnosticsModel(
         }
 
         var process = Process.GetCurrentProcess();
-        Sections.Add(("Sistema", [
-            new("Versione", AdminViewContext.Version),
+        Sections.Add((T("diagSystem"), [
+            new(T("diagVersion"), AdminViewContext.Version),
             new(".NET", RuntimeInformation.FrameworkDescription),
-            new("Sistema operativo", RuntimeInformation.OSDescription),
-            new("Processo", $"{RuntimeInformation.ProcessArchitecture}, {(Environment.Is64BitProcess ? "64" : "32")} bit, {process.ProcessName}"),
-            new("Ambiente", environment.EnvironmentName),
-            new("Avviato", process.StartTime.ToUniversalTime().ToString("u", CultureInfo.InvariantCulture)),
-            new("Ora del server (UTC)", DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture)),
-            new("Memoria", $"{process.WorkingSet64 / 1024 / 1024} MB"),
-            new("Utente del processo", $@"{Environment.UserDomainName}\{Environment.UserName}"),
+            new(T("diagOperatingSystem"), RuntimeInformation.OSDescription),
+            new(T("diagProcess"), $"{RuntimeInformation.ProcessArchitecture}, {(Environment.Is64BitProcess ? "64" : "32")} bit, {process.ProcessName}"),
+            new(T("diagEnvironment"), environment.EnvironmentName),
+            new(T("diagStarted"), process.StartTime.ToUniversalTime().ToString("u", CultureInfo.InvariantCulture)),
+            new(T("diagServerTime"), DateTime.UtcNow.ToString("u", CultureInfo.InvariantCulture)),
+            new(T("diagMemory"), $"{process.WorkingSet64 / 1024 / 1024} MB"),
+            new(T("diagProcessUser"), $@"{Environment.UserDomainName}\{Environment.UserName}"),
         ]));
 
         var folders = new List<DiagnosticItem>
         {
-            new("Cartella del sito", paths.ContentRoot),
-            new("Cartella dei dati", paths.DataRoot),
+            new(T("diagSiteFolder"), paths.ContentRoot),
+            new(T("diagDataFolder"), paths.DataRoot),
         };
         foreach (var (name, folder) in new[]
         {
-            ("App_Data", paths.DataRoot), ("Dati", paths.Data), ("File caricati", paths.Files), ("Cache", paths.Cache),
-            ("Chiavi", paths.Keys), ("Log", paths.Logs), ("Temi caricati", paths.InstalledThemes),
-            ("Estensioni caricate", paths.InstalledExtensions), ("Widget caricati", paths.InstalledWidgets),
+            ("App_Data", paths.DataRoot), (T("diagData"), paths.Data), (T("diagUploadedFiles"), paths.Files), ("Cache", paths.Cache),
+            (T("diagKeys"), paths.Keys), ("Log", paths.Logs), (T("diagUploadedThemes"), paths.InstalledThemes),
+            (T("diagUploadedExtensions"), paths.InstalledExtensions), (T("diagUploadedWidgets"), paths.InstalledWidgets),
         })
         {
             var (ok, message) = CanWrite(folder);
-            folders.Add(new($"Scrittura: {name}", message, ok));
+            folders.Add(new(string.Format(CultureInfo.CurrentCulture, T("diagWritable"), name), message, ok));
         }
 
-        Sections.Add(("Cartelle e permessi", folders));
+        Sections.Add((T("diagFolders"), folders));
 
         var blogSettings = await settings.GetAsync();
         var theme = themes.Find(blogSettings.Theme);
         var keys = Directory.Exists(paths.Keys) ? Directory.EnumerateFiles(paths.Keys, "*.xml").Count() : 0;
         var log = new FileInfo(Path.Combine(paths.Logs, "blogengine.log"));
         Sections.Add(("Blog", [
-            new("Provider dei dati", installation.DataProvider.ToString()),
+            new(T("diagDataProvider"), installation.DataProvider.ToString()),
             new("Blog", (await blogs.GetBlogsAsync()).Count.ToString(CultureInfo.InvariantCulture)),
             new("Post", (await posts.GetPostsAsync()).Count.ToString(CultureInfo.InvariantCulture)),
-            new("Tema attivo", theme is null ? $"{blogSettings.Theme} (non trovato, si usa quello di riserva)" : $"{theme.Title} ({(theme.IsInstalledByUpload ? "App_Data/themes" : "Custom/Themes")})", theme is not null),
-            new("Lingua", string.IsNullOrEmpty(blogSettings.Language) ? "automatica" : blogSettings.Language),
-            new("Fuso orario", ValidTimeZone(blogSettings.TimeZoneId), TimeZoneExists(blogSettings.TimeZoneId)),
-            new("Server di posta", string.IsNullOrWhiteSpace(blogSettings.SmtpServer) ? "non configurato" : $"{blogSettings.SmtpServer}:{blogSettings.SmtpServerPort}{(blogSettings.EnableSsl ? " (SSL)" : string.Empty)}", !string.IsNullOrWhiteSpace(blogSettings.SmtpServer)),
-            new("Chiavi di cifratura", $"{keys} in App_Data/keys", keys > 0),
-            new("File di log", log.Exists ? $"{log.FullName} ({log.Length / 1024} KB)" : "non ancora creato"),
+            new(T("diagActiveTheme"), theme is null ? string.Format(CultureInfo.CurrentCulture, T("diagThemeMissing"), blogSettings.Theme) : $"{theme.Title} ({(theme.IsInstalledByUpload ? "App_Data/themes" : "Custom/Themes")})", theme is not null),
+            new(T("diagLanguage"), string.IsNullOrEmpty(blogSettings.Language) ? T("diagAutomatic") : blogSettings.Language),
+            new(T("diagTimeZone"), ValidTimeZone(blogSettings.TimeZoneId), TimeZoneExists(blogSettings.TimeZoneId)),
+            new(T("diagMailServer"), string.IsNullOrWhiteSpace(blogSettings.SmtpServer) ? T("diagNotConfigured") : $"{blogSettings.SmtpServer}:{blogSettings.SmtpServerPort}{(blogSettings.EnableSsl ? " (SSL)" : string.Empty)}", !string.IsNullOrWhiteSpace(blogSettings.SmtpServer)),
+            new(T("diagEncryptionKeys"), $"{keys} in App_Data/keys", keys > 0),
+            new(T("diagLogFile"), log.Exists ? $"{log.FullName} ({log.Length / 1024} KB)" : T("diagNotCreated")),
         ]));
 
-        Sections.Add(("Estensioni", extensions.All.Select(e => new DiagnosticItem(
+        Sections.Add((T("diagExtensions"), extensions.All.Select(e => new DiagnosticItem(
             e.Name,
-            e.Error ?? $"{(extensionStates.IsEnabled(e.Name) ? "attiva" : "disattivata")}, {(e.IsUploaded ? "App_Data/extensions" : "Custom/Extensions")}",
+            e.Error ?? $"{(extensionStates.IsEnabled(e.Name) ? T("diagEnabled") : T("diagDisabled"))}, {(e.IsUploaded ? "App_Data/extensions" : "Custom/Extensions")}",
             e.Error is null)).ToList()));
 
         return Page();
@@ -123,6 +126,6 @@ public sealed class DiagnosticsModel(
         }
     }
 
-    private static string ValidTimeZone(string id) =>
-        string.IsNullOrEmpty(id) ? "UTC" : TimeZoneExists(id) ? id : $"{id} (non riconosciuto dal server)";
+    private string ValidTimeZone(string id) =>
+        string.IsNullOrEmpty(id) ? "UTC" : TimeZoneExists(id) ? id : string.Format(CultureInfo.CurrentCulture, T("diagTimeZoneUnknown"), id);
 }

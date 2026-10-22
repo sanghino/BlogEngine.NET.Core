@@ -46,7 +46,7 @@ public sealed class UsersController(
     {
         if (string.IsNullOrWhiteSpace(item.UserName) || string.IsNullOrWhiteSpace(item.Email) || string.IsNullOrEmpty(item.Password))
         {
-            return BadRequest(new { Message = "Error adding new user; Missing required fields" });
+            return BadRequest(new { Message = T("errorMissingRequiredFields") });
         }
 
         var created = await users.CreateUserAsync(item.UserName, item.Email, item.Password, CheckedRoles(item));
@@ -61,7 +61,7 @@ public sealed class UsersController(
     {
         if (string.IsNullOrWhiteSpace(item.UserName) || string.IsNullOrWhiteSpace(item.Email))
         {
-            return BadRequest(new { Message = "Error updating user; Missing required fields" });
+            return BadRequest(new { Message = T("errorMissingRequiredFields") });
         }
 
         if (await users.GetUserAsync(item.UserName) is not { } user)
@@ -78,7 +78,7 @@ public sealed class UsersController(
             {
                 if (!await users.ChangePasswordAsync(item.OldPassword, item.Password))
                 {
-                    return BadRequest(new { Message = "La password attuale non è corretta." });
+                    return BadRequest(new { Message = T("errorCurrentPasswordWrong") });
                 }
             }
             else

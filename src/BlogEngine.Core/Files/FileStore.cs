@@ -30,14 +30,14 @@ public sealed class FileStore(BlogEnginePaths paths)
         var clean = (relativePath ?? string.Empty).Replace('\\', '/').Trim().TrimStart('/');
         if (clean.Contains('\0') || Path.IsPathRooted(clean) || clean.Contains(':'))
         {
-            throw new ArgumentException("Percorso non valido.");
+            throw new ArgumentException(Messages.InvalidPath);
         }
 
         var full = Path.GetFullPath(Path.Combine(root, clean));
         if (!full.Equals(root, PathComparison)
             && !full.StartsWith(root + Path.DirectorySeparatorChar, PathComparison))
         {
-            throw new ArgumentException("Percorso non valido.");
+            throw new ArgumentException(Messages.InvalidPath);
         }
 
         return full;
@@ -74,7 +74,7 @@ public sealed class FileStore(BlogEnginePaths paths)
         var full = Resolve(blogId, relativePath);
         if (full.Equals(Path.GetFullPath(GetBlogRoot(blogId)), PathComparison))
         {
-            throw new ArgumentException("La cartella principale non può essere eliminata.");
+            throw new ArgumentException(Messages.RootFolderDelete);
         }
 
         if (Directory.Exists(full))

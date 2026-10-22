@@ -1,3 +1,4 @@
+using BlogEngine.Web.Hosting;
 using BlogEngine.Core;
 using BlogEngine.Core.Security;
 using BlogEngine.Core.Services;
@@ -48,7 +49,7 @@ public sealed class ChangePasswordModel(IUserService users, IStringLocalizer<Lab
         {
             foreach (var (field, message) in ex.Errors)
             {
-                ModelState.AddModelError(field, message);
+                ModelState.AddModelError(field, new MessageTranslator(labels).Translate(message));
             }
         }
         catch (UnauthorizedAccessException)

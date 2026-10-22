@@ -129,7 +129,7 @@ public sealed partial class RolesController(IUserService users, IRightsService r
     {
         if (string.IsNullOrWhiteSpace(id))
         {
-            return BadRequest(new { Message = "Invalid role name" });
+            return BadRequest(new { Message = T("errorInvalidRoleName") });
         }
 
         var granted = (groups ?? [])

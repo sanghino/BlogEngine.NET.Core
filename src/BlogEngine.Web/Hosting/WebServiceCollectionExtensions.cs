@@ -109,6 +109,7 @@ public static class WebServiceCollectionExtensions
         services.AddScoped<Api.AdminMapper>();
         services.AddScoped<Api.TrashService>();
         services.AddScoped<Admin.AdminViewContext>();
+        services.AddScoped<MessageTranslator>();
         services.AddSingleton<ThemeCatalog>();
 
         // Temi Liquid, widget e pagine pubbliche.

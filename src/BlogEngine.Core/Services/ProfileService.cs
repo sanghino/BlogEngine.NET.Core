@@ -51,7 +51,7 @@ public sealed class ProfileService(ProfileRepository profiles, IBlogContext cont
     public async Task SaveAsync(AuthorProfile profile, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(profile);
-        BlogValidationException.ThrowIfInvalid(("UserName", string.IsNullOrWhiteSpace(profile.UserName), "Il nome utente è obbligatorio."));
+        BlogValidationException.ThrowIfInvalid(("UserName", string.IsNullOrWhiteSpace(profile.UserName), Messages.UserNameRequired));
         await DemandForUserAsync(profile.UserName, Rights.EditOwnUser, Rights.EditOtherUsers, cancellationToken).ConfigureAwait(false);
 
         if (profile.BlogId == Guid.Empty)

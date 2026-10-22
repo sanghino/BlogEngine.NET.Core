@@ -80,7 +80,7 @@ public sealed class BlogService(
     {
         ArgumentNullException.ThrowIfNull(blog);
         DemandAdministrator();
-        BlogValidationException.ThrowIfInvalid(("Name", string.IsNullOrWhiteSpace(blog.Name), "Il nome del blog è obbligatorio."));
+        BlogValidationException.ThrowIfInvalid(("Name", string.IsNullOrWhiteSpace(blog.Name), Messages.BlogNameRequired));
 
         var all = await blogs.GetAllAsync(cancellationToken).ConfigureAwait(false);
         var isNew = all.All(b => b.Id != blog.Id);
@@ -113,7 +113,7 @@ public sealed class BlogService(
         DemandAdministrator();
         if (blog.IsPrimary)
         {
-            throw new InvalidOperationException("Il blog principale non può essere eliminato.");
+            throw new InvalidOperationException(Messages.PrimaryBlogDelete);
         }
 
         await events.PublishAsync(new SavingEvent<Blog> { BlogId = blog.Id, Entity = blog, Action = SaveAction.Delete }, cancellationToken).ConfigureAwait(false);
