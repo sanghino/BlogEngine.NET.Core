@@ -565,10 +565,85 @@ img.blog-logo {
     font-size: .88rem;
 }
 
-/* Valutazione a stelle (Global.css) */
+/*
+  Valutazione a stelle. Scripts/blog.js crea: div.rating > p (testo) + ul.star-rating > li.current-rating
+  (larghezza = voto medio) e cinque link sovrapposti larghi 20%, 40%... 100%. Qui le piccole GIF di
+  Global.css sono sostituite da stelle disegnate con una maschera SVG e colorate con il verde del tema.
+*/
 .rating {
-    margin: .6em 0;
+    --star: 22px;
+    --star-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath d='M12 1.8l3.1 6.6 7.2.9-5.3 5 1.4 7.1L12 17.9l-6.4 3.5 1.4-7.1-5.3-5 7.2-.9z'/%3E%3C/svg%3E");
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .4rem .9rem;
+    margin: 1em 0;
     color: var(--fg-dim);
+    text-shadow: none;
+}
+
+.rating p {
+    position: static;
+    margin: 0;
+    font-size: .9rem;
+}
+
+.rating .star-rating {
+    order: -1;
+    position: relative;
+    width: calc(var(--star) * 5);
+    height: var(--star);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    background: none;
+}
+
+/* Stelle vuote di sfondo */
+.rating .star-rating::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--fg-faint);
+    -webkit-mask: var(--star-mask) left center / var(--star) var(--star) repeat-x;
+    mask: var(--star-mask) left center / var(--star) var(--star) repeat-x;
+}
+
+.rating .star-rating .current-rating,
+.rating .star-rating a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: var(--star);
+    line-height: var(--star);
+    font-size: 0;
+    text-indent: 0;
+    background-image: none;
+    -webkit-mask: var(--star-mask) left center / var(--star) var(--star) repeat-x;
+    mask: var(--star-mask) left center / var(--star) var(--star) repeat-x;
+}
+
+/* Voto medio attuale */
+.rating .star-rating .current-rating {
+    background-color: var(--fg);
+    filter: drop-shadow(0 0 3px rgba(51, 255, 102, .5));
+}
+
+/* Link per votare: trasparenti, si accendono al passaggio del mouse */
+.rating .star-rating a {
+    background-color: transparent;
+    cursor: pointer;
+}
+
+.rating .star-rating a:hover,
+.rating .star-rating a:focus-visible {
+    background-color: var(--fg-strong);
+    outline: none;
+}
+
+.rating .star-rating:hover .current-rating,
+.rating .star-rating:focus-within .current-rating {
+    visibility: hidden;
 }
 
 /* Post precedente e successivo */
@@ -1055,4 +1130,8 @@ label {
     .term-body {
         display: block;
     }
+}
+
+:root[data-theme="light"] .rating .star-rating .current-rating {
+    filter: none;
 }
