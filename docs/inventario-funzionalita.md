@@ -20,7 +20,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + `/tag/{tag}` (anche `?tag=`) + widget TagCloud |
 | ☑ | Campi personalizzati su post, pagine, profili e temi | `CustomFieldRepository`, `CustomFieldsParser` | Core + API; segnaposto `[CUSTOMFIELD...]` e `[CUSTOMBLOCK]` nei testi (`CustomFieldTokensHandler`), filtro `theme_field` nei temi |
 | ☑ | Cestino: eliminazione logica, ripristino, svuotamento | `TrashRepository`, `TrashController` | Core + API |
-| ☐ | Allegati / enclosure nei post | `EnableEnclosures` | Core + feed |
+| ☑ | Allegati / enclosure nei post | `EnableEnclosures` | Primo file audio/video del sito citato nel post, come `<enclosure>` nei feed |
 | ☑ | Post correlati | `RelatedPostsBase`, `EnableRelatedPosts` | `BlogController` + `related-posts.liquid` |
 | ☑ | Navigazione post precedente/successivo | `PostNavigationBase` | `post-navigation.liquid` |
 | ☑ | Archivio (per categoria, per mese, calendario) | `archive.aspx`, `PostCalendar`, `MonthList` | `/archive`, `/calendar`, `/{anno}/{mese}/{giorno}`, widget MonthList |
@@ -51,7 +51,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
 | ☑ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
 | ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
-| ☐ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | Middleware |
+| ☑ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | `WwwRedirectMiddleware` (redirect permanente) |
 | ☐ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | Endpoint |
 | ☐ | Persistenza chiavi di cifratura su hosting condiviso | (nuovo) | ☑ `App_Data/keys` (Fase 1) |
 
@@ -116,7 +116,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | ResolveLinks | `ResolveLinks.cs` | Convertita |
 | ☑ | SendCommentMail | `SendCommentMail.cs` | Convertita (email in background) |
 | ☑ | SendNewsletters | `SendNewsletters.cs` | Convertita (usa `newsletter.html` del tema) |
-| ◐ | SendPings | `SendPings.cs` | Ping ai servizi XML-RPC convertiti; invio di trackback e pingback con i protocolli (Fase 7) |
+| ☑ | SendPings | `SendPings.cs` | Ping ai servizi XML-RPC e invio di pingback/trackback ai siti citati (`LinkbackSender`) |
 | ☑ | SimpleCaptcha | `SimpleCaptcha/` | Convertita (attiva per default, come in origine) |
 | ☑ | Smilies | `Smilies.cs` | Convertita |
 | ☑ | StopForumSpam | `StopForumSpam.cs` | Convertita (API JSON attuale) |
@@ -126,21 +126,21 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ☐ | Feed RSS 2.0 / Atom, per categoria, tag, autore, commenti | `SyndicationHandler` (`syndication.axd`), `SyndicationGenerator` | Endpoint |
-| ☐ | Feed alternativo (es. FeedBurner), numero voci | `AlternateFeedUrl`, `PostsPerFeed` | Endpoint |
-| ☐ | Sitemap XML | `SiteMap` (`sitemap.axd`) | Endpoint |
+| ☑ | Feed RSS 2.0 / Atom, per categoria, tag, autore, commenti | `SyndicationHandler` (`syndication.axd`), `SyndicationGenerator` | `FeedController`: stessi parametri e estensioni (dc, slash, wfw, pingback, trackback, betag), anche `category/feed/`, `tag/feed/`, `post/feed/`, risposta 304 |
+| ☑ | Feed alternativo (es. FeedBurner), numero voci | `AlternateFeedUrl`, `PostsPerFeed` | Link del feed nelle pagine e `maxitems` |
+| ☑ | Sitemap XML | `SiteMap` (`sitemap.axd`) | `SemanticController` |
 | ☐ | MetaWeblog / XML-RPC (Windows Live Writer, Open Live Writer) | `API/MetaWeblog` (`metaweblog.axd`), `wlwmanifest.xml`, `AppCode/Wlw` | Endpoint |
-| ☐ | RSD | `RsdHandler` (`rsd.axd`) | Endpoint |
-| ☐ | Pingback e trackback, in ricezione e invio | `PingbackHandler`, `TrackbackHandler`, `Services/Messaging/Ping` | Endpoint + servizio |
-| ☐ | OpenSearch | `OpenSearchHandler` (`opensearch.axd`) | Endpoint |
-| ☐ | OPML (blogroll) | `OpmlHandler` (`opml.axd`) | Endpoint |
-| ☐ | APML, FOAF, SIOC | `Apml`, `Foaf`, `Sioc` | Endpoint |
+| ☑ | RSD | `RsdHandler` (`rsd.axd`) | `SemanticController` |
+| ☑ | Pingback e trackback, in ricezione e invio | `PingbackHandler`, `TrackbackHandler`, `Services/Messaging/Ping` | `LinkbackController` (verifica della pagina d'origine), `LinkbackSender`; le pagine esterne si scaricano solo da indirizzi pubblici |
+| ☑ | OpenSearch | `OpenSearchHandler` (`opensearch.axd`) | `SemanticController` |
+| ☑ | OPML (blogroll) | `OpmlHandler` (`opml.axd`) | `SemanticController` |
+| ☑ | APML, FOAF, SIOC | `Apml`, `Foaf`, `Sioc` | `SemanticController` (`foaf.axd`, `foaf_nome.axd`, `sioc.axd`, `apml.axd`); il filtro dei feed tramite APML remoto è stato tolto |
 | ☐ | Export BlogML | `BlogMLExportHandler` (`blogml.axd`) | Endpoint |
 | ☐ | Import BlogML | `Services/Syndication/BlogML` | Admin |
 | ◐ | File e immagini serviti con controllo accessi, ridimensionamento | `FileHandler` (`file.axd`), `ImageHandler` (`image.axd`) | Endpoint; immagini con ImageSharp/SkiaSharp |
-| ☐ | Risorse localizzate per JavaScript | `ResourceHandler` (`*.res.axd`) | Endpoint |
-| ☐ | JavaScript minificato | `JavaScriptHandler` (`*.js.axd`), AjaxMin | Minificazione in fase di build |
-| ☐ | `robots.txt` | file statico | `wwwroot` |
+| ☑ | Risorse localizzate per JavaScript | `ResourceHandler` (`*.res.axd`) | `admin.res.axd` per l'amministrazione, `BlogEngineRes` nelle pagine pubbliche |
+| ✖ | JavaScript minificato | `JavaScriptHandler` (`*.js.axd`), AjaxMin | Gli script inclusi sono già minificati e serviti come file statici |
+| ☑ | `robots.txt` | file statico | Generato, con l'indirizzo della sitemap |
 | ☐ | Download di file remoti da parte del server | `RemoteFile.cs`, `AllowServerToDownloadRemoteFiles` | Core (`HttpClient`) |
 
 ## 9. URL e routing
@@ -148,9 +148,9 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
 | ☑ | Permalink di post (con o senza data), pagine, categorie, tag, autori, calendario, contatti, archivio, ricerca | `UrlRewrite` + `UrlRules.cs` | `BlogController`; le varianti di un post rimandano all'indirizzo definitivo |
-| ☐ | URL senza `.aspx` e redirect da quelli vecchi | `RedirectToRemoveFileExtension` | Routing + redirect |
+| ☑ | URL senza `.aspx` e redirect da quelli vecchi | `RedirectToRemoveFileExtension` | `LegacyUrlMiddleware`: redirect permanenti (post, pagine, default, archivio, ricerca, account, post.aspx?id=, page.aspx?id=) |
 | ☑ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | `/error/{codice}` con il tema e suggerimenti di contenuti simili |
-| ◐ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | Middleware |
+| ☑ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | `ReferrerMiddleware` (se attivato nelle impostazioni) |
 
 ## 10. Email, contatti, newsletter
 
@@ -169,8 +169,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ◐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
 | ☐ | Calendario persiano | `AppCode/PersianCulture.cs` | Core |
 | ◐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |
-| ☐ | Compressione delle risposte | `CompressionModule`, `CompressWebResource` | Middleware integrato |
-| ☐ | Bundling/minificazione | `EnableOptimization`, System.Web.Optimization | Build |
+| ☑ | Compressione delle risposte | `CompressionModule`, `CompressWebResource` | gzip/brotli con `EnableHttpCompression` |
+| ✖ | Bundling/minificazione | `EnableOptimization`, System.Web.Optimization | Non necessario: file già minificati, compressione e cache del browser |
 | ◐ | Cache | `Providers/CacheProvider` | `IMemoryCache` |
 
 ## 12. Dati e installazione

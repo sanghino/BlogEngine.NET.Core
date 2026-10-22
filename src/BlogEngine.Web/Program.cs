@@ -37,6 +37,10 @@ app.UseCustomFolderFiles("/Custom/Widgets", paths.BundledWidgets, paths.Installe
 
 app.UseMiddleware<SetupGateMiddleware>();
 app.UseMiddleware<BlogContextMiddleware>();
+app.UseMiddleware<WwwRedirectMiddleware>();
+app.UseMiddleware<LegacyUrlMiddleware>();
+app.UseMiddleware<ConditionalCompressionMiddleware>();
+app.UseMiddleware<ReferrerMiddleware>();
 
 // Pagine di errore (404...) con il tema del blog, solo per le pagine pubbliche richieste in GET.
 app.UseWhen(

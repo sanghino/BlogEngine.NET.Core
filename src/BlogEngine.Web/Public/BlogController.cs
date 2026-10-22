@@ -340,6 +340,13 @@ public sealed class BlogController(
 
     // ---------------------------------------------------------------- pagine
 
+    /// <summary>page.aspx?id=...: reindirizza all'indirizzo definitivo della pagina.</summary>
+    [HttpGet("/page")]
+    public async Task<IActionResult> PageById(Guid id) =>
+        await pages.GetByIdAsync(id) is { } page && await pages.IsVisibleAsync(page)
+            ? RedirectPermanent(await links.PageAsync(page))
+            : NotFound();
+
     [HttpGet("/page/{slug}")]
     public async Task<IActionResult> Page(string slug) =>
         await pages.GetBySlugAsync(slug) is { } page ? await ShowPageAsync(page) : NotFound();

@@ -124,6 +124,11 @@ public static class WebServiceCollectionExtensions
         services.AddScoped<IEmailQueue, BackgroundEmailQueue>();
         services.AddHostedService<EmailSenderService>();
         services.AddHostedService<ExtensionWatcher>();
+
+        // Protocolli tra blog: pingback, trackback e pagine di altri siti.
+        Protocols.RemotePages.Register(services);
+        ConditionalCompressionMiddleware.Register(services);
+        services.AddSingleton<Protocols.LinkbackSender>();
         services.AddSingleton<FileLog>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 
