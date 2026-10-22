@@ -16,8 +16,6 @@ public sealed class Blog
 
     public bool IsDeleted { get; set; }
 
-    /// <summary>Blog che mostra anche i contenuti di tutti gli altri blog.</summary>
-    public bool IsSiteAggregation { get; set; }
 
     /// <summary>Nome host dedicato (es. "blog.esempio.it"); vuoto per usare quello della richiesta.</summary>
     public string Hostname { get; set; } = string.Empty;

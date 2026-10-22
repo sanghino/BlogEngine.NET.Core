@@ -26,8 +26,6 @@ public sealed class PostStateTracker
 
 public sealed class PostService(
     EntityRepository<Post> posts,
-    EntityRepository<Category> categories,
-    BlogsCache blogs,
     PostStateTracker states,
     IBlogContext context,
     IRightsService rights,
@@ -39,15 +37,8 @@ public sealed class PostService(
 
     public async Task<IReadOnlyList<Post>> GetPostsAsync(CancellationToken cancellationToken = default)
     {
-        IEnumerable<Post> result = await GetBlogPostsAsync(context.Blog.Id, cancellationToken).ConfigureAwait(false);
-        if (context.Blog.IsSiteAggregation)
-        {
-            foreach (var blog in (await blogs.GetAllAsync(cancellationToken).ConfigureAwait(false)).Where(b => b.IsActive && b.Id != context.Blog.Id))
-            {
-                result = result.Concat(await GetBlogPostsAsync(blog.Id, cancellationToken).ConfigureAwait(false));
-            }
-        }
-
+        // Ogni blog mostra solo i propri post: il blog principale non include quelli dei blog figli.
+        var result = await GetBlogPostsAsync(context.Blog.Id, cancellationToken).ConfigureAwait(false);
         return result.OrderByDescending(p => p.DateCreated).ToList();
     }
 
@@ -75,31 +66,10 @@ public sealed class PostService(
             .Where(p => Slug.AreEquivalent(p.Author, author))
             .ToList();
 
-    public async Task<IReadOnlyList<Post>> GetByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default)
-    {
-        var visible = await GetVisiblePostsAsync(cancellationToken).ConfigureAwait(false);
-        if (!context.Blog.IsSiteAggregation)
-        {
-            return visible.Where(p => p.Categories.Contains(categoryId)).ToList();
-        }
-
-        // Nel blog aggregatore le categorie dei diversi blog si considerano uguali se hanno lo stesso titolo.
-        var category = await FindCategoryInAnyBlogAsync(categoryId, cancellationToken).ConfigureAwait(false);
-        if (category is null)
-        {
-            return [];
-        }
-
-        var matchingIds = new HashSet<Guid>();
-        foreach (var blog in await blogs.GetAllAsync(cancellationToken).ConfigureAwait(false))
-        {
-            matchingIds.UnionWith((await categories.GetAllAsync(blog.Id, cancellationToken).ConfigureAwait(false))
-                .Where(c => string.Equals(c.Title, category.Title, StringComparison.OrdinalIgnoreCase))
-                .Select(c => c.Id));
-        }
-
-        return visible.Where(p => p.Categories.Any(matchingIds.Contains)).ToList();
-    }
+    public async Task<IReadOnlyList<Post>> GetByCategoryAsync(Guid categoryId, CancellationToken cancellationToken = default) =>
+        (await GetVisiblePostsAsync(cancellationToken).ConfigureAwait(false))
+            .Where(p => p.Categories.Contains(categoryId))
+            .ToList();
 
     public async Task<IReadOnlyList<Post>> GetByTagAsync(string tag, CancellationToken cancellationToken = default) =>
         (await GetVisiblePostsAsync(cancellationToken).ConfigureAwait(false))
@@ -316,16 +286,4 @@ public sealed class PostService(
         return candidate;
     }
 
-    private async Task<Category?> FindCategoryInAnyBlogAsync(Guid categoryId, CancellationToken cancellationToken)
-    {
-        foreach (var blog in await blogs.GetAllAsync(cancellationToken).ConfigureAwait(false))
-        {
-            if (await categories.FindAsync(blog.Id, categoryId, cancellationToken).ConfigureAwait(false) is { } category)
-            {
-                return category;
-            }
-        }
-
-        return null;
-    }
 }

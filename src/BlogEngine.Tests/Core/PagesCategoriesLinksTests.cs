@@ -118,8 +118,9 @@ public sealed class PagesCategoriesLinksTests
         Assert.AreSame(host.PrimaryBlog, await blogs.ResolveAsync("localhost", "/figlio/post/x"));
     }
 
+    /// <summary>Blog principale e blog figli restano distinti: ognuno mostra solo i propri contenuti.</summary>
     [TestMethod]
-    public async Task SiteAggregation_ShowsPostsOfAllBlogs()
+    public async Task PrimaryBlog_DoesNotShowPostsOfChildBlogs()
     {
         using var host = new TestBlogHost().AsAdmin();
         var child = new Blog { Name = "Figlio", VirtualPath = "~/figlio" };
@@ -127,10 +128,8 @@ public sealed class PagesCategoriesLinksTests
         await host.CreatePostAsync("Nel principale");
         await host.CreatePostAsync("Nel figlio", p => p.BlogId = child.Id);
 
-        Assert.AreEqual(1, (await host.Posts.GetPostsAsync()).Count);
-
-        host.PrimaryBlog.IsSiteAggregation = true;
-        Assert.AreEqual(2, (await host.Posts.GetPostsAsync()).Count);
+        var posts = await host.Posts.GetPostsAsync();
+        Assert.AreEqual("Nel principale", posts.Single().Title);
     }
 
     [TestMethod]

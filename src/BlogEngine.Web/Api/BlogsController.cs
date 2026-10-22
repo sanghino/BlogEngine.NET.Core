@@ -64,7 +64,6 @@ public sealed class BlogsController(
             IsAnyTextBeforeHostnameAccepted = item.IsAnyTextBeforeHostnameAccepted,
             VirtualPath = string.IsNullOrWhiteSpace(item.VirtualPath) ? blog.VirtualPath : item.VirtualPath.Trim(),
             IsActive = item.IsActive,
-            IsSiteAggregation = item.IsSiteAggregation,
             IsPrimary = item.IsPrimary,
             DateCreated = blog.DateCreated,
         };
@@ -141,7 +140,6 @@ public sealed class BlogsController(
             IsAnyTextBeforeHostnameAccepted = blog.IsAnyTextBeforeHostnameAccepted,
             VirtualPath = blog.VirtualPath,
             IsActive = blog.IsActive,
-            IsSiteAggregation = blog.IsSiteAggregation,
             IsPrimary = blog.IsPrimary,
             RelativeWebRoot = root,
             AbsoluteWebRoot = new Uri(authority, root),

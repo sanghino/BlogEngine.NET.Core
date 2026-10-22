@@ -60,7 +60,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
 | ☑ | Più blog nella stessa applicazione (sottocartella o host) | `Blog.cs`, `BlogsController`, `App_Data/blogs` | Core + middleware di risoluzione del blog |
-| ◐ | Blog principale che vede i contenuti dei blog figli | `Blog.cs` | Core |
+| ✖ | Blog principale che vede i contenuti dei blog figli | `Blog.cs` | Scelta: blog principale e figli restano distinti, ognuno mostra solo i propri contenuti; dal principale si passa ai figli con il widget Blog List. Opzione IsSiteAggregation rimossa |
 | ☑ | Generatore di nuovi blog da modello | `Helpers/BlogGenerator.cs` | Core |
 
 ## 5. Amministrazione (AngularJS 1.3, mantenuto nella prima fase)

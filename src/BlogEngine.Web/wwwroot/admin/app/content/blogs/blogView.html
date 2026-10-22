@@ -33,12 +33,6 @@
                                     {{lbl.active}}
                                 </label>
                             </div>
-                            <div class="checkbox">
-                                <label>
-                                    <input type="checkbox" id="cbAggregation" data-ng-model="editItem.IsSiteAggregation" />
-                                    {{lbl.isForSiteAggregation}}
-                                </label>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -127,7 +121,6 @@
                     <th class="item-author">{{lbl.virtualPath}}</th>
                     <th class="item-state">{{lbl.primary}}</th>
                     <th class="item-state">{{lbl.active}}</th>
-                    <th class="item-state">{{lbl.isForSiteAggregation}}</th>
                 </tr>
             </thead>
             <tbody>
@@ -140,7 +133,6 @@
                     <td class="item-author">{{item.VirtualPath}}</td>
                     <td class="item-state"><input type="checkbox" ng-model="item.IsPrimary" data-ng-disabled="true" /></td>
                     <td class="item-state"><input type="checkbox" ng-model="item.IsActive" data-ng-disabled="true" /></td>
-                    <td class="item-state"><input type="checkbox" data-ng-model="item.IsSiteAggregation" data-ng-disabled="true"></td>
                 </tr>
                 <tr id="tr-spinner"><td colspan="6"><div id="div-spinner"><i class="fa fa-spinner fa-spin"></i></div></td></tr>
             </tbody>

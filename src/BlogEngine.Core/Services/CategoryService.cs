@@ -10,7 +10,6 @@ namespace BlogEngine.Core.Services;
 public sealed class CategoryService(
     EntityRepository<Category> categories,
     EntityRepository<Post> posts,
-    BlogsCache blogs,
     IBlogContext context,
     IRightsService rights,
     IBlogClock clock,
@@ -19,14 +18,6 @@ public sealed class CategoryService(
     public async Task<IReadOnlyList<Category>> GetCategoriesAsync(CancellationToken cancellationToken = default)
     {
         var list = new List<Category>(await categories.GetAllAsync(context.Blog.Id, cancellationToken).ConfigureAwait(false));
-        if (context.Blog.IsSiteAggregation)
-        {
-            foreach (var blog in (await blogs.GetAllAsync(cancellationToken).ConfigureAwait(false)).Where(b => b.IsActive && b.Id != context.Blog.Id))
-            {
-                list.AddRange(await categories.GetAllAsync(blog.Id, cancellationToken).ConfigureAwait(false));
-            }
-        }
-
         return list.OrderBy(c => CompleteTitle(c, list), StringComparer.CurrentCultureIgnoreCase).ToList();
     }
 

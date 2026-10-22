@@ -42,13 +42,13 @@ public sealed class LinkGenerator(IBlogContext context, IBlogService blogs, ISet
     public Task<string> CategoryAsync(Category category, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(category);
-        return Task.FromResult($"{CategoryRoot()}category/{Segment(Slug.Create(category.Title))}");
+        return Task.FromResult($"{BlogRoot}category/{Segment(Slug.Create(category.Title))}");
     }
 
     public Task<string> CategoryFeedAsync(Category category, CancellationToken cancellationToken = default)
     {
         ArgumentNullException.ThrowIfNull(category);
-        return Task.FromResult($"{CategoryRoot()}category/feed/{Segment(Slug.Create(category.Title))}");
+        return Task.FromResult($"{BlogRoot}category/feed/{Segment(Slug.Create(category.Title))}");
     }
 
     public string Tag(string tag) => $"{BlogRoot}tag/{Segment(Slug.Create(tag))}";
@@ -77,8 +77,6 @@ public sealed class LinkGenerator(IBlogContext context, IBlogService blogs, ISet
     }
 
     /// <summary>Nel blog aggregatore le categorie sono raggruppate per titolo alla radice del sito.</summary>
-    private string CategoryRoot() => context.Blog.IsSiteAggregation ? "/" : BlogRoot;
-
     private Uri GetAuthority(Blog blog)
     {
         var request = context.RequestBaseUri;

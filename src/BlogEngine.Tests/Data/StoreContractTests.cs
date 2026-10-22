@@ -45,7 +45,7 @@ public abstract class StoreContractTests
     public async Task Blogs_SaveUpdateDelete()
     {
         var store = await NewStoreAsync<IBlogStore>();
-        var blog = new Blog { Name = "Figlio", VirtualPath = "~/figlio", Hostname = "x.it", IsSiteAggregation = true, DateCreated = Created };
+        var blog = new Blog { Name = "Figlio", VirtualPath = "~/figlio", Hostname = "x.it", DateCreated = Created };
 
         await store.SaveAsync(blog);
         await store.SaveAsync(new Blog { Id = blog.Id, Name = "Rinominato", VirtualPath = "~/figlio", DateCreated = Created });

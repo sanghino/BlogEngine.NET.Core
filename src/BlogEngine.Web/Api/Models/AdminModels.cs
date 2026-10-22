@@ -305,7 +305,6 @@ public sealed class BlogDto
 
     public bool IsActive { get; set; }
 
-    public bool IsSiteAggregation { get; set; }
 
     public bool CanUserDelete { get; set; }
 

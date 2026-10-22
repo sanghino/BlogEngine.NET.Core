@@ -268,9 +268,6 @@ namespace BlogEngine.Data.Sqlite.Migrations
                     b.Property<bool>("IsPrimary")
                         .HasColumnType("INTEGER");
 
-                    b.Property<bool>("IsSiteAggregation")
-                        .HasColumnType("INTEGER");
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("TEXT");
