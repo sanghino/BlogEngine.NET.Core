@@ -50,7 +50,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ✖ | Creazione di un blog alla registrazione | `create-blog.aspx`, `CreateBlogOnSelfRegistration` | Sostituita dal permesso "CreateNewBlogs": creare blog figli spetta agli amministratori, che possono concederlo ad altri ruoli (Utenti → Ruoli); modifica ed eliminazione restano agli amministratori |
 | ☑ | Utenti e ruoli (store XML / SQLite) | `XmlMembershipProvider`, `XmlRoleProvider` | Store personalizzato + `PasswordHasher` |
 | ☑ | Permessi granulari (`Rights`: ~40 diritti, 8 gruppi) | `Services/Security/Rights.cs`, `Right.cs` | Core + policy di autorizzazione |
-| ◐ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | Core + API |
+| ☑ | Profili autore | `AuthorProfile.cs`, `Profiles.cs` | `ProfileService` + API del profilo (con foto); nome visualizzato nei post, pagina `/author/{nome}`, widget Autori, FOAF |
 | ☑ | Gestione www / non-www | `WwwSubDomainModule`, `HandleWwwSubdomain` | `WwwRedirectMiddleware` (redirect permanente) |
 | ☑ | SSL obbligatorio per MetaWeblog | `RequireSslMetaWeblogApi` | `MetaWeblogController` |
 | ☑ | Persistenza chiavi di cifratura su hosting condiviso | (nuovo) | `App_Data/keys` (Fase 1) |
@@ -69,7 +69,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ☑ | Dashboard e statistiche | `dashboard/`, `DashboardController`, `StatsController` | Contratti JSON invariati |
 | ☑ | Editor di post e pagine (TinyMCE, Summernote, bootstrap-wysiwyg) | `admin/app/editor`, `admin/editors` | Le pagine `.cshtml` dell'editor diventano Razor ASP.NET Core |
-| ◐ | File manager, upload | `FileManagerController`, `UploadController` | File in `App_Data/files` |
+| ☑ | File manager, upload | `FileManagerController`, `UploadController` | File in `App_Data/files`: elenco, caricamento, nuove cartelle, eliminazione; immagini, file, video e foto del profilo dagli editor |
 | ☑ | Contenuti: post, pagine, categorie, tag, commenti, blog | `admin/app/content/*` | API |
 | ☑ | Utenti, ruoli, profilo | `admin/app/security/*` | API |
 | ☑ | Impostazioni: base, avanzate, commenti, email, feed, controlli | `admin/app/settings/*`, `SettingsController` | API |
@@ -91,7 +91,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Tema `Standard-2017` | `Custom/Themes/Standard-2017` | Convertito in Liquid |
 | ✖ | Tema `RazorHost` | `Custom/Themes/RazorHost` | Non era un tema grafico ma il ponte per scrivere temi in Razor dentro Web Forms: il motore Liquid ne prende il posto |
 | ☑ | Tema dell'amministrazione | `admin/themes/standard` | Statico (Fase 4b) |
-| ◐ | Tema mobile alternativo | `MobileThemeSwitch.cs` | I temi inclusi sono responsive; il cookie `ThemeCookieName` permette comunque di scegliere un altro tema (es. da un'estensione, Fase 6) |
+| ✖ | Tema mobile alternativo | `MobileThemeSwitch.cs` | I temi inclusi sono responsive; il cookie `ThemeCookieName` permette comunque di scegliere un altro tema (es. da un'estensione, Fase 6) |
 | ☑ | Zone dei widget, ordinamento, configurazione | `WidgetZone`, `WidgetContainer`, `WidgetsController` | Tag `widget_zone`, `WidgetService`, API `/api/widgets`; zone lette dai template, widget predefiniti in `theme.json` |
 | ☑ | Widget installabili da cartella (`widget.xml` + vista + edit) | `Custom/Widgets/*` | `widget.liquid` + `widget.json`; pagina di modifica generata dalle impostazioni del manifest; guida in `Custom/Widgets/README.md` |
 | ☑ | Widget inclusi: Administration, AuthorList, BlogList, BlogRoll, CategoryList, CommentList, LinkList, MonthList, Newsletter, PageList, PostList, Search, TagCloud, TextBox | `Custom/Widgets` | Convertiti (BlogRoll scarica i feed in background) |
@@ -156,7 +156,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ◐ | Invio email SMTP (SSL, prefisso oggetto) | `Utils.SendMailMessage`, `BlogSettings` | Core (MailKit o `SmtpClient`) |
+| ☑ | Invio email SMTP (SSL, prefisso oggetto) | `Utils.SendMailMessage`, `BlogSettings` | `SmtpEmailSender` con MailKit, invio in background: con SSL la porta 465 usa SSL diretto (es. `smtps.aruba.it`), le altre STARTTLS |
 | ☑ | Form contatti con allegati e reCAPTCHA | `contact.aspx` | `/contact` con allegati, antispam (campo nascosto + limite di invii) e captcha delle estensioni |
 | ☑ | Notifica email dei commenti | estensione SendCommentMail, `Post.SendNotifications` | Al proprietario con SendCommentMail; agli iscritti dal Core (`CommentNotificationHandler`), con link per cancellarsi |
 | ☑ | Newsletter | widget Newsletter + estensione SendNewsletters | Iscrizione dal widget, gestione degli iscritti, invio alla pubblicazione |
@@ -165,13 +165,13 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 
 | Stato | Funzionalità | Oggi | Destinazione / note |
 |---|---|---|---|
-| ✔ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | `Resources/Labels.*.resx` + `IStringLocalizer`; anche i messaggi di errore e validazione del Core (chiavi in `Messages`, tradotti da `MessageTranslator`): testi completi in inglese e italiano, per i messaggi nuovi le altre lingue usano il testo inglese |
-| ◐ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | Middleware di localizzazione |
+| ☑ | Interfaccia in 37 lingue | `App_GlobalResources/labels.*.resx` | `Resources/Labels.*.resx` + `IStringLocalizer`; anche i messaggi di errore e validazione del Core (chiavi in `Messages`, tradotti da `MessageTranslator`): testi completi in inglese e italiano, per i messaggi nuovi le altre lingue usano il testo inglese |
+| ☑ | Cultura e fuso orario del blog | `Culture`, `TimeZoneId`, `BlogCulture.cs` | `BlogCultureProvider` ("Auto" = lingua del browser) e `BlogClock`; i fusi orari proposti sono quelli del server, un id sconosciuto ripiega su UTC |
 | ☑ | Calendario persiano | `AppCode/PersianCulture.cs` | Con .NET 8 (ICU) la cultura fa-IR usa già il calendario persiano: la classe di correzione non serve più |
-| ◐ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi |
+| ☑ | ~90 impostazioni del blog | `BlogSettings.cs` | Core, stessi nomi; verificate una per una: tutte hanno effetto tranne `CommentsPerPage`, inutilizzata già nell'originale |
 | ☑ | Compressione delle risposte | `CompressionModule`, `CompressWebResource` | gzip/brotli con `EnableHttpCompression` |
 | ✖ | Bundling/minificazione | `EnableOptimization`, System.Web.Optimization | Non necessario: file già minificati, compressione e cache del browser |
-| ◐ | Cache | `Providers/CacheProvider` | `IMemoryCache` |
+| ☑ | Cache | `Providers/CacheProvider` | `BlogDataCache` per blog (post, pagine, utenti, impostazioni...) aggiornata a ogni scrittura; cache dei temi compilati, del blogroll e dei permessi |
 
 ## 12. Dati e installazione
 
@@ -179,7 +179,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ☑ | Provider XML | `Providers/XmlProvider` | `BlogEngine.Data.Xml` |
 | ☑ | Provider SQLite | `setup/SQLite` + `DbBlogProvider` | `BlogEngine.Data.Sqlite` (EF Core) |
-| ☐ | File system dei file caricati | `XmlFileSystemProvider` | Disco, in `App_Data/files` |
+| ☑ | File system dei file caricati | `XmlFileSystemProvider` | `FileStore`: disco, in `App_Data/files`, serviti da `/file.axd` e `/image.axd` |
 | ☑ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
 | ☑ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | `/admin/diagnostics` (link dalla pagina "Informazioni") |
 | ☑ | Percorso dati configurabile, cartelle create all'avvio | (nuovo) | `BlogEnginePaths` (Fase 1) |

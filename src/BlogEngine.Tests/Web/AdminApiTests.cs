@@ -320,6 +320,27 @@ public sealed partial class AdminApiTests
     }
 
     [TestMethod]
+    public async Task FileManager_CreatesFoldersAndDeletesCheckedItems()
+    {
+        var add = await _admin.SendAsync(new HttpRequestMessage(HttpMethod.Put, "/api/filemanager/addfolder/add") { Content = Json("""{ "Name": "documenti", "FullPath": "/" }""") });
+        Assert.AreEqual(HttpStatusCode.OK, add.StatusCode);
+
+        using var form = new MultipartFormDataContent();
+        form.Add(new ByteArrayContent("ciao"u8.ToArray()), "file", "nota.txt");
+        Assert.AreEqual(HttpStatusCode.Created, (await _admin.PostAsync("/api/upload?action=filemgr&dirPath=/documenti", form)).StatusCode);
+
+        var listing = await GetJsonAsync<JsonArray>("/api/filemanager?path=/documenti");
+        var note = listing.Single(f => f!["Name"]!.GetValue<string>() == "nota.txt")!;
+
+        var delete = await _admin.SendAsync(new HttpRequestMessage(HttpMethod.Put, "/api/filemanager/processchecked/delete")
+        {
+            Content = Json($$"""[{ "Name": "nota.txt", "FullPath": {{note["FullPath"]!.ToJsonString()}}, "IsChecked": true }]"""),
+        });
+        Assert.AreEqual(HttpStatusCode.OK, delete.StatusCode);
+        Assert.IsFalse((await GetJsonAsync<JsonArray>("/api/filemanager?path=/documenti")).Any(f => f!["Name"]!.GetValue<string>() == "nota.txt"));
+    }
+
+    [TestMethod]
     public async Task Blogs_CreateChildBlogServedUnderItsPath()
     {
         var created = await SendJsonAsync<JsonObject>(HttpMethod.Post, "/api/blogs",
