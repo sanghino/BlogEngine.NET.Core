@@ -49,6 +49,10 @@ public sealed partial class AdminApiTests
         StringAssert.Contains(shell, "\"IsAdmin\":\"True\"");
         StringAssert.Contains(shell, "admin/app/content/posts/postController.js");
         StringAssert.Contains(shell, "admin/#/settings/advanced", "Impostazioni avanzate (con import/export BlogML) visibili anche con un solo blog.");
+        foreach (var section in new[] { "admin/#/security/users", "admin/#/security/roles", "admin/#/content/blogs" })
+        {
+            StringAssert.Contains(shell, section, "Utenti, ruoli e blog sono visibili all'amministratore senza configurazioni particolari.");
+        }
 
         var editor = await _admin.GetStringAsync("/admin/app/editor/editpost.cshtml");
         StringAssert.Contains(editor, "PostEditorController");

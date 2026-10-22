@@ -2,7 +2,6 @@
 @model BlogEngine.Web.Pages.Admin.AboutModel
 @{
     Layout = "_AdminLayout";
-    var usage = Admin.Options.UsageScenario switch { "multiusers" => "Multiple users", "multiblogs" => "Multiple blogs", _ => "Single blog" };
 }
 <div class="about-view content">
     <button tabindex="-1" class="sidebar-toggle"><span></span><span></span><span></span></button>
@@ -37,9 +36,6 @@
             <ul class="list-group">
                 <li class="list-group-item">
                     <span> Version:</span> @AdminViewContext.Version
-                </li>
-                <li class="list-group-item">
-                    <span>Configuration:</span> @usage
                 </li>
                 <li class="list-group-item">
                     <span>Trust level:</span> Full (.NET 8)

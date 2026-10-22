@@ -17,12 +17,6 @@ public sealed class BlogEngineOptions
     /// <summary>Provider dei dati: "Xml" (file nella cartella dati) oppure "Sqlite" (un unico database).</summary>
     public DataProviderKind DataProvider { get; set; } = DataProviderKind.Xml;
 
-    /// <summary>
-    /// Scenario d'uso che adatta il menu dell'amministrazione: "singleblog" (predefinito), "multiusers"
-    /// (gestione di utenti e ruoli) o "multiblogs" (anche la gestione dei blog).
-    /// </summary>
-    public string UsageScenario { get; set; } = "singleblog";
-
     /// <summary>Editor dei contenuti: "tinymce" (predefinito), "summernote" o "bootstrap-wysiwyg".</summary>
     public string DefaultEditor { get; set; } = "tinymce";
 

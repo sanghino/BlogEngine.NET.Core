@@ -12,7 +12,6 @@
 <script type="text/javascript">
     var UserVars = @Html.Raw(JsonSerializer.Serialize(userVars));
     var ActiveTheme = @Html.Raw(JsonSerializer.Serialize(Admin.ActiveTheme));
-    var UsageScenario = @Html.Raw(JsonSerializer.Serialize(Admin.Options.UsageScenario));
     var ServerTime = @Html.Raw(JsonSerializer.Serialize(now.ToString()));
     var UtcTime = @Html.Raw(JsonSerializer.Serialize(now.ToUniversalTime().ToString()));
 </script>

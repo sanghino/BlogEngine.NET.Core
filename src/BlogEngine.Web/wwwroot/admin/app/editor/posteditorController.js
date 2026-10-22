@@ -8,7 +8,8 @@
     $scope.security = $rootScope.security;
     $scope.UserVars = UserVars;
     $scope.root = $rootScope.SiteVars.ApplicationRelativeWebRoot;
-    $scope.usageScenario = UsageScenario;
+    // L'autore si può cambiare solo con il permesso di modificare i post degli altri.
+    $scope.canChangeAuthor = UserVars.Rights.indexOf('EditOtherUsersPosts') >= 0;
 
     $scope.focusInput = false;
     $scope.customFields = [];

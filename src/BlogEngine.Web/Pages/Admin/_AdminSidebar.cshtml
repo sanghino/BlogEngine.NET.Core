@@ -1,7 +1,7 @@
 @* Porting di admin/themes/standard/sidebar.cshtml: stessa struttura e stesse classi CSS. *@
 @{
+    // I menu dipendono solo dai permessi dell'utente, che gli amministratori gestiscono da Utenti → Ruoli.
     var root = Admin.BlogRoot;
-    var scenario = Admin.Options.UsageScenario;
 }
 <div class="nav-user">
     <div class="nav-user-info">
@@ -35,7 +35,7 @@
                 <li id="mu-pages" data-ng-class="{ active: isActive('/content/pages')}"><a href="@(root)admin/#/content/pages">@L["pages"]</a></li>
                 <li data-ng-class="{ active: isActive('/content/categories')}"><a href="@(root)admin/#/content/categories">@L["categories"]</a></li>
                 <li data-ng-class="{ active: isActive('/content/tags')}"><a href="@(root)admin/#/content/tags">@L["tags"]</a></li>
-                @if (Admin.IsPrimaryBlog && Admin.Can(Rights.CreateNewBlogs) && scenario == "multiblogs")
+                @if (Admin.IsPrimaryBlog && Admin.Can(Rights.CreateNewBlogs))
                 {
                     <li data-ng-class="{ active: isActive('/content/blogs')}"><a href="@(root)admin/#/content/blogs">@L["blogs"]</a></li>
                 }
@@ -52,23 +52,20 @@
                 </ul>
             </li>
         }
-        @if (scenario != "singleblog")
-        {
-            <li id="mu-users">
-                <a href="@(root)admin/#/security/profile"><i class="fa fa-user"></i> @L["users"]</a>
-                <ul class="sub-nav-sidebar">
-                    <li data-ng-class="{ active: isActive('/security/profile')}"><a class="ng-binding" href="@(root)admin/#/security/profile">@L["profile"]</a></li>
-                    @if (Admin.Can(Rights.ViewRoles))
-                    {
-                        <li data-ng-class="{ active: isActive('/security/roles')}"><a class="ng-binding" href="@(root)admin/#/security/roles">@L["roles"]</a></li>
-                    }
-                    @if (Admin.Can(Rights.EditOtherUsers))
-                    {
-                        <li data-ng-class="{ active: isActive('/security/users')}"><a class="ng-binding" href="@(root)admin/#/security/users">@L["users"]</a></li>
-                    }
-                </ul>
-            </li>
-        }
+        <li id="mu-users">
+            <a href="@(root)admin/#/security/profile"><i class="fa fa-user"></i> @L["users"]</a>
+            <ul class="sub-nav-sidebar">
+                <li data-ng-class="{ active: isActive('/security/profile')}"><a class="ng-binding" href="@(root)admin/#/security/profile">@L["profile"]</a></li>
+                @if (Admin.Can(Rights.ViewRoles))
+                {
+                    <li data-ng-class="{ active: isActive('/security/roles')}"><a class="ng-binding" href="@(root)admin/#/security/roles">@L["roles"]</a></li>
+                }
+                @if (Admin.Can(Rights.EditOtherUsers))
+                {
+                    <li data-ng-class="{ active: isActive('/security/users')}"><a class="ng-binding" href="@(root)admin/#/security/users">@L["users"]</a></li>
+                }
+            </ul>
+        </li>
         @if (Admin.Can(Rights.AccessAdminSettingsPages))
         {
             <li id="mu-settings">
