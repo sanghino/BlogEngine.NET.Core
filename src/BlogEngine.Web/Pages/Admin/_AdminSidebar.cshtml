@@ -79,7 +79,8 @@
                     <li data-ng-class="{ active: isActive('/settings/feed')}"><a class="ng-binding" href="@(root)admin/#/settings/feed">@L["feed"]</a></li>
                     <li data-ng-class="{ active: isActive('/settings/comments')}"><a class="ng-binding" href="@(root)admin/#/settings/comments">@L["comments"]</a></li>
                     <li data-ng-class="{ active: isActive('/settings/controls')}"><a class="ng-binding" href="@(root)admin/#/settings/controls">@L["controls"]</a></li>
-                    @if (scenario != "singleblog" && Admin.IsPrimaryBlog)
+                    @* In origine la pagina era nascosta con un solo blog, ma contiene opzioni utili a tutti (www, file remoti, BlogML). *@
+                    @if (Admin.IsPrimaryBlog)
                     {
                         <li data-ng-class="{ active: isActive('/settings/advanced')}"><a class="ng-binding" href="@(root)admin/#/settings/advanced">@L["advanced"]</a></li>
                     }

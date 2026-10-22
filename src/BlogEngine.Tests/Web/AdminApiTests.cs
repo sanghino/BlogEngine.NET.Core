@@ -47,6 +47,7 @@ public sealed partial class AdminApiTests
         StringAssert.Contains(shell, "ng-view");
         StringAssert.Contains(shell, "\"IsAdmin\":\"True\"");
         StringAssert.Contains(shell, "admin/app/content/posts/postController.js");
+        StringAssert.Contains(shell, "admin/#/settings/advanced", "Impostazioni avanzate (con import/export BlogML) visibili anche con un solo blog.");
 
         var editor = await _admin.GetStringAsync("/admin/app/editor/editpost.cshtml");
         StringAssert.Contains(editor, "PostEditorController");
