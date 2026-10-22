@@ -2945,4 +2945,61 @@
   <data name="adHideForUsers" xml:space="preserve">
     <value>Hide for logged-in users</value>
   </data>
+  <data name="cookieTitle" xml:space="preserve">
+    <value>This site uses cookies</value>
+  </data>
+  <data name="cookieText" xml:space="preserve">
+    <value>We use technical cookies, needed for the site to work, and, only with your consent, statistics cookies to understand how the site is used and marketing cookies for advertising. You can accept, reject or choose which ones to allow, and change your mind at any time.</value>
+  </data>
+  <data name="cookiePolicy" xml:space="preserve">
+    <value>Cookie policy</value>
+  </data>
+  <data name="cookieAcceptAll" xml:space="preserve">
+    <value>Accept all</value>
+  </data>
+  <data name="cookieReject" xml:space="preserve">
+    <value>Reject</value>
+  </data>
+  <data name="cookieCustomize" xml:space="preserve">
+    <value>Customize</value>
+  </data>
+  <data name="cookieSave" xml:space="preserve">
+    <value>Save choices</value>
+  </data>
+  <data name="cookieCloseReject" xml:space="preserve">
+    <value>Close and continue without accepting</value>
+  </data>
+  <data name="cookiePreferences" xml:space="preserve">
+    <value>Cookies</value>
+  </data>
+  <data name="cookieNecessary" xml:space="preserve">
+    <value>Necessary</value>
+  </data>
+  <data name="cookieNecessaryText" xml:space="preserve">
+    <value>Login, security and your cookie choice. Always active.</value>
+  </data>
+  <data name="cookieStatistics" xml:space="preserve">
+    <value>Statistics</value>
+  </data>
+  <data name="cookieStatisticsText" xml:space="preserve">
+    <value>Anonymous visit statistics (e.g. Google Analytics).</value>
+  </data>
+  <data name="cookieMarketing" xml:space="preserve">
+    <value>Marketing</value>
+  </data>
+  <data name="cookieMarketingText" xml:space="preserve">
+    <value>Advertising, possibly personalized, from third parties.</value>
+  </data>
+  <data name="cookieConsentSettings" xml:space="preserve">
+    <value>Cookie consent (GDPR)</value>
+  </data>
+  <data name="enableCookieConsent" xml:space="preserve">
+    <value>Show the cookie consent banner</value>
+  </data>
+  <data name="enableCookieConsentHelp" xml:space="preserve">
+    <value>The custom header code and the tracking script (e.g. Google Analytics) run only after consent to statistics; advertisement widgets only after consent to marketing.</value>
+  </data>
+  <data name="cookiePolicyUrl" xml:space="preserve">
+    <value>Cookie policy address</value>
+  </data>
 </root>

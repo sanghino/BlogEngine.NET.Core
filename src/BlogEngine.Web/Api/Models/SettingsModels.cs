@@ -126,6 +126,10 @@ public sealed class SettingsDto
 
     public string? TrackingScript { get; set; }
 
+    public bool EnableCookieConsent { get; set; }
+
+    public string? CookiePolicyUrl { get; set; }
+
     public int DaysCommentsAreEnabled { get; set; }
 
     public bool IsCommentsEnabled { get; set; }

@@ -150,6 +150,8 @@ public sealed class SettingsController(
         ErrorText = s.ErrorText,
         HtmlHeader = s.HtmlHeader,
         TrackingScript = s.TrackingScript,
+        EnableCookieConsent = s.EnableCookieConsent,
+        CookiePolicyUrl = s.CookiePolicyUrl,
         DaysCommentsAreEnabled = s.DaysCommentsAreEnabled,
         IsCommentsEnabled = s.IsCommentsEnabled,
         EnableCommentsModeration = s.EnableCommentsModeration,
@@ -177,7 +179,7 @@ public sealed class SettingsController(
     {
         s.Name = n.Name ?? s.Name;
         s.Description = n.Description ?? string.Empty;
-        s.PostsPerPage = n.PostsPerPage;
+        s.PostsPerPage = n.PostsPerPage > 0 ? n.PostsPerPage : s.PostsPerPage;
         s.ThemeCookieName = n.ThemeCookieName ?? string.Empty;
         s.UseBlogNameInPageTitles = n.UseBlogNameInPageTitles;
         s.EnableRelatedPosts = n.EnableRelatedPosts;
@@ -233,6 +235,8 @@ public sealed class SettingsController(
         s.ErrorText = n.ErrorText ?? string.Empty;
         s.HtmlHeader = n.HtmlHeader ?? string.Empty;
         s.TrackingScript = n.TrackingScript ?? string.Empty;
+        s.EnableCookieConsent = n.EnableCookieConsent;
+        s.CookiePolicyUrl = n.CookiePolicyUrl?.Trim() ?? string.Empty;
         s.DaysCommentsAreEnabled = n.DaysCommentsAreEnabled;
         s.IsCommentsEnabled = n.IsCommentsEnabled;
         s.EnableCommentsModeration = n.EnableCommentsModeration;

@@ -36,6 +36,9 @@ public sealed class ThemeScope
     /// <summary>Indirizzo della cartella del tema (Custom/Themes/Nome/).</summary>
     public string ThemeUrl { get; }
 
+    /// <summary>Consenso ai cookie del visitatore (filtro <c>consent</c> e banner).</summary>
+    public CookieConsent Consent { get; internal set; } = CookieConsent.Disabled;
+
     /// <summary>Variabili disponibili in tutti i template.</summary>
     public Dictionary<string, object?> GlobalValues { get; } = new(StringComparer.Ordinal);
 

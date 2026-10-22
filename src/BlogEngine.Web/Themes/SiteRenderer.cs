@@ -117,7 +117,10 @@ public sealed class SiteRenderer(
             return fields.TryGetValue(key, out var value) ? value : null;
         }
 
-        var scope = new ThemeScope(theme, blogRoot, appRoot, T, ThemeField, widgets);
+        var scope = new ThemeScope(theme, blogRoot, appRoot, T, ThemeField, widgets)
+        {
+            Consent = CookieConsent.FromRequest(Http.Request, blogSettings.EnableCookieConsent),
+        };
         scope.GlobalValues["blog"] = await BuildBlogAsync(blogSettings, theme, blogRoot, appRoot);
         scope.GlobalValues["user"] = await BuildUserAsync();
         scope.GlobalValues["theme"] = new { id = theme.Id, title = theme.Title, url = scope.ThemeUrl };
@@ -234,7 +237,10 @@ public sealed class SiteRenderer(
         scope.GlobalValues["template"] = template;
         scope.GlobalValues["meta"] = new { description = meta.Description, keywords = meta.Keywords, author = meta.Author };
         scope.GlobalValues["content_for_header"] = new Microsoft.AspNetCore.Html.HtmlString(BuildHeader(scope, blogSettings, meta));
-        scope.GlobalValues["content_for_footer"] = new Microsoft.AspNetCore.Html.HtmlString(resources.FooterHtml + Environment.NewLine + blogSettings.TrackingScript);
+        scope.GlobalValues["content_for_footer"] = new Microsoft.AspNetCore.Html.HtmlString(
+            resources.FooterHtml + Environment.NewLine
+            + scope.Consent.Gate(blogSettings.TrackingScript, CookieConsent.Statistics) + Environment.NewLine
+            + BuildConsentBanner(scope, blogSettings));
     }
 
     /// <summary>Porting delle aggiunte automatiche di BlogBasePage all'intestazione della pagina.</summary>
@@ -302,7 +308,50 @@ public sealed class SiteRenderer(
         html.AppendLine($"<script src=\"{E(scope.AppRoot)}Scripts/blog.js\"></script>");
         html.AppendLine(meta.ExtraHead);
         html.AppendLine(resources.HeadHtml);
-        html.AppendLine(blogSettings.HtmlHeader ?? string.Empty);
+        html.AppendLine(scope.Consent.Gate(blogSettings.HtmlHeader, CookieConsent.Statistics));
+        return html.ToString();
+    }
+
+    /// <summary>
+    /// Banner del consenso ai cookie e pulsante per cambiare la scelta; Scripts/consent.js li gestisce e
+    /// accende gli script spenti dopo il consenso. Nascosto se il visitatore ha già scelto.
+    /// </summary>
+    private string BuildConsentBanner(ThemeScope scope, BlogSettings blogSettings)
+    {
+        if (!scope.Consent.Enabled)
+        {
+            return string.Empty;
+        }
+
+        static string E(string value) => WebUtility.HtmlEncode(value);
+        string Option(string category, string title, string description, bool locked) =>
+            $"<label class=\"be-consent-option\"><input type=\"checkbox\" name=\"{category}\"{(locked ? " checked disabled" : scope.Consent.Allows(category) && scope.Consent.HasChoice ? " checked" : string.Empty)} />"
+            + $" <strong>{E(T(title))}</strong> <span>{E(T(description))}</span></label>";
+
+        var policy = string.IsNullOrWhiteSpace(blogSettings.CookiePolicyUrl)
+            ? string.Empty
+            : $" <a href=\"{E(blogSettings.CookiePolicyUrl)}\">{E(T("cookiePolicy"))}</a>";
+        var hidden = scope.Consent.HasChoice ? " hidden" : string.Empty;
+        var html = new System.Text.StringBuilder();
+        html.AppendLine($"<div id=\"be-consent\" class=\"be-consent\" role=\"dialog\" aria-labelledby=\"be-consent-title\" data-cookie=\"{CookieConsent.CookieName}\" data-path=\"{E(scope.AppRoot)}\" data-days=\"{CookieConsent.CookieDays}\"{hidden}>");
+        html.AppendLine("<div class=\"be-consent-box\">");
+        html.AppendLine($"<button type=\"button\" class=\"be-consent-close\" data-consent-action=\"reject\" aria-label=\"{E(T("cookieCloseReject"))}\" title=\"{E(T("cookieCloseReject"))}\">&times;</button>");
+        html.AppendLine($"<p id=\"be-consent-title\" class=\"be-consent-title\">{E(T("cookieTitle"))}</p>");
+        html.AppendLine($"<p class=\"be-consent-text\">{E(T("cookieText"))}{policy}</p>");
+        html.AppendLine("<div class=\"be-consent-options\" hidden>");
+        html.AppendLine(Option("necessary", "cookieNecessary", "cookieNecessaryText", locked: true));
+        html.AppendLine(Option(CookieConsent.Statistics, "cookieStatistics", "cookieStatisticsText", locked: false));
+        html.AppendLine(Option(CookieConsent.Marketing, "cookieMarketing", "cookieMarketingText", locked: false));
+        html.AppendLine("</div>");
+        html.AppendLine("<div class=\"be-consent-actions\">");
+        html.AppendLine($"<button type=\"button\" class=\"be-consent-button\" data-consent-action=\"reject\">{E(T("cookieReject"))}</button>");
+        html.AppendLine($"<button type=\"button\" class=\"be-consent-button\" data-consent-action=\"customize\" data-save-label=\"{E(T("cookieSave"))}\">{E(T("cookieCustomize"))}</button>");
+        html.AppendLine($"<button type=\"button\" class=\"be-consent-button\" data-consent-action=\"accept\">{E(T("cookieAcceptAll"))}</button>");
+        html.AppendLine("</div>");
+        html.AppendLine("</div>");
+        html.AppendLine("</div>");
+        html.AppendLine($"<button type=\"button\" id=\"be-consent-reopen\" class=\"be-consent-reopen\"{(scope.Consent.HasChoice ? string.Empty : " hidden")}>{E(T("cookiePreferences"))}</button>");
+        html.AppendLine($"<script src=\"{E(scope.AppRoot)}Scripts/consent.js\"></script>");
         return html.ToString();
     }
 

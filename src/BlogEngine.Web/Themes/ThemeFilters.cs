@@ -29,6 +29,10 @@ internal static class ThemeFilters
         filters.AddFilter("theme_field", ThemeField);
         filters.AddFilter("date_format", DateFormat);
 
+        // {{ codice | consent: 'marketing' }}: script spenti finché il visitatore non dà il consenso
+        // alla categoria (banner dei cookie); senza banner il codice resta invariato.
+        filters.AddFilter("consent", Consent);
+
         // Sostituisce il filtro json standard, il cui risultato verrebbe codificato in HTML: qui è
         // JSON valido e sicuro dentro <script> (i caratteri <, > e & diventano sequenze \u....).
         filters.AddFilter("json", Json);
@@ -50,6 +54,13 @@ internal static class ThemeFilters
         };
 
         return new ValueTask<FluidValue>(new StringValue(System.Text.Json.JsonSerializer.Serialize(value, JsonOptions), false));
+    }
+
+    private static ValueTask<FluidValue> Consent(FluidValue input, FilterArguments arguments, TemplateContext context)
+    {
+        var category = arguments.Count > 0 ? arguments.At(0).ToStringValue() : Hosting.CookieConsent.Marketing;
+        var consent = ThemeEngine.GetScope(context)?.Consent ?? Hosting.CookieConsent.Disabled;
+        return new ValueTask<FluidValue>(new StringValue(consent.Gate(input.ToStringValue(), category), false));
     }
 
     private static ValueTask<FluidValue> Translate(FluidValue input, FilterArguments arguments, TemplateContext context)

@@ -77,6 +77,15 @@ public sealed class BlogSettings
     /// <summary>Script di statistiche aggiunto in fondo a ogni pagina.</summary>
     public string TrackingScript { get; set; } = string.Empty;
 
+    /// <summary>
+    /// Banner di consenso ai cookie (GDPR): gli script di HtmlHeader e TrackingScript partono solo dopo il
+    /// consenso alle statistiche, quelli degli annunci dopo il consenso al marketing.
+    /// </summary>
+    public bool EnableCookieConsent { get; set; }
+
+    /// <summary>Indirizzo dell'informativa sui cookie / privacy policy, collegata dal banner.</summary>
+    public string CookiePolicyUrl { get; set; } = string.Empty;
+
     public float GeocodingLatitude { get; set; }
 
     public float GeocodingLongitude { get; set; }

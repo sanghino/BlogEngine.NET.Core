@@ -8,6 +8,6 @@
 {%- if ad_code != '' and hidden == false %}
 <div class="Widget widget advertisement">
     {%- if widget.settings.show_label != 'false' %}<span class="ad-label">{{ 'advertisement' | t }}</span>{% endif %}
-    <div class="ad-content">{{ widget.settings.code | raw }}</div>
+    <div class="ad-content">{{ widget.settings.code | consent: 'marketing' }}</div>
 </div>
 {%- endif %}

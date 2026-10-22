@@ -776,3 +776,7 @@ youHaveNoTaggedPosts
 youHaveNotDefinedAnyRolesSoFar
 youHaveNotWrittenAnyPosts
 youHaveNoWrittenAnyPages
+cookieConsentSettings
+enableCookieConsent
+enableCookieConsentHelp
+cookiePolicyUrl

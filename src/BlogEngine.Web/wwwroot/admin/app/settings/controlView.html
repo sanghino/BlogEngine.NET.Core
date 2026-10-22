@@ -47,6 +47,15 @@
                     <label for="txtTrackingScript">{{lbl.trackingScript}}</label>
                     <textarea class="form-control ltr-dir" rows="3" id="txtTrackingScript" data-ng-model="settings.TrackingScript"> </textarea>
                 </div>
+                <h4>{{lbl.cookieConsentSettings}}</h4>
+                <div class="form-group">
+                    <label><input type="checkbox" data-ng-model="settings.EnableCookieConsent" /> {{lbl.enableCookieConsent}}</label>
+                    <p class="help-block">{{lbl.enableCookieConsentHelp}}</p>
+                </div>
+                <div class="form-group">
+                    <label for="txtCookiePolicyUrl">{{lbl.cookiePolicyUrl}}</label>
+                    <input type="text" class="form-control ltr-dir" id="txtCookiePolicyUrl" data-ng-model="settings.CookiePolicyUrl" placeholder="/page/privacy-policy" />
+                </div>
             </div>
         </div>
     </form>

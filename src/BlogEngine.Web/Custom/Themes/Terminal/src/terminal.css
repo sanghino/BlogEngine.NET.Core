@@ -1063,6 +1063,85 @@ label {
     border: 0;
 }
 
+/* ---------- Consenso ai cookie ---------- */
+.be-consent {
+    font: inherit;
+    font-size: .9rem;
+    z-index: 150;
+}
+
+.be-consent-box {
+    max-width: 1148px;
+    background: var(--bg-panel);
+    color: var(--fg);
+    border: 1px solid var(--fg-dim);
+    border-radius: 0;
+    box-shadow: 0 0 0 1px var(--bg), 0 -4px 30px rgba(0, 0, 0, .5);
+}
+
+.be-consent-title {
+    color: var(--fg-strong);
+    font-size: 1rem;
+}
+
+.be-consent-title::before {
+    content: "$ cat cookies.txt";
+    display: block;
+    margin-bottom: .4em;
+    font-weight: 400;
+    color: var(--fg-dim);
+}
+
+.be-consent-text a {
+    color: var(--fg-strong);
+}
+
+.be-consent-option {
+    color: var(--fg);
+}
+
+.be-consent-option input {
+    accent-color: var(--fg);
+}
+
+.be-consent-button {
+    font: inherit;
+    color: var(--fg);
+    background: transparent;
+    border: 1px solid var(--fg);
+    border-radius: 0;
+    text-shadow: inherit;
+}
+
+.be-consent-button::before { content: "[ "; }
+.be-consent-button::after { content: " ]"; }
+
+.be-consent-button:hover,
+.be-consent-button:focus-visible {
+    background: var(--fg);
+    color: var(--bg);
+    text-shadow: none;
+}
+
+.be-consent-close {
+    color: var(--fg-dim);
+}
+
+.be-consent-reopen {
+    font: inherit;
+    font-size: .78rem;
+    color: var(--fg);
+    background: var(--bg-panel);
+    border: 1px solid var(--border);
+    border-radius: 0;
+    z-index: 150;
+}
+
+.be-consent-reopen::before {
+    content: "$ ";
+    color: var(--fg-dim);
+}
+
 /* ---------- Piè di pagina ---------- */
 .term-footer {
     margin-top: 3rem;
