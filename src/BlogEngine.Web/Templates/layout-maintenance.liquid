@@ -1,0 +1,35 @@
+{%- comment -%}
+  Layout della pagina di manutenzione: una pagina a sé, senza menu né widget (che mostrerebbero i contenuti
+  del blog). Un tema può fornire il proprio layout-maintenance.liquid.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    {{ content_for_header }}
+    <style>
+        html, body { margin: 0; height: 100%; }
+        body { display: flex; align-items: center; justify-content: center; padding: 24px; box-sizing: border-box;
+               background: #f4f5f7; color: #222; font: 16px/1.6 -apple-system, "Segoe UI", Roboto, Arial, sans-serif; }
+        .maintenance-box { max-width: 560px; padding: 40px 36px; background: #fff; border-radius: 8px;
+                           box-shadow: 0 10px 40px rgba(0, 0, 0, .08); text-align: center; }
+        .maintenance-icon { font-size: 44px; line-height: 1; margin-bottom: 12px; }
+        .maintenance-blog { margin: 0 0 18px; font-size: 14px; letter-spacing: .06em; text-transform: uppercase; color: #888; }
+        .maintenance-title { margin: 0 0 12px; font-size: 26px; }
+        .maintenance-message { margin: 0; color: #555; }
+        .maintenance-login { margin-top: 28px; font-size: 13px; }
+        .maintenance-login a { color: #888; }
+    </style>
+</head>
+<body class="template-maintenance">
+    <main class="maintenance-box">
+        <div class="maintenance-icon" aria-hidden="true">&#128736;</div>
+        <p class="maintenance-blog">{{ blog.name }}</p>
+        {{ content_for_layout }}
+        <p class="maintenance-login"><a href="{{ blog.login_url }}">{{ 'login' | t }}</a></p>
+    </main>
+    {{ content_for_footer }}
+</body>
+</html>

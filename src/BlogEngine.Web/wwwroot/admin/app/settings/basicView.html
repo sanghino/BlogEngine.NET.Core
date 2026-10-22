@@ -6,6 +6,18 @@
         </div>
         <div class="content-inner">
             <div class="form-content">
+                <div class="panel" data-ng-class="settings.EnableMaintenanceMode ? 'panel-warning' : 'panel-default'">
+                    <div class="panel-body">
+                        <div class="form-group">
+                            <label><input type="checkbox" name="ckMaintenance" data-ng-model="settings.EnableMaintenanceMode" /> <strong>{{lbl.enableMaintenanceMode}}</strong></label>
+                            <p class="help-block">{{lbl.enableMaintenanceModeHelp}}</p>
+                        </div>
+                        <div class="form-group" style="margin-bottom:0">
+                            <label for="txtMaintenanceMessage">{{lbl.maintenanceMessage}}</label>
+                            <textarea class="form-control" rows="2" id="txtMaintenanceMessage" data-ng-model="settings.MaintenanceMessage" placeholder="{{lbl.maintenanceDefaultText}}"></textarea>
+                        </div>
+                    </div>
+                </div>
                 <div class="form-group">
                     <label for="txtName">{{lbl.blogTitle}}</label>
                     <input type="text" class="form-control" id="txtName" name="txtName" data-ng-model="settings.Name" />

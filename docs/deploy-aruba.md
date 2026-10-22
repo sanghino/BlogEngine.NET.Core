@@ -91,6 +91,12 @@ Alcune cartelle non vengono toccate dall'aggiornamento perché stanno in `App_Da
 
 Quelli inclusi nel sito, cioè `public/Custom/...`, vengono invece aggiornati.
 
+### Manutenzione più lunga
+
+`app_offline.htm` ferma tutto il sito, amministrazione compresa, e serve solo durante il caricamento dei file. Se vuoi tenere chiuso il blog ai visitatori per più tempo e continuare a lavorarci, usa invece **Impostazioni → Base → Sito in manutenzione**:
+- i visitatori vedono la pagina di manutenzione;
+- tu, collegato, vedi il sito normalmente, con un avviso giallo in cima.
+
 ## 4. Backup
 
 Prima di ogni aggiornamento scarica via FTP sul PC:

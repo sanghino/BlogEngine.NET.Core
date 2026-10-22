@@ -1147,6 +1147,40 @@ label {
     color: var(--fg-dim);
 }
 
+/* ---------- Pagina di manutenzione ---------- */
+.term-maintenance {
+    max-width: 760px;
+    padding-top: 12vh;
+}
+
+.maintenance-status {
+    margin: .8em 0 0;
+    color: var(--warning);
+}
+
+.term-maintenance .maintenance-title {
+    margin: .6em 0 .4em;
+    font-size: 1.5rem;
+}
+
+.term-maintenance .maintenance-title::before {
+    content: "> ";
+    color: var(--fg-dim);
+}
+
+.term-maintenance .maintenance-message {
+    color: var(--fg);
+}
+
+.maintenance-wait {
+    margin-top: 1.4em;
+}
+
+.maintenance-login {
+    margin: 1.4em 0 .6em;
+    font-size: .85rem;
+}
+
 /* ---------- Piè di pagina ---------- */
 .term-footer {
     margin-top: 3rem;

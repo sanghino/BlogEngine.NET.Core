@@ -65,6 +65,7 @@ app.UseRouting();
 app.UseRateLimiter();
 app.UseAuthentication();
 app.UseMiddleware<UserContextMiddleware>();
+app.UseMiddleware<MaintenanceMiddleware>();
 app.UseAuthorization();
 
 app.MapRazorPages();

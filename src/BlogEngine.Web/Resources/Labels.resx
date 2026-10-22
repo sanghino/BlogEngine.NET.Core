@@ -3002,4 +3002,25 @@
   <data name="cookiePolicyUrl" xml:space="preserve">
     <value>Cookie policy address</value>
   </data>
+  <data name="maintenanceTitle" xml:space="preserve">
+    <value>Site under maintenance</value>
+  </data>
+  <data name="maintenanceDefaultText" xml:space="preserve">
+    <value>We are carrying out some maintenance work. The site will be back online as soon as possible: thank you for your patience.</value>
+  </data>
+  <data name="maintenanceActiveNotice" xml:space="preserve">
+    <value>Maintenance mode is on: visitors see the maintenance page.</value>
+  </data>
+  <data name="maintenanceSwitchOff" xml:space="preserve">
+    <value>Turn off</value>
+  </data>
+  <data name="enableMaintenanceMode" xml:space="preserve">
+    <value>Site under maintenance</value>
+  </data>
+  <data name="enableMaintenanceModeHelp" xml:space="preserve">
+    <value>Visitors see a maintenance page; administrators and editors who are logged in see the site normally and can keep working on it.</value>
+  </data>
+  <data name="maintenanceMessage" xml:space="preserve">
+    <value>Maintenance page message (empty = default text)</value>
+  </data>
 </root>

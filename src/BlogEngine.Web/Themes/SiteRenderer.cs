@@ -65,6 +65,7 @@ public sealed class SiteRenderer(
     private ThemeScope? _scope;
     private BlogSettings? _settings;
     private AntiforgeryTokenSet? _tokens;
+    private bool _maintenancePage;
 
     private AntiforgeryTokenSet Tokens => _tokens ??= antiforgery.GetAndStoreTokens(Http);
 
@@ -87,6 +88,25 @@ public sealed class SiteRenderer(
         var layout = template == "post" ? "layout-post" : template == "index" ? string.Empty : "layout-page";
         var html = await engine.RenderPageAsync(scope, template, layout, values);
         return new ContentResult { Content = html, ContentType = "text/html; charset=utf-8", StatusCode = statusCode };
+    }
+
+    /// <summary>
+    /// Pagina "sito in manutenzione": template maintenance nel layout layout-maintenance (una pagina a sé,
+    /// senza menu né widget). Un tema può ridefinire entrambi; altrimenti valgono quelli di Templates/.
+    /// </summary>
+    public async Task<string> MaintenanceAsync(string? message)
+    {
+        _maintenancePage = true;
+        var scope = await GetScopeAsync();
+        await AddPageValuesAsync(scope, "maintenance", new PageMeta { Title = T("maintenanceTitle"), NoIndex = true });
+        return await engine.RenderPageAsync(scope, "maintenance", "layout-maintenance", new Dictionary<string, object?>
+        {
+            ["maintenance"] = new
+            {
+                title = T("maintenanceTitle"),
+                message = string.IsNullOrWhiteSpace(message) ? T("maintenanceDefaultText") : message,
+            },
+        });
     }
 
     /// <summary>Mostra un frammento senza layout (es. il commento appena aggiunto).</summary>
@@ -240,7 +260,8 @@ public sealed class SiteRenderer(
         scope.GlobalValues["content_for_footer"] = new Microsoft.AspNetCore.Html.HtmlString(
             resources.FooterHtml + Environment.NewLine
             + scope.Consent.Gate(blogSettings.TrackingScript, CookieConsent.Statistics) + Environment.NewLine
-            + BuildConsentBanner(scope, blogSettings));
+            + BuildConsentBanner(scope, blogSettings)
+            + BuildMaintenanceNotice(scope, blogSettings));
     }
 
     /// <summary>Porting delle aggiunte automatiche di BlogBasePage all'intestazione della pagina.</summary>
@@ -310,6 +331,20 @@ public sealed class SiteRenderer(
         html.AppendLine(resources.HeadHtml);
         html.AppendLine(scope.Consent.Gate(blogSettings.HtmlHeader, CookieConsent.Statistics));
         return html.ToString();
+    }
+
+    /// <summary>
+    /// Avviso per chi lavora sul blog mentre è in manutenzione (solo loro vedono le pagine pubbliche).
+    /// </summary>
+    private string BuildMaintenanceNotice(ThemeScope scope, BlogSettings blogSettings)
+    {
+        if (!blogSettings.EnableMaintenanceMode || _maintenancePage)
+        {
+            return string.Empty;
+        }
+
+        return $"<div class=\"be-maintenance-notice\" role=\"status\">{WebUtility.HtmlEncode(T("maintenanceActiveNotice"))} "
+            + $"<a href=\"{WebUtility.HtmlEncode(scope.BlogRoot)}admin/#/settings/basic\">{WebUtility.HtmlEncode(T("maintenanceSwitchOff"))}</a></div>";
     }
 
     /// <summary>

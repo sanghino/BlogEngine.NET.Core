@@ -2928,4 +2928,25 @@
   <data name="cookiePolicyUrl" xml:space="preserve">
     <value>Indirizzo dell'informativa sui cookie</value>
   </data>
+  <data name="maintenanceTitle" xml:space="preserve">
+    <value>Sito in manutenzione</value>
+  </data>
+  <data name="maintenanceDefaultText" xml:space="preserve">
+    <value>Stiamo eseguendo alcuni lavori di manutenzione. Il sito tornerà online al più presto: grazie per la pazienza.</value>
+  </data>
+  <data name="maintenanceActiveNotice" xml:space="preserve">
+    <value>Modalità manutenzione attiva: i visitatori vedono la pagina di manutenzione.</value>
+  </data>
+  <data name="maintenanceSwitchOff" xml:space="preserve">
+    <value>Disattiva</value>
+  </data>
+  <data name="enableMaintenanceMode" xml:space="preserve">
+    <value>Sito in manutenzione</value>
+  </data>
+  <data name="enableMaintenanceModeHelp" xml:space="preserve">
+    <value>I visitatori vedono una pagina di manutenzione; amministratori e redattori collegati vedono il sito normalmente e possono continuare a lavorarci.</value>
+  </data>
+  <data name="maintenanceMessage" xml:space="preserve">
+    <value>Messaggio della pagina di manutenzione (vuoto = testo predefinito)</value>
+  </data>
 </root>

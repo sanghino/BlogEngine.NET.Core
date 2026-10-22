@@ -18,6 +18,15 @@ public sealed class BlogSettings
 
     public string Description { get; set; } = "Short description of the blog";
 
+    /// <summary>
+    /// Modalità manutenzione: i visitatori vedono la pagina "sito in manutenzione" (codice 503), mentre chi
+    /// può accedere all'amministrazione vede il blog normalmente.
+    /// </summary>
+    public bool EnableMaintenanceMode { get; set; }
+
+    /// <summary>Messaggio della pagina di manutenzione; vuoto = testo predefinito tradotto.</summary>
+    public string MaintenanceMessage { get; set; } = string.Empty;
+
     public string AuthorName { get; set; } = "My name";
 
     public string Theme { get; set; } = "Standard";

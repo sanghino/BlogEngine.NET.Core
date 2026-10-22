@@ -1,0 +1,5 @@
+{%- comment -%} Pagina "sito in manutenzione". Variabili: maintenance (title, message). {%- endcomment -%}
+<div class="maintenance-page">
+    <h1 class="maintenance-title">{{ maintenance.title }}</h1>
+    <p class="maintenance-message">{{ maintenance.message | newline_to_br }}</p>
+</div>

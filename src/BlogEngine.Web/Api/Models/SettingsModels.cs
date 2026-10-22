@@ -9,6 +9,10 @@ public sealed class SettingsDto
 
     public string? Description { get; set; }
 
+    public bool EnableMaintenanceMode { get; set; }
+
+    public string? MaintenanceMessage { get; set; }
+
     public int PostsPerPage { get; set; }
 
     public string? ThemeCookieName { get; set; }

@@ -1,0 +1,38 @@
+{%- comment -%} Tema Terminal: pagina di manutenzione nello stile del terminale, senza menu né widget. {%- endcomment -%}
+{%- assign host = blog.name | downcase | strip | replace: ' ', '-' -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}" data-theme="dark">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    <script>
+        (function () {
+            var mode = null;
+            try { mode = localStorage.getItem('terminal-theme'); } catch (e) { }
+            if (mode === 'light') { document.documentElement.setAttribute('data-theme', 'light'); }
+        })();
+    </script>
+    <link rel="icon" href="{{ 'src/logo.svg' | theme_url }}" type="image/svg+xml" />
+    {{ content_for_header }}
+    <link href="{{ 'src/terminal.css' | theme_url }}" rel="stylesheet" />
+</head>
+<body class="template-maintenance">
+    <div class="term term-maintenance">
+        <header class="term-header">
+            <div class="term-bar">
+                <span class="term-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+                <span class="term-title">guest@{{ host }}: ~</span>
+            </div>
+            <div class="term-brand">
+                <p class="prompt"><span class="prompt-user">guest@{{ host }}</span>:<span class="prompt-path">~</span>$ systemctl status {{ host }}</p>
+                <p class="maintenance-status">&#9679; {{ host }}.service &mdash; <strong>maintenance</strong></p>
+                {{ content_for_layout }}
+                <p class="prompt maintenance-wait"><span class="prompt-user">guest@{{ host }}</span>:<span class="prompt-path">~</span>$ <span class="cursor" aria-hidden="true"></span></p>
+                <p class="maintenance-login"><a href="{{ blog.login_url }}">{{ 'login' | t | downcase }}</a></p>
+            </div>
+        </header>
+    </div>
+    {{ content_for_footer }}
+</body>
+</html>

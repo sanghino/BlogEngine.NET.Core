@@ -93,6 +93,8 @@ public sealed class SettingsController(
     {
         Name = s.Name,
         Description = s.Description,
+        EnableMaintenanceMode = s.EnableMaintenanceMode,
+        MaintenanceMessage = s.MaintenanceMessage,
         PostsPerPage = s.PostsPerPage,
         ThemeCookieName = s.ThemeCookieName,
         UseBlogNameInPageTitles = s.UseBlogNameInPageTitles,
@@ -179,6 +181,8 @@ public sealed class SettingsController(
     {
         s.Name = n.Name ?? s.Name;
         s.Description = n.Description ?? string.Empty;
+        s.EnableMaintenanceMode = n.EnableMaintenanceMode;
+        s.MaintenanceMessage = n.MaintenanceMessage?.Trim() ?? string.Empty;
         s.PostsPerPage = n.PostsPerPage > 0 ? n.PostsPerPage : s.PostsPerPage;
         s.ThemeCookieName = n.ThemeCookieName ?? string.Empty;
         s.UseBlogNameInPageTitles = n.UseBlogNameInPageTitles;
