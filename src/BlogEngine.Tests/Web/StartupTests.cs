@@ -181,4 +181,17 @@ public sealed class StartupTests
             System.Globalization.CultureInfo.CurrentUICulture = previous;
         }
     }
+
+    [TestMethod]
+    public async Task Responses_CarrySecurityHeaders()
+    {
+        using var factory = new BlogWebFactory();
+        using var browser = factory.CreateBrowser(followRedirects: false);
+
+        var response = await browser.GetAsync("/setup");
+
+        Assert.AreEqual("SAMEORIGIN", response.Headers.GetValues("X-Frame-Options").Single());
+        Assert.AreEqual("nosniff", response.Headers.GetValues("X-Content-Type-Options").Single());
+        Assert.AreEqual("strict-origin-when-cross-origin", response.Headers.GetValues("Referrer-Policy").Single());
+    }
 }

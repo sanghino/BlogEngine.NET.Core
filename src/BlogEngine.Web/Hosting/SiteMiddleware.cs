@@ -153,3 +153,25 @@ public sealed class ConditionalCompressionMiddleware
                 ["application/rss+xml", "application/atom+xml", "application/rdf+xml", "application/opensearchdescription+xml"]);
         });
 }
+
+/// <summary>
+/// Intestazioni di sicurezza su tutte le risposte: il sito non può essere incorniciato da altri siti
+/// (clickjacking su login e amministrazione), il browser non "indovina" il tipo dei file e agli altri
+/// siti arriva solo l'origine come referrer. Un'intestazione già impostata (es. dai file caricati) resta.
+/// </summary>
+public sealed class SecurityHeadersMiddleware(RequestDelegate next)
+{
+    public Task InvokeAsync(HttpContext http)
+    {
+        http.Response.OnStarting(() =>
+        {
+            var headers = http.Response.Headers;
+            headers.TryAdd("X-Frame-Options", "SAMEORIGIN");
+            headers.TryAdd("X-Content-Type-Options", "nosniff");
+            headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+            return Task.CompletedTask;
+        });
+
+        return next(http);
+    }
+}

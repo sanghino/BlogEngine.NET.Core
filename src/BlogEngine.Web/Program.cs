@@ -27,6 +27,7 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/error");
 }
 
+app.UseMiddleware<SecurityHeadersMiddleware>();
 app.UseStaticFiles();
 
 // File dei temi e dei widget (CSS, immagini, script) dalle cartelle Custom/ e da quelle caricate in App_Data.
