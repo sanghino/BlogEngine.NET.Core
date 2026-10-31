@@ -294,6 +294,11 @@ public sealed partial class PublicSiteTests
         var home = await admin.GetStringAsync($"/?theme={theme}");
         var postUrl = PostLinkRegex().Match(home).Groups["url"].Value;
         var pages = new[] { home, await admin.GetStringAsync($"{postUrl}?theme={theme}"), await admin.GetStringAsync($"/archive?theme={theme}") };
+        foreach (var page in pages)
+        {
+            StringAssert.Contains(page, "Powered by ExtraGeek-BlogEngine", $"{theme}: firma nel piè di pagina.");
+            Assert.IsFalse(page.Contains("BlogEngine.NET") || page.Contains("blogengine.io/\""), $"{theme}: nessun riferimento al vecchio progetto.");
+        }
 
         var assets = pages.SelectMany(p => LocalAssetRegex().Matches(p).Select(m => m.Groups["url"].Value)).Distinct().ToList();
         Assert.IsTrue(assets.Count > 10, string.Join(", ", assets));

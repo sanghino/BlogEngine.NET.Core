@@ -17,7 +17,8 @@ public sealed class AdminViewContext(
     IOptions<BlogEngineOptions> options,
     ILinkGenerator links)
 {
-    public const string Version = "BlogEngine.NET 4.0 (.NET 8)";
+    /// <summary>Nome e versione del programma (meta generator, feed, diagnostica), con il .NET in uso.</summary>
+    public static readonly string Version = $"ExtraGeek-BlogEngine 4.0 (.NET {Environment.Version.Major})";
 
     private bool _loaded;
 
