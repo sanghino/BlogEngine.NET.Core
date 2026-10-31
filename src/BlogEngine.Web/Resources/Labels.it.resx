@@ -2958,4 +2958,73 @@
   <data name="aboutSpecification" xml:space="preserve">
     <value>La tua installazione di ExtraGeek-BlogEngine</value>
   </data>
+  <data name="sortOrder" xml:space="preserve">
+    <value>Ordinamento</value>
+  </data>
+  <data name="reviews" xml:space="preserve">
+    <value>Recensioni</value>
+  </data>
+  <data name="writeReview" xml:space="preserve">
+    <value>Scrivi una recensione</value>
+  </data>
+  <data name="customFields" xml:space="preserve">
+    <value>Campi personalizzati</value>
+  </data>
+  <data name="theNew" xml:space="preserve">
+    <value>Nuovo</value>
+  </data>
+  <data name="back" xml:space="preserve">
+    <value>Indietro</value>
+  </data>
+  <data name="latestNews" xml:space="preserve">
+    <value>Ultime notizie</value>
+  </data>
+  <data name="quickDraft" xml:space="preserve">
+    <value>Bozza veloce</value>
+  </data>
+  <data name="theOperator" xml:space="preserve">
+    <value>Operatore</value>
+  </data>
+  <data name="blogEngineComment" xml:space="preserve">
+    <value>ExtraGeek-BlogEngine</value>
+  </data>
+  <data name="blogLanguage" xml:space="preserve">
+    <value>Lingua del blog</value>
+  </data>
+  <data name="blogTitle" xml:space="preserve">
+    <value>Titolo del blog</value>
+  </data>
+  <data name="commentsProvider" xml:space="preserve">
+    <value>Sistema dei commenti</value>
+  </data>
+  <data name="customize" xml:space="preserve">
+    <value>Personalizza</value>
+  </data>
+  <data name="disqusComment" xml:space="preserve">
+    <value>Commenti Disqus</value>
+  </data>
+  <data name="facebookComment" xml:space="preserve">
+    <value>Commenti Facebook</value>
+  </data>
+  <data name="highestRated" xml:space="preserve">
+    <value>Più votati</value>
+  </data>
+  <data name="information" xml:space="preserve">
+    <value>Informazioni</value>
+  </data>
+  <data name="latest" xml:space="preserve">
+    <value>Più recenti</value>
+  </data>
+  <data name="mostDownloaded" xml:space="preserve">
+    <value>Più scaricati</value>
+  </data>
+  <data name="plugins" xml:space="preserve">
+    <value>Plugin</value>
+  </data>
+  <data name="changeName" xml:space="preserve">
+    <value>Cambia nome</value>
+  </data>
+  <data name="share" xml:space="preserve">
+    <value>Condividi</value>
+  </data>
 </root>

@@ -29,6 +29,7 @@
         .success(function (data) {
             angular.copy(data, $scope.vm);
             $scope.settings = $scope.vm.Settings;
+            $scope.loadedCulture = $scope.settings.Culture;
             $scope.timeZoneOptions = $scope.vm.TimeZones;
             $scope.selectedLanguage = selectedOption($scope.lookups.Cultures, $scope.settings.Culture);
             $scope.selectedDeskTheme = selectedOption($scope.lookups.InstalledThemes, $scope.settings.DesktopTheme);
@@ -62,10 +63,16 @@
         $scope.settings.TimeZoneId = $scope.selTimeZone.OptionValue;
         $scope.settings.FacebookLanguage = $scope.selFacebookLanguage.OptionValue;
         $scope.settings.txtErrorTitle = $scope.txtErrorTitle;
+        var languageChanged = $scope.settings.Culture !== $scope.loadedCulture;
 
         dataService.updateItem("/api/settings", $scope.settings)
         .success(function (data) {
             toastr.success($rootScope.lbl.settingsUpdated);
+            // Le etichette sono caricate all'apertura dell'amministrazione: con una nuova lingua si ricarica la pagina.
+            if (languageChanged) {
+                setTimeout(function () { location.reload(); }, 800);
+                return;
+            }
             $scope.load();
         })
         .error(function () { toastr.error($rootScope.lbl.updateFailed); });

@@ -327,6 +327,16 @@ public sealed partial class PublicSiteTests
         Assert.AreEqual(0, offenders.Count, string.Join(Environment.NewLine, offenders));
     }
 
+    /// <summary>Ogni etichetta inglese ha la traduzione italiana: altrimenti l'amministrazione mostra testi in inglese.</summary>
+    [TestMethod]
+    public void ItalianLabels_CoverAllEnglishLabels()
+    {
+        static HashSet<string> Keys(string file) => System.Xml.Linq.XDocument.Load(Path.Combine(SourcePaths.WebProject, "Resources", file))
+            .Root!.Elements("data").Select(d => (string)d.Attribute("name")!).ToHashSet();
+        var missing = Keys("Labels.resx").Except(Keys("Labels.it.resx")).ToList();
+        Assert.AreEqual(0, missing.Count, "Senza traduzione italiana: " + string.Join(", ", missing));
+    }
+
     [TestMethod]
     public void ThemeStylesheets_ReferenceExistingFiles()
     {
