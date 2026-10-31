@@ -10,7 +10,8 @@ public sealed class BlogEngineOptions
     /// <summary>
     /// Cartella in cui l'applicazione scrive dati, file caricati, cache, chiavi e log.
     /// Un percorso relativo è risolto rispetto alla cartella dell'applicazione (content root).
-    /// Su Aruba vale "../App_Data", cioè la cartella accanto a "public".
+    /// Su Aruba vale "App_Data", cioè la cartella App_Data nella root del sito (accanto a "public"):
+    /// IIS non la rende mai raggiungibile dal web.
     /// </summary>
     public string DataPath { get; set; } = "App_Data";
 

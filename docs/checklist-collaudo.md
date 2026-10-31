@@ -63,6 +63,6 @@ Conviene usare due browser, oppure una finestra normale e una in incognito: uno 
 - [ ] Facoltativo: Open Live Writer o un'altra app MetaWeblog pubblica un post su `/metaweblog.axd`.
 
 ## L. Dopo l'aggiornamento su Aruba
-- [ ] `app_offline.htm` è stato cancellato da `public`.
+- [ ] `app_offline.htm` è stato cancellato dalla root del sito.
 - [ ] Il sito risponde in `https://` con il lucchetto.
-- [ ] Il backup di `App_Data` e `public` di questo aggiornamento è salvato sul PC.
+- [ ] Il backup della root del sito (con `App_Data`) di questo aggiornamento è salvato sul PC.

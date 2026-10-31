@@ -4,8 +4,8 @@
 
 .DESCRIPTION
     Pubblica BlogEngine.Web in artifacts\aruba\<data-ora>\ con:
-      public\           contenuto della cartella "public" del sito (da caricare via FTP)
-      app_offline.htm   da caricare in "public" PRIMA dell'aggiornamento e da cancellare DOPO
+      sito\             contenuto da caricare via FTP nella root del sito (la cartella con il nome del dominio)
+      app_offline.htm   da caricare nella root PRIMA dell'aggiornamento e da cancellare DOPO
       LEGGIMI.txt       riepilogo delle opzioni usate
     e ne crea anche lo zip. La cartella App_Data non fa parte del pacchetto: contiene i dati del blog
     e non va mai sovrascritta.
@@ -45,12 +45,12 @@ $root = Split-Path -Parent $PSScriptRoot
 $project = Join-Path $root 'src\BlogEngine.Web\BlogEngine.Web.csproj'
 $stamp = Get-Date -Format 'yyyyMMdd-HHmm'
 $output = Join-Path $root "artifacts\aruba\$stamp"
-$public = Join-Path $output 'public'
+$site = Join-Path $output 'sito'
 
 $arguments = @(
     'publish', $project,
     '--configuration', 'Release',
-    '--output', $public,
+    '--output', $site,
     "-p:BlogEngineTargetFramework=$Framework",
     "-p:AspNetCoreHostingModel=$HostingModel"
 )
@@ -65,7 +65,7 @@ Write-Host "Pubblicazione: $Framework, $Mode, $HostingModel$(if ($Mode -eq 'Self
 if ($LASTEXITCODE -ne 0) { throw "dotnet publish non riuscito (codice $LASTEXITCODE)." }
 
 # web.config: programma da avviare e modello di hosting scelti (il file del progetto vale per "dotnet BlogEngine.Web.dll").
-$webConfigPath = Join-Path $public 'web.config'
+$webConfigPath = Join-Path $site 'web.config'
 [xml] $webConfig = Get-Content $webConfigPath -Raw
 $aspNetCore = $webConfig.SelectSingleNode('//aspNetCore')
 if ($Mode -eq 'SelfContained') {
@@ -79,7 +79,7 @@ $aspNetCore.SetAttribute('hostingModel', $HostingModel.ToLowerInvariant())
 $webConfig.Save($webConfigPath)
 
 # File che non devono arrivare sul server.
-Get-ChildItem $public -Recurse -Include '*.pdb', 'appsettings.Development.json' | Remove-Item -Force
+Get-ChildItem $site -Recurse -Include '*.pdb', 'appsettings.Development.json' | Remove-Item -Force
 
 # Pagina mostrata ai visitatori durante l'aggiornamento (IIS ferma il sito finché il file esiste).
 @'
@@ -92,7 +92,7 @@ Get-ChildItem $public -Recurse -Include '*.pdb', 'appsettings.Development.json' 
 </html>
 '@ | Set-Content -Path (Join-Path $output 'app_offline.htm') -Encoding utf8
 
-$version = (Get-Item (Join-Path $public 'BlogEngine.Web.dll')).VersionInfo.ProductVersion
+$version = (Get-Item (Join-Path $site 'BlogEngine.Web.dll')).VersionInfo.ProductVersion
 @"
 BlogEngine.NET $version - pacchetto del $(Get-Date -Format 'dd/MM/yyyy HH:mm')
 Framework: $Framework
@@ -100,10 +100,12 @@ Modalità: $Mode$(if ($Mode -eq 'SelfContained') { " ($Runtime)" })
 Hosting IIS: $HostingModel
 
 Procedura completa: docs\deploy-aruba.md
-1. Backup via FTP di "public" e "App_Data".
-2. Carica app_offline.htm in "public".
-3. Carica il contenuto di public\ in "public" (sovrascrivendo).
-4. Cancella app_offline.htm da "public" e apri il sito.
+Tutto va nella ROOT del sito (la cartella con il nome del dominio), NON nella cartella "public".
+1. Backup via FTP della root del sito (App_Data compresa).
+2. Carica app_offline.htm nella root.
+3. Carica il contenuto di sito\ nella root (sovrascrivendo). Non cancellare le cartelle di Aruba
+   (public, App_Data, mdb-database, cgi-bin...).
+4. Cancella app_offline.htm dalla root e apri il sito.
 "@ | Set-Content -Path (Join-Path $output 'LEGGIMI.txt') -Encoding utf8
 
 $zip = "$output.zip"

@@ -5,14 +5,18 @@ Guida passo passo per installare e aggiornare BlogEngine.NET sull'hosting Window
 ## Come è organizzato il sito sul server
 
 ```
-/                 radice FTP
-├── public/       il sito (tutto ciò che crea il pacchetto)
-└── App_Data/     i dati del blog: post, utenti, file caricati, temi ed estensioni aggiunti, chiavi, log
+www.tuodominio.it/   ROOT del sito: qui va il contenuto della cartella sito\ del pacchetto
+├── web.config, BlogEngine.Web.exe, ...   (dal pacchetto)
+├── Custom/, Templates/, wwwroot/, ...    (dal pacchetto)
+├── App_Data/        i dati del blog: post, utenti, file caricati, temi ed estensioni aggiunti, chiavi, log
+├── public/          cartella di Aruba per documenti pubblici: il blog non la usa
+└── mdb-database/, cgi-bin/, ...          altre cartelle di Aruba: non toccarle
 ```
 
-- `public` si sostituisce a ogni aggiornamento.
+- Il blog va nella **root** del sito, la cartella con il nome del dominio, **non** nella cartella `public`.
+- I file del pacchetto si sostituiscono a ogni aggiornamento; le cartelle di Aruba (`public`, `mdb-database`, `cgi-bin`...) non si cancellano.
 - `App_Data` **non si sovrascrive e non si cancella mai**: contiene tutto il blog. Il pacchetto non la include apposta.
-- Il sito la trova grazie a `appsettings.json` (`"DataPath": "../App_Data"`) e crea da solo le sottocartelle mancanti.
+- Il sito la trova grazie a `appsettings.json` (`"DataPath": "App_Data"`) e crea da solo le sottocartelle mancanti. Anche se sta nella root, IIS non la rende mai raggiungibile dal web.
 
 ## 1. Preparare il pacchetto (sul PC)
 
@@ -28,7 +32,7 @@ Lo script non ha un parametro per scegliere la cartella di uscita: crea sempre `
 
 | File | A cosa serve |
 |---|---|
-| `public\` | il contenuto da caricare nella cartella `public` del sito |
+| `sito\` | il contenuto da caricare nella **root** del sito |
 | `app_offline.htm` | la pagina "Aggiornamento in corso" da usare durante l'aggiornamento |
 | `LEGGIMI.txt` | le opzioni con cui è stato creato il pacchetto |
 
@@ -57,28 +61,29 @@ Alla prima installazione il blog è vuoto: l'amministratore, il nome del blog e 
 
 ### Passo 1: controllare il pacchetto sul PC
 
-Nella cartella `artifacts\aruba\<data-ora>\public\` devono esserci direttamente i file del sito, tra cui `web.config` e `BlogEngine.Web.dll` (e `BlogEngine.Web.exe` con il pacchetto predefinito). Se li vedi dentro un'altra sottocartella, hai aperto la cartella sbagliata.
+Nella cartella `artifacts\aruba\<data-ora>\sito\` devono esserci direttamente i file del sito, tra cui `web.config` e `BlogEngine.Web.dll` (e `BlogEngine.Web.exe` con il pacchetto predefinito). Se li vedi dentro un'altra sottocartella, hai aperto la cartella sbagliata.
 
 ### Passo 2: preparare l'hosting dal pannello Aruba
 
 1. Imposta il pool applicativo del sito su **.NET Core**: di solito è su "Framework .NET 4.0", che non avvia il sito. Tra le modalità scegli **self-contained**, oppure "hosted" se usi il pacchetto `-Mode FrameworkDependent`.
-2. Con il programma FTP guarda la radice del tuo spazio: deve esserci la cartella `public` (il sito). Accanto a `public`, **non dentro**, crea la cartella `App_Data` se non c'è già. È qui che il blog salva tutti i suoi dati:
+2. Con il programma FTP apri la **root** del sito, la cartella con il nome del dominio: dentro ci sono le cartelle di Aruba, tra cui `public`. Il blog va proprio qui nella root, **non** dentro `public`. Sempre nella root, accanto a `public`, deve esserci la cartella `App_Data`: creala se non c'è già. È qui che il blog salva tutti i suoi dati:
 
    ```
-   /                 radice FTP
-   ├── public/       il sito
-   └── App_Data/     i dati del blog
+   www.tuodominio.it/   root del sito: qui va il blog
+   ├── App_Data/        i dati del blog
+   ├── public/          cartella di Aruba, il blog non la usa
+   └── ...              altre cartelle di Aruba (mdb-database, cgi-bin...): non toccarle
    ```
 
 3. Dal pannello Aruba (Pannello di controllo → Hosting → Gestione permessi) dai alla cartella `App_Data` i **permessi di scrittura**. Senza, il sito non riesce a salvare nulla e non parte.
-4. Svuota la cartella `public`: cancella la pagina di benvenuto di Aruba (per esempio `index.html`), altrimenti verrebbe mostrata al posto del blog.
+4. Se nella root c'è la pagina di benvenuto di Aruba (per esempio `index.html` o `default.asp`), cancellala, altrimenti verrebbe mostrata al posto del blog. Non cancellare le cartelle di Aruba.
 
 ### Passo 3: caricare il sito via FTP
 
-1. Apri la cartella `public` del server.
-2. Dal PC, apri `artifacts\aruba\<data-ora>\public\`, seleziona **tutto il contenuto** (file e cartelle) e trascinalo dentro `public` sul server. Non caricare la cartella `public` stessa, e non caricare `app_offline.htm` né `LEGGIMI.txt`.
+1. Apri la **root** del sito sul server (la cartella con il nome del dominio).
+2. Dal PC, apri `artifacts\aruba\<data-ora>\sito\`, seleziona **tutto il contenuto** (file e cartelle) e trascinalo nella root sul server. Non caricare la cartella `sito` stessa, e non caricare `app_offline.htm` né `LEGGIMI.txt`.
 3. Aspetta la fine del trasferimento. Con il pacchetto predefinito sono circa 150 MB, quindi servono diversi minuti: non interromperlo. Se il programma FTP segnala file falliti, riprovali.
-4. Controlla che sul server, direttamente dentro `public`, ci siano `web.config` e `BlogEngine.Web.dll`.
+4. Controlla che sul server, direttamente nella root (accanto a `public` e `App_Data`), ci siano `web.config` e `BlogEngine.Web.dll`.
 
 ### Passo 4: aprire il sito la prima volta
 
@@ -91,7 +96,7 @@ Nella cartella `artifacts\aruba\<data-ora>\public\` devono esserci direttamente 
 
 La chiave impedisce che qualcun altro configuri il blog al posto tuo.
 
-1. Con il programma FTP apri `App_Data` (accanto a `public`).
+1. Con il programma FTP apri `App_Data` nella root del sito.
 2. Scarica `setup-key.txt` sul PC e aprilo con il Blocco note.
 3. Copia la stringa che contiene: sono 32 caratteri fatti di cifre e lettere da A a F. Le maiuscole e le minuscole non contano.
 
@@ -141,16 +146,16 @@ Con il pulsante di prova invii un messaggio di test.
 
 1. **Backup** (vedi sotto).
 2. Crea il nuovo pacchetto con `.\tools\publish-aruba.ps1`.
-3. Carica `app_offline.htm` dentro `public` sul server. IIS ferma il sito, mostra "Aggiornamento in corso" e sblocca i file.
-4. Carica il contenuto di `public\` del pacchetto in `public`, sovrascrivendo i file esistenti.
-5. **Cancella** `app_offline.htm` da `public`.
+3. Carica `app_offline.htm` nella **root** del sito. IIS ferma il sito, mostra "Aggiornamento in corso" e sblocca i file.
+4. Carica il contenuto di `sito\` del pacchetto nella root, sovrascrivendo i file esistenti.
+5. **Cancella** `app_offline.htm` dalla root.
 6. Apri il sito e verifica home page, login e un post. Usa la checklist in `docs/checklist-collaudo.md`.
 
 Alcune cartelle non vengono toccate dall'aggiornamento perché stanno in `App_Data`:
 - i temi, le estensioni e i widget caricati;
 - i file caricati.
 
-Quelli inclusi nel sito, cioè `public/Custom/...`, vengono invece aggiornati.
+Quelli inclusi nel sito, cioè `Custom/...` nella root, vengono invece aggiornati.
 
 ### Manutenzione più lunga
 
@@ -163,7 +168,7 @@ Quelli inclusi nel sito, cioè `public/Custom/...`, vengono invece aggiornati.
 Prima di ogni aggiornamento scarica via FTP sul PC:
 
 - tutta la cartella `App_Data`: sono i dati, ed è la parte più importante;
-- tutta la cartella `public`: serve per tornare alla versione precedente.
+- il resto della root (i file del blog): serve per tornare alla versione precedente.
 
 Mettile in una cartella con la data, ad esempio `backup\2026-10-22\`.
 
@@ -173,16 +178,16 @@ Tra un aggiornamento e l'altro conviene comunque copiare `App_Data` ogni tanto. 
 
 Se dopo l'aggiornamento il sito non funziona:
 
-1. Carica `app_offline.htm` in `public`.
-2. Cancella il contenuto di `public` e ricarica quello del backup.
+1. Carica `app_offline.htm` nella root.
+2. Ricarica nella root i file del blog dal backup, sovrascrivendo quelli nuovi. Non cancellare le cartelle di Aruba.
 3. Ripristina `App_Data` dal backup **solo se** l'aggiornamento l'ha modificata. Con SQLite il database viene aggiornato automaticamente all'avvio, quindi ripristinare anche `App_Data` è la scelta sicura.
-4. Cancella `app_offline.htm`.
+4. Cancella `app_offline.htm` dalla root.
 
 ## 6. Se qualcosa non va
 
 | Sintomo | Cosa fare |
 |---|---|
-| Errore **500.30** o **502.5** (il sito non parte) | In `public/web.config` imposta `stdoutLogEnabled="true"`, ricarica il file e apri il sito. Il motivo è scritto in `App_Data/logs/stdout_*.log`. Poi rimetti `false`. |
+| Errore **500.30** o **502.5** (il sito non parte) | Nel `web.config` della root imposta `stdoutLogEnabled="true"`, ricarica il file e apri il sito. Il motivo è scritto in `App_Data/logs/stdout_*.log`. Poi rimetti `false`. |
 | Errore **500.19** | Il modulo ASP.NET Core non è attivo sul piano: chiedi al supporto Aruba di abilitare .NET Core per il sito. |
 | Errore all'avvio con il pacchetto `-Mode FrameworkDependent` | Sul server manca la versione di .NET richiesta: usa il pacchetto predefinito (self-contained). |
 | Cartelle con il triangolo rosso nella Diagnostica | Dai i permessi di scrittura ad `App_Data` dal pannello Aruba. |

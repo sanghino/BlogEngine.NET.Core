@@ -60,9 +60,10 @@ Guide: `BlogEngine.Web/Custom/Themes/README.md`, `BlogEngine.Web/Custom/Widgets/
 dotnet publish BlogEngine.Web -c Release -o publish
 ```
 
-Caricare via FTP il contenuto di `publish` nella cartella `public` del sito. In produzione i dati vanno in
-`../App_Data`, cioè la cartella `App_Data` allo stesso livello di `public` (impostazione `BlogEngine:DataPath`
-in `appsettings.json`). L'applicazione crea da sola le sottocartelle `files`, `cache`, `keys`, `logs`, `themes`,
+Caricare via FTP il contenuto di `publish` nella root del sito (la cartella con il nome del dominio, che contiene
+anche `public` e `App_Data`); il pacchetto completo si crea con `tools/publish-aruba.ps1` (vedi `docs/deploy-aruba.md`).
+In produzione i dati vanno in `App_Data`, la cartella `App_Data` della root, che IIS non rende raggiungibile dal web
+(impostazione `BlogEngine:DataPath` in `appsettings.json`). L'applicazione crea da sola le sottocartelle `files`, `cache`, `keys`, `logs`, `themes`,
 `widgets` ed `extensions`.
 
 Nel pannello Aruba il sito va impostato su .NET Core (al posto di "Framework .NET 4.0") solo al momento del
