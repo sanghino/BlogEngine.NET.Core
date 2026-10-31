@@ -18,13 +18,13 @@ Guida passo passo per installare e aggiornare BlogEngine.NET sull'hosting Window
 
 Serve l'**SDK .NET 10**. Va installato una volta sola da https://dotnet.microsoft.com/download/dotnet/10.0, scegliendo "SDK" per Windows x64.
 
-Dalla cartella del progetto, in PowerShell:
+Apri PowerShell nella cartella principale del progetto (quella che contiene `src` e `tools`) ed esegui:
 
 ```powershell
 .\tools\publish-aruba.ps1
 ```
 
-Lo script crea `artifacts\aruba\<data-ora>\` (e lo zip con lo stesso nome), che contiene:
+Lo script non ha un parametro per scegliere la cartella di uscita: crea sempre `artifacts\aruba\<data-ora>\` dentro il progetto (e lo zip con lo stesso nome), che contiene:
 
 | File | A cosa serve |
 |---|---|
@@ -51,16 +51,77 @@ Varianti, se servono:
 
 ## 2. Prima installazione
 
-1. Dal pannello Aruba imposta il pool applicativo del sito su **.NET Core**: di solito è su "Framework .NET 4.0", che non avvia il sito. Tra le modalità scegli **self-contained**, o "hosted" se usi il pacchetto `-Mode FrameworkDependent`.
-2. Dal pannello Aruba, verifica che la cartella `App_Data` abbia i **permessi di scrittura** (Pannello di controllo → Hosting → Gestione permessi). Se non esiste, creala accanto a `public`.
-3. Svuota la cartella `public`: togli la pagina di benvenuto di Aruba.
-4. Carica via FTP **il contenuto** di `public\` del pacchetto dentro `public` sul server. Carica i file e le cartelle, non la cartella `public` stessa.
-5. Apri il sito nel browser: viene mostrata la pagina **Configurazione iniziale** (`/setup`).
-6. Scarica via FTP il file `App_Data/setup-key.txt`, aprilo e copia la chiave nella pagina di configurazione. La chiave impedisce che un estraneo configuri il blog al posto tuo.
-7. Scegli il provider dei dati e crea l'utente amministratore:
-   - **XML**: file leggibili, consigliato per blog piccoli;
-   - **SQLite**: un unico file di database, più veloce con molti contenuti.
-8. Accedi a `/admin/` e controlla **Informazioni → Diagnostica**: tutte le cartelle devono avere il segno di spunta verde.
+Tempo necessario: circa 20-30 minuti, quasi tutti per il caricamento via FTP. Serve: il pacchetto del passo 1, un programma FTP (per esempio FileZilla) con i dati di accesso Aruba e l'accesso al pannello Aruba.
+
+Alla prima installazione il blog è vuoto: l'amministratore, il nome del blog e il tipo di archiviazione si scelgono in una pagina di configurazione che compare da sola al primo avvio.
+
+### Passo 1: controllare il pacchetto sul PC
+
+Nella cartella `artifacts\aruba\<data-ora>\public\` devono esserci direttamente i file del sito, tra cui `web.config` e `BlogEngine.Web.dll` (e `BlogEngine.Web.exe` con il pacchetto predefinito). Se li vedi dentro un'altra sottocartella, hai aperto la cartella sbagliata.
+
+### Passo 2: preparare l'hosting dal pannello Aruba
+
+1. Imposta il pool applicativo del sito su **.NET Core**: di solito è su "Framework .NET 4.0", che non avvia il sito. Tra le modalità scegli **self-contained**, oppure "hosted" se usi il pacchetto `-Mode FrameworkDependent`.
+2. Con il programma FTP guarda la radice del tuo spazio: deve esserci la cartella `public` (il sito). Accanto a `public`, **non dentro**, crea la cartella `App_Data` se non c'è già. È qui che il blog salva tutti i suoi dati:
+
+   ```
+   /                 radice FTP
+   ├── public/       il sito
+   └── App_Data/     i dati del blog
+   ```
+
+3. Dal pannello Aruba (Pannello di controllo → Hosting → Gestione permessi) dai alla cartella `App_Data` i **permessi di scrittura**. Senza, il sito non riesce a salvare nulla e non parte.
+4. Svuota la cartella `public`: cancella la pagina di benvenuto di Aruba (per esempio `index.html`), altrimenti verrebbe mostrata al posto del blog.
+
+### Passo 3: caricare il sito via FTP
+
+1. Apri la cartella `public` del server.
+2. Dal PC, apri `artifacts\aruba\<data-ora>\public\`, seleziona **tutto il contenuto** (file e cartelle) e trascinalo dentro `public` sul server. Non caricare la cartella `public` stessa, e non caricare `app_offline.htm` né `LEGGIMI.txt`.
+3. Aspetta la fine del trasferimento. Con il pacchetto predefinito sono circa 150 MB, quindi servono diversi minuti: non interromperlo. Se il programma FTP segnala file falliti, riprovali.
+4. Controlla che sul server, direttamente dentro `public`, ci siano `web.config` e `BlogEngine.Web.dll`.
+
+### Passo 4: aprire il sito la prima volta
+
+1. Apri nel browser l'indirizzo del blog. Se hai già attivato il certificato SSL, usa `https://`: la password dell'amministratore che inserirai tra poco viaggerà protetta.
+2. Il primo caricamento è lento (anche 20-30 secondi): il sito si sta avviando.
+3. Deve comparire la pagina **Configurazione iniziale**. Al primo avvio il sito ha creato anche il file `App_Data/setup-key.txt`, la chiave che serve nel passo successivo.
+4. Se invece compare un errore (500.30, 502.5, 500.19...) vai alla sezione **6. Se qualcosa non va**. Se `setup-key.txt` non esiste dopo l'apertura del sito, il sito non è partito oppure `App_Data` non ha i permessi di scrittura.
+
+### Passo 5: leggere la chiave di configurazione
+
+La chiave impedisce che qualcun altro configuri il blog al posto tuo.
+
+1. Con il programma FTP apri `App_Data` (accanto a `public`).
+2. Scarica `setup-key.txt` sul PC e aprilo con il Blocco note.
+3. Copia la stringa che contiene: sono 32 caratteri fatti di cifre e lettere da A a F. Le maiuscole e le minuscole non contano.
+
+### Passo 6: compilare la configurazione iniziale
+
+Torna alla pagina **Configurazione iniziale** nel browser e compila il modulo:
+
+| Campo | Cosa inserire |
+|---|---|
+| Chiave di configurazione | la stringa copiata da `setup-key.txt` |
+| Archiviazione dei dati | **File XML** (file semplici e leggibili, consigliato per blog piccoli) oppure **Database SQLite** (un unico file, più veloce con molti post). Decidilo ora: dopo l'installazione non c'è una voce per cambiarlo. |
+| Nome del Blog | il titolo che vedranno i visitatori (si può cambiare poi nelle impostazioni) |
+| Nome utente | il nome con cui accedi all'amministrazione |
+| Email | il tuo indirizzo email |
+| Password | almeno **8 caratteri** |
+| Conferma password | la stessa password |
+
+Premi **Installa**. Se qualcosa non va, la pagina mostra l'errore accanto al campo (per esempio "La chiave di configurazione non è valida") e puoi correggerlo e riprovare.
+
+Quando l'installazione riesce, sei già collegato come amministratore e vieni portato alla home del blog. Da questo momento:
+- la pagina `/setup` non esiste più (risponde "non trovato");
+- il file `setup-key.txt` viene cancellato dal server;
+- compare `App_Data/installation.json`: non cancellarlo, è ciò che dice al sito che è già installato.
+
+### Passo 7: controllare che sia tutto a posto
+
+1. Apri `https://tuodominio/admin/` (l'amministrazione) e poi `https://tuodominio/admin/diagnostics` (nel menu: **Informazioni → Diagnostica**). Tutte le cartelle devono avere il segno di spunta verde. Se una ha il triangolo rosso, dai i permessi di scrittura ad `App_Data` dal pannello Aruba (passo 2).
+2. Imposta le email (vedi sotto) e prova il pulsante di invio di prova.
+3. Attiva il certificato SSL gratuito dal pannello Aruba, se non l'hai ancora fatto (sezione 7).
+4. Crea un articolo di prova, aprilo sul sito e poi cancellalo. Per un controllo più completo segui `docs/checklist-collaudo.md`.
 
 ### Email (Impostazioni → Email)
 
