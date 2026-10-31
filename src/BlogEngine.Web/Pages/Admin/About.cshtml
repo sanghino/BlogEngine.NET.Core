@@ -10,35 +10,19 @@
     </div>
     <div class="content-inner">
         <div class="about-section">
-            <div class="about-logo"><a href="https://blogengine.io/"><img src="~/Content/images/blog/logo.png" /></a></div>
-            <p class="text-justify">
-                BlogEngine.NET is an open source ASP.NET project that was born out of desire for a better blogging platform. We focused on simplicity, ease of use, extendibility and innovative design while taking advantage of the latest .NET features.
-            </p>
-            <p class="text-justify">
-                BlogEngine.NET is easily customizable. We have many downloadable themes, widgets, and extensions or you can make your own with some basic .NET skills. With BlogEngine.NET, it is easy to make your blog look and function exactly how you’d like.
-            </p>
-            <div class="about-external-link">
-                <ul class="list-unstyled list-inline">
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="https://blogengine.io/"><i class="fa fa-globe"></i> Website</a></li>
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="http://dnbe.net/docs"><i class="fa fa-question-circle"></i> Docs</a></li>
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="http://dnbe.net/v01"><i class="fa fa-cube"></i> Gallery</a></li>
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="https://github.com/rxtur/BlogEngine.NET/"><i class="fa fa-github"></i> Source</a></li>
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="https://www.facebook.com/BlogEngine.NET"><i class="fa fa-facebook"></i> Facebook</a></li>
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="https://twitter.com/blogenginenet"><i class="fa fa-twitter"></i> Twitter</a></li>
-                    <li><a class="btn btn-default btn-hasicon btn-sm" target="_blank" href="https://www.youtube.com/user/blogenginenet"><i class="fa fa-youtube"></i> Youtube</a></li>
-                </ul>
-            </div>
+            <div class="about-logo"><img src="~/Content/images/brand/logo.svg" alt="ExtraGeek-BlogEngine" style="width:360px;max-width:100%" /></div>
+            <p class="text-justify">@L["aboutDescription"]</p>
         </div>
         <div class="panel panel-default">
             <div class="panel-heading">
-                <div class="panel-title">Your BlogEngine.NET Specification</div>
+                <div class="panel-title" style="text-transform:none">@L["aboutSpecification"]</div>
             </div>
             <ul class="list-group">
                 <li class="list-group-item">
                     <span> Version:</span> @AdminViewContext.Version
                 </li>
                 <li class="list-group-item">
-                    <span>Trust level:</span> Full (.NET 8)
+                    <span>Trust level:</span> Full (.NET @Environment.Version)
                 </li>
                 <li class="list-group-item">
                     <span>Identity:</span> @(Environment.UserDomainName)\@Environment.UserName
@@ -53,10 +37,10 @@
                     </li>
                 }
                 <li class="list-group-item">
-                    <span>Membership provider:</span> BlogEngine (@Model.DataProvider)
+                    <span>Membership provider:</span> ExtraGeek-BlogEngine (@Model.DataProvider)
                 </li>
                 <li class="list-group-item">
-                    <span>Role provider:</span> BlogEngine (@Model.DataProvider)
+                    <span>Role provider:</span> ExtraGeek-BlogEngine (@Model.DataProvider)
                 </li>
             </ul>
         </div>

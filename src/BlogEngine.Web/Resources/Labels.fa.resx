@@ -169,7 +169,7 @@
     <value>اولین کسی باشید که به این پست رای میدهید</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET از &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; به عنوان قابل برای صدور مطالب استفاده می کند. ورود مطالب هم از طریق BlogML و هم از طریق RSS پشتیبانی می شود.</value>
+    <value>ExtraGeek-BlogEngine از BlogML به عنوان قابل برای صدور مطالب استفاده می کند. ورود مطالب هم از طریق BlogML و هم از طریق RSS پشتیبانی می شود.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>اخبار از سایتهای دیگر</value>

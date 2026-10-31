@@ -81,7 +81,7 @@ public static class FeedWriter
     private const string Wfw = "http://wellformedweb.org/CommentAPI/";
     private const string Slash = "http://purl.org/rss/1.0/modules/slash/";
     private const string Geo = "http://www.w3.org/2003/01/geo/wgs84_pos#";
-    private const string BeTag = "https://blogengine.io/schemas/tags";
+    private const string BeTag = "urn:extrageek-blogengine:tags";
     private const string BlogChannel = "http://backend.userland.com/blogChannelModule";
 
     private static readonly Dictionary<string, string> Namespaces = new()
@@ -191,7 +191,6 @@ public static class FeedWriter
             writer.WriteElementString("name", string.IsNullOrEmpty(channel.AuthorName) ? channel.Title : channel.AuthorName);
             writer.WriteEndElement();
             writer.WriteStartElement("generator");
-            writer.WriteAttributeString("uri", "https://blogengine.io/");
             writer.WriteString(channel.Generator);
             writer.WriteEndElement();
             if (!string.IsNullOrEmpty(channel.Language))

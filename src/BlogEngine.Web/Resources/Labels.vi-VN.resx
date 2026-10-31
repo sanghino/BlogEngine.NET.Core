@@ -194,8 +194,8 @@
     <comment>Birthday</comment>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET BlogML sử dụng như là định dạng cho xuất khẩu. Nhập khẩu hỗ trợ cả hai BlogML và RSS.</value>
-    <comment>BlogEngine.NET uses BlogML as the format for exporting. The import supports both BlogML and RSS.</comment>
+    <value>ExtraGeek-BlogEngine BlogML sử dụng như là định dạng cho xuất khẩu. Nhập khẩu hỗ trợ cả hai BlogML và RSS.</value>
+    <comment>ExtraGeek-BlogEngine uses BlogML as the format for exporting. The import supports both BlogML and RSS.</comment>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blog liên kết</value>

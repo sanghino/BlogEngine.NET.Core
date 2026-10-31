@@ -82,7 +82,7 @@ public sealed class SemanticController(
         writer.WriteAttributeString("version", "1.0");
         writer.WriteStartElement("service");
         writer.WriteElementString("engineName", AdminViewContext.Version);
-        writer.WriteElementString("engineLink", "https://blogengine.io");
+        writer.WriteElementString("engineLink", Root);
         writer.WriteElementString("homePageLink", Root);
         writer.WriteStartElement("apis");
         writer.WriteStartElement("api");
@@ -115,7 +115,7 @@ public sealed class SemanticController(
             writer.WriteAttributeString("height", "16");
             writer.WriteAttributeString("width", "16");
             writer.WriteAttributeString("type", "image/vnd.microsoft.icon");
-            writer.WriteString(links.ToAbsolute("/Content/images/blog/blogengine.ico").ToString());
+            writer.WriteString(links.ToAbsolute("/favicon.ico").ToString());
             writer.WriteEndElement();
             writer.WriteStartElement("Url");
             writer.WriteAttributeString("type", "text/html");

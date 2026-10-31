@@ -1,7 +1,7 @@
 // Converte i codici BBCode dei commenti ([b], [i], [u], [quote]...) in HTML.
 // Porting dell'estensione BBCode di BlogEngine.NET.
 
-[Extension("Converts BBCode to XHTML in the comments", "4.0", "<a href=\"https://blogengine.io\">BlogEngine.NET</a>")]
+[Extension("Converts BBCode to XHTML in the comments", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class BBCode : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>

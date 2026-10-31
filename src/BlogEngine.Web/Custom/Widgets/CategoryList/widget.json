@@ -2,8 +2,7 @@
   "title": "Category List",
   "description": "List of post categories",
   "version": "4.0.0",
-  "authors": "BlogEngine.NET",
-  "website": "https://blogengine.io/",
+  "authors": "ExtraGeek-BlogEngine",
   "settings": [
     {
       "key": "showrssicon",

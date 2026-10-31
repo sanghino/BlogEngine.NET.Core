@@ -169,7 +169,7 @@
     <value>Ninguém avaliou. Dê sua nota!</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET usa BlogML como formato para exportação. A importação suporta BlogML e também RSS.</value>
+    <value>ExtraGeek-BlogEngine usa BlogML como formato para exportação. A importação suporta BlogML e também RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

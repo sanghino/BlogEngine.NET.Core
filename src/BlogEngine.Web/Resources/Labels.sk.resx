@@ -169,7 +169,7 @@
     <value>Ohodnoť post ako prvý</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET používa BlogML formát exportu. Pre import je podporovaný BlogML a RSS.</value>
+    <value>ExtraGeek-BlogEngine používa BlogML formát exportu. Pre import je podporovaný BlogML a RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

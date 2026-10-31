@@ -169,7 +169,7 @@
     <value>Be the first to rate this post</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET uses &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; as the format for exporting. The import supports both BlogML and RSS.</value>
+    <value>ExtraGeek-BlogEngine uses BlogML as the format for exporting. The import supports both BlogML and RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>
@@ -2556,7 +2556,7 @@
     <value>About</value>
   </data>
   <data name="blogEngineComment" xml:space="preserve">
-    <value>BlogEngine</value>
+    <value>ExtraGeek-BlogEngine</value>
   </data>
   <data name="blogLanguage" xml:space="preserve">
     <value>Blog Language</value>
@@ -3022,5 +3022,11 @@
   </data>
   <data name="maintenanceMessage" xml:space="preserve">
     <value>Maintenance page message (empty = default text)</value>
+  </data>
+  <data name="aboutDescription" xml:space="preserve">
+    <value>ExtraGeek-BlogEngine is a blogging platform built on ASP.NET Core: multilingual, with themes, widgets and extensions, data stored in XML files or SQLite, and designed to run on ordinary Windows hosting.</value>
+  </data>
+  <data name="aboutSpecification" xml:space="preserve">
+    <value>Your ExtraGeek-BlogEngine installation</value>
   </data>
 </root>

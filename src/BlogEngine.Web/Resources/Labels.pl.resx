@@ -169,7 +169,7 @@
     <value>Bądź pierwszą osobą oceniającą post</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET uses &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; as the format for exporting. The import supports both BlogML and RSS.</value>
+    <value>ExtraGeek-BlogEngine uses BlogML as the format for exporting. The import supports both BlogML and RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

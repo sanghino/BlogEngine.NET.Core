@@ -3,7 +3,7 @@
 
 using System.Text.RegularExpressions;
 
-[Extension("Auto resolves URLs in the comments and turn them into valid hyperlinks.", "4.0", "BlogEngine.NET")]
+[Extension("Auto resolves URLs in the comments and turn them into valid hyperlinks.", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class ResolveLinks : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>

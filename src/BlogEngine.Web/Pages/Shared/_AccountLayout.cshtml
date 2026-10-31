@@ -9,9 +9,15 @@
     <meta name="robots" content="noindex" />
     <title>@ViewData["Title"]</title>
     <link rel="stylesheet" href="~/css/account.css" asp-append-version="true" />
+    <link rel="icon" href="~/favicon.ico" sizes="any" />
+    <link rel="icon" href="~/Content/images/brand/icon.svg" type="image/svg+xml" />
 </head>
 <body>
     <main class="account">
+        <picture class="account-logo">
+            <source srcset="~/Content/images/brand/logo-dark.svg" media="(prefers-color-scheme: dark)" />
+            <img src="~/Content/images/brand/logo.svg" alt="ExtraGeek-BlogEngine" />
+        </picture>
         <h1>@ViewData["Title"]</h1>
         @RenderBody()
     </main>

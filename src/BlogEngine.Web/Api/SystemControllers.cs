@@ -1,5 +1,3 @@
-using System.ServiceModel.Syndication;
-using System.Xml;
 using BlogEngine.Core.Configuration;
 using BlogEngine.Security;
 using BlogEngine.Services;
@@ -86,37 +84,6 @@ public sealed class LogsController(FileLog log, IRightsService rights) : AdminAp
         if (!await rights.IsAuthorizedAsync(Rights.AccessAdminPages))
         {
             throw new UnauthorizedAccessException();
-        }
-    }
-}
-
-/// <summary>
-/// Notizie nella dashboard. Il feed originale (blogengine.io/news.xml) può non essere più disponibile:
-/// in quel caso l'elenco è semplicemente vuoto.
-/// </summary>
-[Route("api/newsfeed")]
-public sealed class NewsFeedController(IHttpClientFactory httpClients, ILogger<NewsFeedController> logger) : AdminApiController
-{
-    public const string FeedUrl = "https://blogengine.io/news.xml";
-
-    [HttpGet("")]
-    public async Task<List<SelectOption>> Get()
-    {
-        try
-        {
-            using var client = httpClients.CreateClient();
-            client.Timeout = TimeSpan.FromSeconds(5);
-            await using var stream = await client.GetStreamAsync(FeedUrl, HttpContext.RequestAborted);
-            using var reader = XmlReader.Create(stream, new XmlReaderSettings { DtdProcessing = DtdProcessing.Ignore, Async = true });
-            return SyndicationFeed.Load(reader).Items
-                .Take(6)
-                .Select(i => new SelectOption { OptionName = i.Title?.Text, OptionValue = i.Id })
-                .ToList();
-        }
-        catch (Exception ex) when (ex is HttpRequestException or TaskCanceledException or XmlException)
-        {
-            logger.LogInformation("Feed delle notizie non disponibile: {Message}", ex.Message);
-            return [];
         }
     }
 }

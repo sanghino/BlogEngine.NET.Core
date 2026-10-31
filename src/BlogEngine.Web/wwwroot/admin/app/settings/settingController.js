@@ -75,11 +75,6 @@
         location.href = SiteVars.RelativeWebRoot + 'blogml.axd';
     }
 
-    $scope.importClickOnce = function () {
-        var url = 'https://blogengine.io/clickonce/blogimporter/blog.importer.application?url=';
-        url += SiteVars.AbsoluteWebRoot + '&username=' + UserVars.Name;
-        location.href = url;
-    }
 
     $scope.uploadFile = function (files) {
         spinOn();

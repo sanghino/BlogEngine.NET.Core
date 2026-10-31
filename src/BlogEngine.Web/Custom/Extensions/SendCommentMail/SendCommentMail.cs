@@ -5,7 +5,7 @@ using System.Net;
 using System.Text;
 using Microsoft.AspNetCore.Http;
 
-[Extension("Sends an e-mail to the blog owner whenever a comment is added", "4.0", "BlogEngine.NET")]
+[Extension("Sends an e-mail to the blog owner whenever a comment is added", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class SendCommentMail : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>

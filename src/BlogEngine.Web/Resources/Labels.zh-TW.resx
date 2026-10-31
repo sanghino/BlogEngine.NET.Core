@@ -169,7 +169,7 @@
     <value>成為第一個評分者吧</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET 使用 &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; 作為匯出格式. 匯入同時支援 BlogML 和 RSS.</value>
+    <value>ExtraGeek-BlogEngine 使用 BlogML 作為匯出格式. 匯入同時支援 BlogML 和 RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>部落格聯播</value>

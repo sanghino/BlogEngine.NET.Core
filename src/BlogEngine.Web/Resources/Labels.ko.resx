@@ -169,7 +169,7 @@
     <value>이 글의 첫번째 추천인이 되세요</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEnginge.Net 은 내보내기시 &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; 을 포맷으로 사용합니다. 가져오기는 BlogML 과 RSS 모두 지원합니다. </value>
+    <value>BlogEnginge.Net 은 내보내기시 BlogML 을 포맷으로 사용합니다. 가져오기는 BlogML 과 RSS 모두 지원합니다. </value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>추천 블로그</value>

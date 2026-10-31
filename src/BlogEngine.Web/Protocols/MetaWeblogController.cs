@@ -102,8 +102,8 @@ public sealed class MetaWeblogController(
 
         writer.WriteEndElement();
         writer.WriteStartElement("weblog");
-        writer.WriteElementString("ServiceName", "BlogEngine.NET");
-        writer.WriteElementString("imageUrl", "Content/images/blog/wrenchicon16.png");
+        writer.WriteElementString("ServiceName", "ExtraGeek-BlogEngine");
+        writer.WriteElementString("imageUrl", "Content/images/brand/icon-16.png");
         writer.WriteElementString("watermarkImageUrl", "Content/images/blog/wrench84watermark.png");
         writer.WriteElementString("homepageLinkText", "View your blog");
         writer.WriteElementString("adminLinkText", "Manage your blog");

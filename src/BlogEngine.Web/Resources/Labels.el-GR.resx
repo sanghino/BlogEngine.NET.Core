@@ -466,7 +466,7 @@
 		<value>Γίνετε ο πρώτος που θα βαθμολογήσει αυτή τη δημοσίευση</value>
 	</data>
 	<data name="blogMLDescription" xml:space="preserve">
-		<value>Το BlogEngine.NET χρησιμοποιεί το BlogML ως format εξαγωγής. Για την εισαγωγή χρησιμοποιούνται το BlogML καθώς και RSS.</value>
+		<value>Το ExtraGeek-BlogEngine χρησιμοποιεί το BlogML ως format εξαγωγής. Για την εισαγωγή χρησιμοποιούνται το BlogML καθώς και RSS.</value>
 	</data>
 	<data name="combine" xml:space="preserve">
 		<value>Συνδυασμός</value>

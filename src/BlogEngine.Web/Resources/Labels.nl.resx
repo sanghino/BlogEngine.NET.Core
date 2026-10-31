@@ -169,7 +169,7 @@
     <value>Waardeer als eerste deze post</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET gebruikt BlogML als export formaat. Import ondersteund zowel BlogML als RSS.</value>
+    <value>ExtraGeek-BlogEngine gebruikt BlogML als export formaat. Import ondersteund zowel BlogML als RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

@@ -9,7 +9,7 @@ using System.Xml.Linq;
 using BlogEngine.Core.Data;
 using BlogEngine.Web.Protocols;
 
-[Extension("Pings all the ping services specified on the PingServices admin page and send track- and pingbacks", "4.0", "BlogEngine.NET")]
+[Extension("Pings all the ping services specified on the PingServices admin page and send track- and pingbacks", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class SendPings : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services)

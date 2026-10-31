@@ -163,7 +163,7 @@
     <value>Vær den første til at give point</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET benytter BlogML som eksporteringsformat. Importen kan både bruge BlogML og RSS.</value>
+    <value>ExtraGeek-BlogEngine benytter BlogML som eksporteringsformat. Importen kan både bruge BlogML og RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

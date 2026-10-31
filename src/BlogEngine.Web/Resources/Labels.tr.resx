@@ -169,7 +169,7 @@
     <value>Bu yazıyı ilk değerlendiren siz olun</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET dışarı aktarım için &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; formatını kullanır. BlogML ve RSS içeri aktarımı destekler.</value>
+    <value>ExtraGeek-BlogEngine dışarı aktarım için BlogML formatını kullanır. BlogML ve RSS içeri aktarımı destekler.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

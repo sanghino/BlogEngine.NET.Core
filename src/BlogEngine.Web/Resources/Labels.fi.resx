@@ -169,7 +169,7 @@
     <value>Arvioi ensimmäisenä tämä viesti</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET käyttää BlogML:ää tallennusformaattina. Viestien tuonti tukee sekä BlogML:ää että RSS-syötteitä.</value>
+    <value>ExtraGeek-BlogEngine käyttää BlogML:ää tallennusformaattina. Viestien tuonti tukee sekä BlogML:ää että RSS-syötteitä.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

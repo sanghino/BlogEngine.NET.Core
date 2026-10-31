@@ -169,8 +169,8 @@
     <value>Reageer als eerste op dit bericht</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET gebruikt BlogML als exportformaat. Importeren ondersteunt zowel BlogML als RSS.</value>
-    <comment>BlogEngine.NET uses BlogML as the format for exporting. The import support both BlogML and RSS.</comment>
+    <value>ExtraGeek-BlogEngine gebruikt BlogML als exportformaat. Importeren ondersteunt zowel BlogML als RSS.</value>
+    <comment>ExtraGeek-BlogEngine uses BlogML as the format for exporting. The import support both BlogML and RSS.</comment>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogrol</value>

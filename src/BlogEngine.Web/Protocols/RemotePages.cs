@@ -33,7 +33,7 @@ public sealed class RemotePages(IHttpClientFactory httpClients) : IRemotePages
         services.AddHttpClient(ClientName, client =>
         {
             client.Timeout = TimeSpan.FromSeconds(10);
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("BlogEngine.NET/4.0");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("ExtraGeek-BlogEngine/4.0");
         }).ConfigurePrimaryHttpMessageHandler(() => new SocketsHttpHandler
         {
             AllowAutoRedirect = true,

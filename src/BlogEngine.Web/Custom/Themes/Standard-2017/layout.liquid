@@ -19,7 +19,8 @@
     <script src="{{ 'Scripts/syntaxhighlighter/scripts/shCore.js' | app_url }}"></script>
     <script src="{{ 'Scripts/syntaxhighlighter/scripts/shAutoloader.js' | app_url }}"></script>
     <script src="{{ 'Scripts/syntaxhighlighter/shActivator.js' | app_url }}"></script>
-    <link rel="shortcut icon" href="{{ 'Content/images/blog/blogengine.ico' | app_url }}" type="image/x-icon" />
+    <link rel="icon" href="{{ 'favicon.ico' | app_url }}" sizes="any" />
+    <link rel="icon" href="{{ 'Content/images/brand/icon.svg' | app_url }}" type="image/svg+xml" />
     <style>
         body {
             background: {{ color_left }};
@@ -69,7 +70,6 @@
                 <footer class="blog-footer">
                     <p>Copyright &copy; {{ blog.year }}</p>
                     <p title="{{ blog.version }}">Powered by ExtraGeek-BlogEngine</p>
-                    <p>Designed by <a href="http://francis.bio/" rel="nofollow" target="_blank">Francis Bio</a></p>
                 </footer>
             </aside>
             <div class="blog-content admin-alerts-{{ 'Home Alert Box (true or false?)' | theme_field: 'true' }}">

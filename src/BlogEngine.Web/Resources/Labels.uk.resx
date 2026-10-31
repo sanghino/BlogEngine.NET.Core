@@ -169,7 +169,7 @@
     <value>Будьте першим, хто оцінить цей запис</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET використовує BlogML як формат для експорту. Імпорт підтримується одночасно для BlogML та RSS.</value>
+    <value>ExtraGeek-BlogEngine використовує BlogML як формат для експорту. Імпорт підтримується одночасно для BlogML та RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Блоги</value>

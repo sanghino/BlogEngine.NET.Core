@@ -4,7 +4,7 @@
 using System.Net.Http;
 using System.Text.Json;
 
-[Extension("Checks comment against stopforumspam.com spammers list.", "4.0", "BlogEngine.NET", EnabledByDefault = false)]
+[Extension("Checks comment against stopforumspam.com spammers list.", "4.0", "ExtraGeek-BlogEngine", EnabledByDefault = false)]
 public sealed class StopForumSpam : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>

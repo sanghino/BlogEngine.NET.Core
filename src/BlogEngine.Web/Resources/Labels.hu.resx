@@ -169,7 +169,7 @@
     <value>Legyél a bejegyzés első értékelője</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>A BlogEngine.NET BlogML exportálási formátumot használ. Az importálás BlogML-t és RSS-t támogat.</value>
+    <value>A ExtraGeek-BlogEngine BlogML exportálási formátumot használ. Az importálás BlogML-t és RSS-t támogat.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogroll</value>

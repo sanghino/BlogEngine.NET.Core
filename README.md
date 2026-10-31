@@ -1,57 +1,39 @@
-<br>
 <p>
-    <strong>BlogEngine</strong> is an open source blogging platform since 2007.<br>Easily customizable. Many free built-in Themes, Widgets, and Plugins.
+    <img src="src/BlogEngine.Web/wwwroot/Content/images/brand/logo.svg" alt="ExtraGeek-BlogEngine" width="420">
 </p>
-<br>
 
-- **[Website](https://blogengine.io/)**
-- **[Docs](https://blogengine.io/support/get-started/)**
-- **[Themes](https://blogengine.io/themes/)**
-- **[Custom Design Theme](https://blogengine.io/themes/custom/)**
-- **[Contact us](https://blogengine.io/support/)**
-  <br>
-  <br>
+**ExtraGeek-BlogEngine** è una piattaforma per blog basata su ASP.NET Core: multilingua (italiano, inglese e altre lingue), con temi Liquid, widget ed estensioni compilate al volo, dati salvati in file XML o in SQLite. Funziona anche su un normale hosting Windows condiviso, ad esempio Aruba.
 
-## Get Started
+## Funzionalità principali
 
-1. Requirements
-   You need a Windows Hosting that supports ASP.NET 4.5 and above.
+- Post, pagine, categorie, tag, commenti con moderazione, voti e newsletter.
+- Più blog nella stessa installazione (blog figli).
+- Tre temi inclusi: Standard, Standard-2017 e Terminal.
+- Widget, spazi pubblicitari, banner per il consenso ai cookie e modalità manutenzione.
+- Feed RSS e Atom, sitemap, MetaWeblog (Open Live Writer), importazione ed esportazione BlogML.
 
-2. Download
-   Get the latest BlogEngine and extract the zip file on the root of your website.
+## Requisiti
 
-3. Write Permissions
-   Add write permissions to the App_Data and Custom folders on your server.
+- Per lo sviluppo: .NET SDK 8 o 10.
+- Per la pubblicazione: hosting Windows con IIS. Il pacchetto per Aruba include già il runtime .NET.
 
-4. Done
-   Navigate to admin panel by adding /admin/ to your website's URL.
-   For example: https://yourwebsite.com/admin/<br>
-   Username: admin<br>
-   Password: admin<br>
-   <br><br>
+## Sviluppo
 
-## Development
+```
+cd src
+dotnet run --project BlogEngine.Web
+```
 
-Environment:
+Al primo avvio il sito chiede la configurazione iniziale. La chiave da inserire si trova in `src/BlogEngine.Web/App_Data/setup-key.txt`. I test si avviano con `dotnet test` dalla cartella `src`.
 
-- Visual Studio
-- ASP.NET 4.5+
+## Pubblicazione
 
-Steps:
+- [Guida alla pubblicazione su Aruba](docs/deploy-aruba.md) (pacchetto creato con `tools/publish-aruba.ps1`)
+- [Checklist di collaudo](docs/checklist-collaudo.md)
+- [Inventario delle funzionalità](docs/inventario-funzionalita.md)
 
-- Clone repository
-- Open solution in Visual Studio 2015 +
-- Build and run solution to load website in the browser
-- You can navigate to administration on: http://localhost:64079/admin/
-- Username: admin Password admin
-  <br><br>
+Il logo si rigenera con `tools/brand/make_logo.py`. Usa il font Cascadia Mono, con licenza SIL OFL.
 
-## Security Update
+## Licenza
 
-After install, update `machineKey` in `Web.config` with values generated with tool [like this](https://www.allkeysgenerator.com/Random/ASP-Net-MachineKey-Generator.aspx). This will prevent known exploit (reported Sep 2019). This only effects if you use default `admin` account.
-<br><br>
-
-## Copyright and License
-
-Code released under the MS-RL License. Docs released under Creative Commons.<br>
-Copyright 2007–2023 BlogEngine
+Codice rilasciato con licenza MS-RL. Il progetto deriva da BlogEngine.NET (Copyright 2007–2023 BlogEngine), distribuito con la stessa licenza.

@@ -6,7 +6,7 @@ using System.Net;
 using System.Text;
 using System.Text.RegularExpressions;
 
-[Extension("HTML5 Video/Audio Player", "4.0", "<a href=\"http://johndyer.me/\">John Dyer</a>")]
+[Extension("HTML5 Video/Audio Player", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class MediaElementPlayer : IBlogExtension
 {
     public const int DefaultWidth = 480;

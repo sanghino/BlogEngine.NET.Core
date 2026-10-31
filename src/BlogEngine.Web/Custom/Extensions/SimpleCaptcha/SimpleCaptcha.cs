@@ -3,7 +3,7 @@
 
 using System.Net;
 
-[Extension("Settings for the SimpleCaptcha control", "4.0", "<a href=\"http://www.aaronstannard.com\">Aaron Stannard</a>", Priority = 2)]
+[Extension("Settings for the SimpleCaptcha control", "4.0", "ExtraGeek-BlogEngine", Priority = 2)]
 public sealed class SimpleCaptcha : IBlogExtension
 {
     public const string AnswerField = "simpleCaptchaValue";

@@ -4,7 +4,7 @@
 
 using System.Net.Http;
 
-[Extension("Akismet anti-spam comment filter", "4.0", "<a href=\"https://blogengine.io\">BlogEngine.NET</a>", EnabledByDefault = false)]
+[Extension("Akismet anti-spam comment filter", "4.0", "ExtraGeek-BlogEngine", EnabledByDefault = false)]
 public sealed class AkismetFilter : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>
@@ -71,7 +71,7 @@ public sealed class AkismetSpamFilter(
         {
             var client = httpClients.CreateClient(nameof(AkismetFilter));
             client.Timeout = TimeSpan.FromSeconds(10);
-            client.DefaultRequestHeaders.UserAgent.ParseAdd("BlogEngine.NET/4.0 Akismet/1.11");
+            client.DefaultRequestHeaders.UserAgent.ParseAdd("ExtraGeek-BlogEngine/4.0 Akismet/1.11");
             using var response = await client.PostAsync($"https://{Uri.EscapeDataString(key)}.rest.akismet.com/1.1/{method}", new FormUrlEncodedContent(form), cancellationToken);
             return (await response.Content.ReadAsStringAsync(cancellationToken)).Trim();
         }

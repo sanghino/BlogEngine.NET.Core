@@ -169,7 +169,7 @@
     <value>Ohodnoťte příspěvek jako první</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET používá pro export formát &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt;. Importovat je možné z BlogML a RSS.</value>
+    <value>ExtraGeek-BlogEngine používá pro export formát BlogML. Importovat je možné z BlogML a RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Odkazy</value>

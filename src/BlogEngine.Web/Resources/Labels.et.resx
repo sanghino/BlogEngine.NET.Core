@@ -169,7 +169,7 @@
     <value>Hinda seda postitust esimesena</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET kasutab &lt;a href="http://blogml.codeplex.com/" target="_blank"&gt;BlogML&lt;/a&gt; vormingut eksportimiseks. Importimisel on toetatud nii BlogML kui ka RSS.</value>
+    <value>ExtraGeek-BlogEngine kasutab BlogML vormingut eksportimiseks. Importimisel on toetatud nii BlogML kui ka RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Blogirull</value>

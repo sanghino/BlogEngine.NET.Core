@@ -2,8 +2,7 @@
   "title": "Post List",
   "description": "List of blog posts",
   "version": "4.0.0",
-  "authors": "BlogEngine.NET",
-  "website": "https://blogengine.io/",
+  "authors": "ExtraGeek-BlogEngine",
   "settings": [
     {
       "key": "numberofposts",

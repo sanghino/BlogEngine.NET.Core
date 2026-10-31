@@ -1,7 +1,6 @@
 ﻿angular.module('blogAdmin').controller('DashboardController', ["$rootScope", "$scope", "$location", "$log", "$filter", "dataService", function ($rootScope, $scope, $location, $log, $filter, dataService) {
     $scope.vm = {};
     $scope.itemToPurge = {};
-    $scope.news = [];
     $scope.security = $rootScope.security;
     $scope.focusInput = false;
     $scope.qd = angular.copy(newDraft);
@@ -119,8 +118,6 @@
         }
         spinOn();
 
-        $scope.loadPackages();
-        $scope.loadNewsFeed();
 
         dataService.getItems('/api/dashboard')
         .success(function (data) {
@@ -131,41 +128,6 @@
             toastr.success($rootScope.lbl.errorGettingStats);
             spinOff();
         });
-    }
-    $scope.loadPackages = function () {
-        if (!$scope.security.showTabCustom) {
-            return;
-        }
-        dataService.getItems('/api/packages', { take: 5, skip: 0 })
-        .success(function (data) {
-            $scope.packages = [];
-            angular.copy(data, $scope.packages);
-            $('#gal-spinner').hide();
-        })
-        .error(function () {
-            toastr.error($rootScope.lbl.errorLoadingPackages);
-            $('#gal-spinner').hide();
-        });
-    }
-    $scope.loadNewsFeed = function () {
-        dataService.getItems('/api/newsfeed', { take: 5, skip: 0 })
-        .success(function (data) {
-            angular.copy(data, $scope.news);
-            $('#news-spinner').hide();
-        })
-        .error(function () {
-            toastr.error($rootScope.lbl.errorLoadingPackages);
-            $('#news-spinner').hide();
-        });
-    }
-    $scope.getGalleryLink = function (tp, id) {
-        var lk = "#/custom/themes/gallery";
-        if(tp == "Extension"){
-            lk = "#/custom/plugins/gallery";
-        }
-        $(".nav-primary > li").removeClass("active");
-        $("#mu-custom").addClass("active");
-        window.location.href = lk + "?pkgId=" + id;
     }
     $scope.load();
     $(document).ready(function () {

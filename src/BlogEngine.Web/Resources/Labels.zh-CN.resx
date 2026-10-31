@@ -186,8 +186,8 @@
     <comment>Be the first to rate this post</comment>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET 使用 BlogML 作为导出格式. 导入同时支持 BlogML 和 RSS.</value>
-    <comment>BlogEngine.NET uses BlogML as the format for exporting. The import supports both BlogML and RSS.</comment>
+    <value>ExtraGeek-BlogEngine 使用 BlogML 作为导出格式. 导入同时支持 BlogML 和 RSS.</value>
+    <comment>ExtraGeek-BlogEngine uses BlogML as the format for exporting. The import supports both BlogML and RSS.</comment>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>博客链接</value>

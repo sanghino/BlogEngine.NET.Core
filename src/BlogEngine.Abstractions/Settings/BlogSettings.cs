@@ -114,7 +114,7 @@ public sealed class BlogSettings
     /// <summary>Feed esterno (es. FeedBurner) verso cui reindirizzare i lettori.</summary>
     public string AlternateFeedUrl { get; set; } = string.Empty;
 
-    public string Endorsement { get; set; } = "https://blogengine.io/syndication.axd";
+    public string Endorsement { get; set; } = string.Empty;
 
     // ---- Commenti ----
 

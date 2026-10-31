@@ -169,7 +169,7 @@
     <value>Оценок нет</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET экспортирует данные в формате BlogML, импортирует в BlogML и RSS.</value>
+    <value>ExtraGeek-BlogEngine экспортирует данные в формате BlogML, импортирует в BlogML и RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Блоги</value>

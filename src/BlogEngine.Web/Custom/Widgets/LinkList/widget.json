@@ -2,8 +2,7 @@
   "title": "Link List",
   "description": "Editable list of links",
   "version": "4.0.0",
-  "authors": "BlogEngine.net",
-  "website": "https://blogengine.io/",
+  "authors": "ExtraGeek-BlogEngine",
   "settings": [
     {
       "key": "numberoflinks",

@@ -1,7 +1,7 @@
 // Trasforma gli emoticon scritti nei commenti, come :) o :D, in immagini.
 // Porting dell'estensione Smilies di BlogEngine.NET (usa le immagini del plugin emoticons di TinyMCE).
 
-[Extension("Converts ASCII smilies into real smilies in the comments", "4.0", "BlogEngine.NET")]
+[Extension("Converts ASCII smilies into real smilies in the comments", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class Smilies : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>

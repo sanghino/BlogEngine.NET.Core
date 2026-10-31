@@ -6,7 +6,7 @@ using System.Net;
 using BlogEngine.Core.Services;
 using BlogEngine.Web.Hosting;
 
-[Extension("Sends emails to newsletter subscribers", "4.0", "BlogEngine.NET")]
+[Extension("Sends emails to newsletter subscribers", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class SendNewsletters : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>

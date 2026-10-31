@@ -169,7 +169,7 @@
     <value>ให้คะแนนเรื่องนี้</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET สามาถส่งออกข้อมูลในรูปแบบ BlogML ได้ ส่วนการนำข้อมูลเข้ามานั้น อาจจะนำเข้ามาเป็น BlogMLหรือ RSS ก็ได้</value>
+    <value>ExtraGeek-BlogEngine สามาถส่งออกข้อมูลในรูปแบบ BlogML ได้ ส่วนการนำข้อมูลเข้ามานั้น อาจจะนำเข้ามาเป็น BlogMLหรือ RSS ก็ได้</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>บลอกโรล</value>

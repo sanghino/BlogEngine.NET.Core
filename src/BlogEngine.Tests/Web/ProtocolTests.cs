@@ -39,7 +39,7 @@ public sealed class ProtocolTests
         StringAssert.StartsWith(item.Element("link")!.Value, "http://localhost/post/");
         StringAssert.Contains(item.Element("description")!.Value, "href=\"http://localhost/page/info\"", "Indirizzi assoluti nel testo.");
         StringAssert.Contains(item.Element("description")!.Value, "src=\"http://localhost/image.axd");
-        Assert.AreEqual("dotnet", item.Element(XName.Get("tag", "https://blogengine.io/schemas/tags"))!.Value);
+        Assert.AreEqual("dotnet", item.Element(XName.Get("tag", "urn:extrageek-blogengine:tags"))!.Value);
         Assert.AreEqual("1", item.Element(XName.Get("comments", "http://purl.org/rss/1.0/modules/slash/"))!.Value);
 
         // Richiesta condizionale: nessuna novità, nessun contenuto.

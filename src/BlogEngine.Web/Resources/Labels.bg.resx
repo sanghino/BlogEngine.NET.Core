@@ -169,7 +169,7 @@
     <value>Първи оцени публикацията</value>
   </data>
   <data name="blogMLDescription" xml:space="preserve">
-    <value>BlogEngine.NET използва  BlogML като формат за експортиране.Импортирането поддържа едновременно BlogML и  RSS.</value>
+    <value>ExtraGeek-BlogEngine използва  BlogML като формат за експортиране.Импортирането поддържа едновременно BlogML и  RSS.</value>
   </data>
   <data name="blogroll" xml:space="preserve">
     <value>Блогове</value>

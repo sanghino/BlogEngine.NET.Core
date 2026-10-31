@@ -2,8 +2,7 @@
   "title": "Tag Cloud",
   "description": "List of post tags",
   "version": "4.0.0",
-  "authors": "BlogEngine.NET",
-  "website": "https://blogengine.io/",
+  "authors": "ExtraGeek-BlogEngine",
   "settings": [
     {
       "key": "minimumposts",

@@ -60,7 +60,13 @@ public sealed partial class AdminApiTests
 
         StringAssert.Contains(await _admin.GetStringAsync("/admin/app/editor/editpage.cshtml"), "PageEditorController");
         StringAssert.Contains(await _admin.GetStringAsync("/admin/app/editor/filemanager.cshtml"), "FileManagerController");
-        StringAssert.Contains(await _admin.GetStringAsync("/admin/about.cshtml"), "Xml");
+        var about = await _admin.GetStringAsync("/admin/about.cshtml");
+        StringAssert.Contains(about, "Xml");
+        StringAssert.Contains(about, "brand/logo.svg", "Informazioni e barra laterale usano il nuovo logo.");
+        StringAssert.Contains(about, "brand/logo-dark.svg");
+        Assert.IsFalse(about.Contains("BlogEngine.NET") || about.Contains("blogengine.io"), "Nessun riferimento al vecchio progetto.");
+        Assert.AreEqual(HttpStatusCode.OK, (await anonymous.GetAsync("/favicon.ico")).StatusCode);
+        StringAssert.Contains(await anonymous.GetStringAsync("/account/login"), "brand/logo.svg", "Logo anche nelle pagine di accesso.");
     }
 
     [TestMethod]

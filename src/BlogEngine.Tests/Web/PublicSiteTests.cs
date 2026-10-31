@@ -311,6 +311,22 @@ public sealed partial class PublicSiteTests
         }
     }
 
+    /// <summary>Nessun link ai siti del vecchio progetto in pagine, temi, widget, estensioni ed etichette.</summary>
+    [TestMethod]
+    public void SourceFiles_HaveNoLinksToOldProjectSites()
+    {
+        var webProject = SourcePaths.WebProject;
+        var oldSites = new[] { "blogengine.io", "dnbe.net", "francis.bio", "github.com/rxtur", "facebook.com/BlogEngine", "blogenginenet", "blogml.codeplex.com" };
+        var extensions = new[] { ".cshtml", ".html", ".liquid", ".js", ".css", ".json", ".resx", ".cs" };
+        var thirdParty = new[] { "/lib/", "/editors/", "/Scripts/", "/bin/", "/obj/", "/App_Data/" };
+        var offenders = Directory.EnumerateFiles(webProject, "*", SearchOption.AllDirectories)
+            .Where(f => extensions.Contains(Path.GetExtension(f)))
+            .Where(f => !thirdParty.Any(p => f.Replace('\\', '/').Contains(p, StringComparison.OrdinalIgnoreCase)))
+            .SelectMany(f => oldSites.Where(s => File.ReadAllText(f).Contains(s, StringComparison.OrdinalIgnoreCase)).Select(s => $"{Path.GetRelativePath(webProject, f)}: {s}"))
+            .ToList();
+        Assert.AreEqual(0, offenders.Count, string.Join(Environment.NewLine, offenders));
+    }
+
     [TestMethod]
     public void ThemeStylesheets_ReferenceExistingFiles()
     {

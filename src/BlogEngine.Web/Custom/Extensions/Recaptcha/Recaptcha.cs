@@ -6,7 +6,7 @@ using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 
-[Extension("Settings for the Recaptcha control", "4.0", "<a href=\"http://www.bloodforge.com\">Bloodforge.com</a>", EnabledByDefault = false)]
+[Extension("Settings for the Recaptcha control", "4.0", "ExtraGeek-BlogEngine", EnabledByDefault = false)]
 public sealed class Recaptcha : IBlogExtension
 {
     public const string ResponseField = "g-recaptcha-response";

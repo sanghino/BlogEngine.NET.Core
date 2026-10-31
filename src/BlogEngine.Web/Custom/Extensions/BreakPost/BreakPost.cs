@@ -4,7 +4,7 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 
-[Extension("Breaks a post where [more] is found in the body and adds a link to full post", "4.0", "BlogEngine.NET", Priority = 1010)]
+[Extension("Breaks a post where [more] is found in the body and adds a link to full post", "4.0", "ExtraGeek-BlogEngine", Priority = 1010)]
 public sealed class BreakPost : IBlogExtension
 {
     public void ConfigureServices(IServiceCollection services) =>
