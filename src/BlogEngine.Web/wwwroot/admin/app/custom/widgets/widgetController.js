@@ -1,7 +1,7 @@
 ﻿angular.module('blogAdmin').controller('CustomWidgetsController', ["$rootScope", "$scope", "$location", "$filter", "DragDropHandler", "dataService", function ($rootScope, $scope, $location, $filter, DragDropHandler, dataService) {
     $scope.widgetZones = {};
     $scope.vm = {};
-    $scope.editSrc = {};
+    $scope.editSrc = "";
     $scope.editId = {};
     $scope.editTitle = {};
     $scope.editZone = {};

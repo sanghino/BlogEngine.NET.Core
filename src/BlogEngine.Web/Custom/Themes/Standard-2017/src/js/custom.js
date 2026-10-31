@@ -16,11 +16,6 @@
     }
 
     //
-    var simpleCap = $("label[for=simpleCaptchaValue]").parent();
-    simpleCap.hide();
-    $("#commentCaptcha").append(simpleCap.html());
-
-    //
     var logintext = $(".item-login span").text();
     var aLogin = $(".item-login");
     aLogin.attr("title", logintext);

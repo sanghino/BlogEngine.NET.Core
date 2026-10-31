@@ -149,8 +149,11 @@ var BlogEngine = {
 
         // Campi dei captcha delle estensioni (es. la risposta di SimpleCaptcha o il token di reCAPTCHA).
         var captchaFields = document.querySelectorAll('#commentCaptcha input[name], #commentCaptcha textarea[name], #commentCaptcha select[name]');
+        // Un tema può duplicare il campo (es. una copia visibile e una nascosta): vale quello compilato.
         for (var f = 0; f < captchaFields.length; f++) {
-            data[captchaFields[f].name] = captchaFields[f].value;
+            if (!data[captchaFields[f].name]) {
+                data[captchaFields[f].name] = captchaFields[f].value;
+            }
         }
 
         BlogEngine.toggleCommentSavingIndicators(true);
@@ -196,6 +199,10 @@ var BlogEngine = {
         }
 
         target.style.display = '';
+        // Alcuni temi nascondono il contenitore dell'elenco finché il post non ha commenti.
+        if (!parentId && target.parentNode && target.parentNode.style && target.parentNode.style.display === 'none') {
+            target.parentNode.style.display = '';
+        }
     },
 
     cancelReply: function () {

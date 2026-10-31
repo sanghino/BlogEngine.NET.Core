@@ -65,17 +65,12 @@ $(window).scroll(function () {
 });
 
 //
-var simpleCap = $("label[for=simpleCaptchaValue]").parent();
-simpleCap.hide();
-$("#commentCaptcha").append(simpleCap.html());
-
-//
 if ($('#comment').length < 1) {
     $("#commentlist").parent().hide();
 }
 
 
-$('input[value="Save comment"]').on('click', function () {
+$('#btnSaveAjax').on('click', function () {
     $("#commentlist").parent().show();
 });
 

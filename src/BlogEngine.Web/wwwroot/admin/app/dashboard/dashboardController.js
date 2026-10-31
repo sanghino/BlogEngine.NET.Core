@@ -117,7 +117,6 @@
         if ($rootScope.security.showTabDashboard === false) {
             window.location = "../account/login";
         }
-        $("#versionMsg").hide();
         spinOn();
 
         $scope.loadPackages();
@@ -141,7 +140,6 @@
         .success(function (data) {
             $scope.packages = [];
             angular.copy(data, $scope.packages);
-            $scope.checkNewVersion();
             $('#gal-spinner').hide();
         })
         .error(function () {
@@ -158,24 +156,6 @@
         .error(function () {
             toastr.error($rootScope.lbl.errorLoadingPackages);
             $('#news-spinner').hide();
-        });
-    }
-    $scope.checkNewVersion = function () {
-        if (!$scope.security.showTabCustom) {
-            return;
-        }
-        var version = SiteVars.Version.substring(15, 22);
-        $.ajax({
-            url: SiteVars.ApplicationRelativeWebRoot + "api/setup?version=" + version,
-            type: "GET",
-            contentType: "application/json; charset=utf-8",
-            dataType: "json",
-            success: function (data) {
-                if (data && data.length > 0) {
-                    $("#vNumber").html(data);
-                    $("#versionMsg").show();
-                }
-            }
         });
     }
     $scope.getGalleryLink = function (tp, id) {
