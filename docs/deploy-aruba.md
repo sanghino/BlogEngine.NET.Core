@@ -157,6 +157,8 @@ Alcune cartelle non vengono toccate dall'aggiornamento perché stanno in `App_Da
 
 Quelli inclusi nel sito, cioè `Custom/...` nella root, vengono invece aggiornati.
 
+Il `web.config` del pacchetto si può sovrascrivere senza problemi: contiene già il **Full Trust** impostato dal pannello Aruba. La riga `compilation tempDirectory=...` che Aruba aggiunge al file la rimette il pannello da solo.
+
 ### Manutenzione più lunga
 
 `app_offline.htm` ferma tutto il sito, amministrazione compresa, e serve solo durante il caricamento dei file. Se vuoi tenere chiuso il blog ai visitatori per più tempo e continuare a lavorarci, usa invece **Impostazioni → Base → Sito in manutenzione**:

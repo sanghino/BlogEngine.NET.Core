@@ -76,6 +76,19 @@ if ($Mode -eq 'SelfContained') {
     $aspNetCore.SetAttribute('arguments', '.\BlogEngine.Web.dll')
 }
 $aspNetCore.SetAttribute('hostingModel', $HostingModel.ToLowerInvariant())
+
+# Full Trust, come lo imposta il pannello Aruba (Application pool -> Trust level): così ricaricare il
+# web.config durante un aggiornamento non riporta il sito al livello "Aruba predefinito". La riga
+# compilation/tempDirectory la aggiunge Aruba da sola e non va messa qui.
+$location = $webConfig.SelectSingleNode('/configuration/location')
+$systemWeb = $location.SelectSingleNode('system.web')
+if (-not $systemWeb) {
+    $systemWeb = $location.AppendChild($webConfig.CreateElement('system.web'))
+}
+if (-not $systemWeb.SelectSingleNode('trust')) {
+    $trust = $systemWeb.AppendChild($webConfig.CreateElement('trust'))
+    $trust.SetAttribute('level', 'Full')
+}
 $webConfig.Save($webConfigPath)
 
 # File che non devono arrivare sul server.
