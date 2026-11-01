@@ -4,7 +4,7 @@ using BlogEngine.Web.Admin;
 using BlogEngine.Web.Endpoints;
 using BlogEngine.Web.Hosting;
 
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(new WebApplicationOptions { Args = args, ContentRootPath = PublishedLayout.ContentRoot() });
 builder.Services.AddBlogEngineWeb(builder.Configuration, builder.Environment);
 
 var app = builder.Build();

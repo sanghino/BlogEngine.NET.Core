@@ -6,17 +6,18 @@ Guida passo passo per installare e aggiornare BlogEngine.NET sull'hosting Window
 
 ```
 www.tuodominio.it/   ROOT del sito: qui va il contenuto della cartella sito\ del pacchetto
-├── web.config, BlogEngine.Web.exe, ...   (dal pacchetto)
-├── Custom/, Templates/, wwwroot/, ...    (dal pacchetto)
+├── web.config       (dal pacchetto) dice a IIS di avviare app\BlogEngine.Web.exe
+├── app/             (dal pacchetto) il programma: librerie, temi (Custom/), file statici (wwwroot/)...
 ├── App_Data/        i dati del blog: post, utenti, file caricati, temi ed estensioni aggiunti, chiavi, log
 ├── public/          cartella di Aruba per documenti pubblici: il blog non la usa
 └── mdb-database/, cgi-bin/, ...          altre cartelle di Aruba: non toccarle
 ```
 
 - Il blog va nella **root** del sito, la cartella con il nome del dominio, **non** nella cartella `public`.
-- I file del pacchetto si sostituiscono a ogni aggiornamento; le cartelle di Aruba (`public`, `mdb-database`, `cgi-bin`...) non si cancellano.
+- Nella root il pacchetto mette solo `web.config` e la cartella `app`. Si sostituiscono a ogni aggiornamento; le cartelle di Aruba (`public`, `mdb-database`, `cgi-bin`...) non si cancellano.
+- I file dentro `app` non sono scaricabili dal web: il sito risponde solo con le pagine del blog e con i file di `wwwroot` e dei temi.
 - `App_Data` **non si sovrascrive e non si cancella mai**: contiene tutto il blog. Il pacchetto non la include apposta.
-- Il sito la trova grazie a `appsettings.json` (`"DataPath": "App_Data"`) e crea da solo le sottocartelle mancanti. Anche se sta nella root, IIS non la rende mai raggiungibile dal web.
+- Il sito la trova grazie a `app\appsettings.json` (`"DataPath": "../App_Data"`, cioè la cartella `App_Data` accanto ad `app`) e crea da solo le sottocartelle mancanti. Anche se sta nella root, IIS non la rende mai raggiungibile dal web.
 
 ## 1. Preparare il pacchetto (sul PC)
 
@@ -61,7 +62,7 @@ Alla prima installazione il blog è vuoto: l'amministratore, il nome del blog e 
 
 ### Passo 1: controllare il pacchetto sul PC
 
-Nella cartella `artifacts\aruba\<data-ora>\sito\` devono esserci direttamente i file del sito, tra cui `web.config` e `BlogEngine.Web.dll` (e `BlogEngine.Web.exe` con il pacchetto predefinito). Se li vedi dentro un'altra sottocartella, hai aperto la cartella sbagliata.
+Nella cartella `artifacts\aruba\<data-ora>\sito\` devono esserci solo `web.config` e la cartella `app`, che contiene `BlogEngine.Web.dll` (e `BlogEngine.Web.exe` con il pacchetto predefinito) e tutto il resto del programma.
 
 ### Passo 2: preparare l'hosting dal pannello Aruba
 
@@ -76,14 +77,15 @@ Nella cartella `artifacts\aruba\<data-ora>\sito\` devono esserci direttamente i 
    ```
 
 3. Dal pannello Aruba (Pannello di controllo → Hosting → Gestione permessi) dai alla cartella `App_Data` i **permessi di scrittura**. Senza, il sito non riesce a salvare nulla e non parte.
-4. Se nella root c'è la pagina di benvenuto di Aruba (per esempio `index.html` o `default.asp`), cancellala, altrimenti verrebbe mostrata al posto del blog. Non cancellare le cartelle di Aruba.
+4. Con il pacchetto predefinito abilita l'eseguibile del blog: Hosting Windows → .NET → **Abilitazione degli eseguibili**, inserisci `app/BlogEngine.Web.exe` e premi Aggiungi. Aruba blocca tutti gli eseguibili non abilitati. Con il pacchetto `-Mode FrameworkDependent` questo passo non serve, perché il sito viene avviato dal .NET di Aruba.
+5. Se nella root c'è la pagina di benvenuto di Aruba (per esempio `index.html` o `default.asp`), cancellala, altrimenti verrebbe mostrata al posto del blog. Non cancellare le cartelle di Aruba.
 
 ### Passo 3: caricare il sito via FTP
 
 1. Apri la **root** del sito sul server (la cartella con il nome del dominio).
-2. Dal PC, apri `artifacts\aruba\<data-ora>\sito\`, seleziona **tutto il contenuto** (file e cartelle) e trascinalo nella root sul server. Non caricare la cartella `sito` stessa, e non caricare `app_offline.htm` né `LEGGIMI.txt`.
+2. Dal PC, apri `artifacts\aruba\<data-ora>\sito\`, seleziona `web.config` e la cartella `app` e trascinali nella root sul server. Non caricare la cartella `sito` stessa, e non caricare `app_offline.htm` né `LEGGIMI.txt`.
 3. Aspetta la fine del trasferimento. Con il pacchetto predefinito sono circa 150 MB, quindi servono diversi minuti: non interromperlo. Se il programma FTP segnala file falliti, riprovali.
-4. Controlla che sul server, direttamente nella root (accanto a `public` e `App_Data`), ci siano `web.config` e `BlogEngine.Web.dll`.
+4. Controlla che sul server, direttamente nella root (accanto a `public` e `App_Data`), ci siano `web.config` e la cartella `app`, e che dentro `app` ci sia `BlogEngine.Web.dll`.
 
 ### Passo 4: aprire il sito la prima volta
 
@@ -147,7 +149,7 @@ Con il pulsante di prova invii un messaggio di test.
 1. **Backup** (vedi sotto).
 2. Crea il nuovo pacchetto con `.\tools\publish-aruba.ps1`.
 3. Carica `app_offline.htm` nella **root** del sito. IIS ferma il sito, mostra "Aggiornamento in corso" e sblocca i file.
-4. Carica il contenuto di `sito\` del pacchetto nella root, sovrascrivendo i file esistenti.
+4. Carica il contenuto di `sito\` del pacchetto (`web.config` e la cartella `app`) nella root, sovrascrivendo i file esistenti.
 5. **Cancella** `app_offline.htm` dalla root.
 6. Apri il sito e verifica home page, login e un post. Usa la checklist in `docs/checklist-collaudo.md`.
 
@@ -155,7 +157,17 @@ Alcune cartelle non vengono toccate dall'aggiornamento perché stanno in `App_Da
 - i temi, le estensioni e i widget caricati;
 - i file caricati.
 
-Quelli inclusi nel sito, cioè `Custom/...` nella root, vengono invece aggiornati.
+Quelli inclusi nel sito, cioè `app/Custom/...`, vengono invece aggiornati.
+
+### Passaggio dalla vecchia disposizione
+
+I pacchetti creati prima del 1° novembre 2026 mettevano tutti i file del programma (centinaia di `.dll`, `BlogEngine.Web.exe`, `Custom/`, `wwwroot/`, le cartelle delle lingue...) direttamente nella root. Al primo aggiornamento con il nuovo pacchetto:
+
+1. Fai il backup e carica `app_offline.htm`, come sempre.
+2. Dalla root cancella tutti i vecchi file e le vecchie cartelle del programma. Lascia solo `app_offline.htm`, `App_Data` e le cartelle di Aruba (`public`, `mdb-database`, `cgi-bin`...).
+3. Carica `web.config` e la cartella `app`.
+4. Nel pannello Aruba, in **Abilitazione degli eseguibili**, revoca `BlogEngine.Web.exe` e aggiungi `app/BlogEngine.Web.exe`.
+5. Cancella `app_offline.htm`.
 
 Il `web.config` del pacchetto si può sovrascrivere senza problemi: contiene già il **Full Trust** impostato dal pannello Aruba. La riga `compilation tempDirectory=...` che Aruba aggiunge al file la rimette il pannello da solo.
 
@@ -191,6 +203,7 @@ Se dopo l'aggiornamento il sito non funziona:
 |---|---|
 | Errore **500.30** o **502.5** (il sito non parte) | Nel `web.config` della root imposta `stdoutLogEnabled="true"`, ricarica il file e apri il sito. Il motivo è scritto in `App_Data/logs/stdout_*.log`. Poi rimetti `false`. |
 | Errore **500.19** | Il modulo ASP.NET Core non è attivo sul piano: chiedi al supporto Aruba di abilitare .NET Core per il sito. |
+| Errore all'avvio con il pacchetto predefinito, senza log in `App_Data/logs` | Controlla nel pannello Aruba che l'eseguibile abilitato sia `app/BlogEngine.Web.exe` (passo 2). |
 | Errore all'avvio con il pacchetto `-Mode FrameworkDependent` | Sul server manca la versione di .NET richiesta: usa il pacchetto predefinito (self-contained). |
 | Cartelle con il triangolo rosso nella Diagnostica | Dai i permessi di scrittura ad `App_Data` dal pannello Aruba. |
 | Le email non partono | Controlla i valori della tabella Email e il registro in **Log** dell'amministrazione. |
