@@ -1,0 +1,20 @@
+{%- comment -%}
+  Tema StableStart (porting di CommentView.ascx): un commento con le sue risposte. Gli id "id_..." e
+  "replies_..." servono a blog.js per inserire le risposte nel punto giusto.
+{%- endcomment -%}
+<div id="id_{{ comment.id }}" class="vcard comment{% if comment.is_by_post_author %} self{% endif %}">
+    <p class="date">{{ comment.date_created | date_format: 'g' }} <a href="#id_{{ comment.id }}">#</a></p>
+    <div class="gravatar">{{ comment.avatar }}</div>
+    <div class="content">{{ comment.text }}</div>
+    <p class="author">
+        {%- if comment.website != '' %}<a href="{{ comment.website }}" rel="nofollow" class="url fn">{{ comment.author }}</a>{% else %}<span class="fn">{{ comment.author }}</span>{% endif %}
+        {{ comment.flag }}
+        {%- if comment.reply_link != '' %} | {{ comment.reply_link }}{% endif %}
+        {%- if comment.admin_links != '' %} | {{ comment.admin_links }}{% endif %}
+    </p>
+    <div class="comment-replies" id="replies_{{ comment.id }}"{% if comment.replies.size == 0 %} style="display:none;"{% endif %}>
+        {%- for reply in comment.replies %}
+        {% include 'comment-view', comment: reply %}
+        {%- endfor %}
+    </div>
+</div>

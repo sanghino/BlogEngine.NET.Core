@@ -1,0 +1,76 @@
+{%- comment -%}
+  Tema StableStart (porting di site.master): intestazione con cinque riquadri di immagini, menu,
+  contenuto a destra, widget a sinistra, disclaimer e piè di pagina.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    <link rel="icon" href="{{ 'favicon.ico' | app_url }}" sizes="any" />
+    <link rel="icon" href="{{ 'Content/images/brand/icon.svg' | app_url }}" type="image/svg+xml" />
+    {{ content_for_header }}
+    <link href="{{ 'style.css' | theme_url }}" rel="stylesheet" />
+</head>
+<body class="template-{{ template }}">
+    <div id="container">
+
+        <div id="header">
+            <div id="headimg1"></div>
+            <div id="headimg2"></div>
+            <div id="headimg3"></div>
+            <div id="headimg4"></div>
+            <div id="headimg5"></div>
+            <div class="title">
+                <span class="sitename"><a href="{{ blog.url }}">{{ blog.name }}</a></span>
+                <div class="slogan">{{ blog.description }}</div>
+            </div>
+
+            <div id="navbar" class="navbar">
+                <div id="menu">
+                    <a href="{{ blog.feed_url }}" class="subscribefeed" target="_blank">{{ 'subscribe' | t }}</a>
+                    <ul>
+                        <li><a href="{{ blog.url }}" rel="home">{{ 'home' | t }}</a></li>
+                        {%- for p in blog.pages %}
+                        <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+                        {%- endfor %}
+                        <li><a href="{{ blog.archive_url }}">{{ 'archive' | t }}</a></li>
+                        <li><a href="{{ blog.contact_url }}">{{ 'contact' | t }}</a></li>
+                        {%- if user.is_authenticated %}
+                        <li><span class="welcome">{{ 'welcome' | t }} {{ user.name }}!</span><a href="{{ blog.logout_url }}">{{ 'logoff' | t }}</a></li>
+                        {%- else %}
+                        <li><a href="{{ blog.login_url }}">{{ 'login' | t }}</a></li>
+                        {%- endif %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div id="wrapper">
+            <div id="content">
+                {{ content_for_layout }}
+            </div>
+            <div id="sidepanel">
+                {% widget_zone 'sidebar' %}
+            </div>
+            <div id="disclaimer">
+                <strong>Disclaimer</strong><br />
+                Questo sito non rappresenta una testata giornalistica poiché non viene aggiornato con periodicità regolare. Non può pertanto considerarsi un prodotto editoriale ai sensi della legge n. 62/2001.
+                Tutti hanno diritto di manifestare liberamente il proprio pensiero con la parola, lo scritto e ogni altro mezzo di diffusione. La stampa non può essere soggetta ad autorizzazioni o censure.
+                Le opinioni espresse qui rappresentano il mio personale punto di vista e di eventuali collaboratori e non rappresentano in nessun modo l'opinione delle Società o degli Enti che potrebbero essere citati e/o descritti.
+                L'intestazione del blog contiene tre immagini tratte da <a href="https://commons.wikimedia.org/wiki/Category:Sesto_Fiorentino" target="_blank" rel="noopener">Wikipedia</a> e rielaborate, tali immagini sono coperte da licenza "GNU Free Documentation License" disponibile <a href="https://it.wikipedia.org/wiki/Wikipedia:Testo_della_GNU_Free_Documentation_License" target="_blank" rel="noopener">qui</a>
+                che ne garantisce la libera copia, distribuzione ed elaborazione avendo, Wikipedia, avuto dal soggetto che detiene i diritti (from the municipality of Sesto Fiorentino to it.wikipedia) la possibilità riservata dalla licenza sopra descritta (rif. Immagine stemma comunale).
+                L'immagine della <a href="https://commons.wikimedia.org/wiki/File:Museo_delle_porcellane_di_Firenze,_piatto_di_doccia,_1800-1810.JPG" target="_blank" rel="noopener">Porcellana di Doccia</a> è sempre coperta dalla licenza sopra descritta con la limitazione dell'indicazione obbligatoria del licenziatario che è <a href="https://commons.wikimedia.org/wiki/User:Sailko" target="_blank" rel="noopener">Sailko</a>.
+                L'immagine della <a href="https://commons.wikimedia.org/wiki/File:Pieve_di_san_martino.jpg" target="_blank" rel="noopener">Chiesa di S.Martino</a> è sempre coperta dalla licenza sopra descritta ed è da attribuire a <a href="https://commons.wikimedia.org/wiki/User:Vignaccia76" target="_blank" rel="noopener">Vignaccia76</a>
+                <br /><br />
+                &copy; Copyright {{ blog.year }} {{ blog.name }}
+            </div>
+            <div id="footer">
+                Powered by ExtraGeek-BlogEngine | {{ 'theme' | t }}: StableStart | Design: Thomas A. Bosscher
+            </div>
+        </div>
+    </div>
+    {{ content_for_footer }}
+</body>
+</html>

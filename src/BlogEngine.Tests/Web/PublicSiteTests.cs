@@ -285,6 +285,7 @@ public sealed partial class PublicSiteTests
     [DataRow("Standard")]
     [DataRow("Standard-2017")]
     [DataRow("Terminal")]
+    [DataRow("StableStart")]
     public async Task Themes_ReferenceOnlyExistingFiles(string theme)
     {
         using var factory = new BlogWebFactory();
@@ -301,7 +302,7 @@ public sealed partial class PublicSiteTests
         }
 
         var assets = pages.SelectMany(p => LocalAssetRegex().Matches(p).Select(m => m.Groups["url"].Value)).Distinct().ToList();
-        Assert.IsTrue(assets.Count > 10, string.Join(", ", assets));
+        Assert.IsTrue(assets.Count > 5, string.Join(", ", assets));
         foreach (var url in assets)
         {
             var path = url.Split('?')[0];

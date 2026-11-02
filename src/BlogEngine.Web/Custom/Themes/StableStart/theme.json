@@ -1,0 +1,9 @@
+{
+  "title": "StableStart",
+  "description": "Il tema storico di SestoFiorentinoInfo: intestazione con le immagini di Sesto Fiorentino, barra laterale a sinistra e disclaimer. Design originale di Thomas A. Bosscher, adattato a ExtraGeek-BlogEngine.",
+  "authors": "Thomas A. Bosscher, Francesco Mori",
+  "version": "4.0.0",
+  "defaultWidgets": {
+    "sidebar": [ "Search", "Administration", "PageList", "CategoryList", "PostList", "CommentList", "MonthList", "TagCloud" ]
+  }
+}

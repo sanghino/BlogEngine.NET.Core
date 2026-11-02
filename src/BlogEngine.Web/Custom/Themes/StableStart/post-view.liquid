@@ -1,0 +1,30 @@
+{%- comment -%}
+  Tema StableStart (porting di PostView.ascx): un post nell'elenco (location = 'list') o da solo
+  (location = 'single'). post.body contiene il testo o il riassunto, secondo le impostazioni.
+{%- endcomment -%}
+<div class="post xfolkentry" id="post{{ post.index }}">
+    <h1><a href="{{ post.url }}" class="taggedlink">{{ post.title }}</a></h1>
+    <span class="author"><a href="{{ post.author_url }}">{{ post.author_name }}</a></span>
+    <span class="pubDate">{{ post.date_created | date_format: 'd MMMM yyyy HH:mm' }}</span>
+
+    <div class="text">{{ post.body }}</div>
+    <div class="bottom">
+        {{ post.rating_html }}
+        {%- if post.tags.size > 0 %}
+        <p class="tags">{{ 'tags' | t }}: {% for tag in post.tags %}<a href="{{ tag.url }}" rel="tag">{{ tag.title }}</a>{% unless forloop.last %}, {% endunless %}{% endfor %}</p>
+        {%- endif %}
+        {%- if post.categories.size > 0 %}
+        <p class="categories">{% for c in post.categories %}<a href="{{ c.url }}">{{ c.title }}</a>{% unless forloop.last %} | {% endunless %}{% endfor %}</p>
+        {%- endif %}
+    </div>
+
+    <div class="footer">
+        <div class="bookmarks">
+            <a rel="nofollow" href="mailto:?subject={{ post.title | url_encode }}&amp;body={{ post.absolute_url | url_encode }}">{{ 'email' | t }}</a>
+        </div>
+        {%- if post.admin_links != '' %}<span class="post-adminlinks">{{ post.admin_links }}</span>{% endif %}
+        <a rel="bookmark" href="{{ post.absolute_url }}">Permalink</a> |
+        <a rel="nofollow" href="{{ post.url }}#comment">{{ 'comments' | t }} ({{ post.comments_count }})</a> |
+        <a rel="nofollow" href="{{ post.feed_url }}">Post RSS<img src="{{ 'images/icon_rssButton.gif' | theme_url }}" alt="RSS" style="margin-left:3px" /></a>
+    </div>
+</div>
