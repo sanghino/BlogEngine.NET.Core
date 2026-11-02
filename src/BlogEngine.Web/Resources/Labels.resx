@@ -3029,4 +3029,49 @@
   <data name="aboutSpecification" xml:space="preserve">
     <value>Your ExtraGeek-BlogEngine installation</value>
   </data>
+  <data name="widgetAdministration" xml:space="preserve">
+    <value>Administration</value>
+  </data>
+  <data name="widgetAdvertisement" xml:space="preserve">
+    <value>Advertisement</value>
+  </data>
+  <data name="widgetAuthorList" xml:space="preserve">
+    <value>Author List</value>
+  </data>
+  <data name="widgetBlogList" xml:space="preserve">
+    <value>Blog List</value>
+  </data>
+  <data name="widgetBlogRoll" xml:space="preserve">
+    <value>Blog Roll</value>
+  </data>
+  <data name="widgetCategoryList" xml:space="preserve">
+    <value>Category List</value>
+  </data>
+  <data name="widgetCommentList" xml:space="preserve">
+    <value>Comment List</value>
+  </data>
+  <data name="widgetLinkList" xml:space="preserve">
+    <value>Link List</value>
+  </data>
+  <data name="widgetMonthList" xml:space="preserve">
+    <value>Month List</value>
+  </data>
+  <data name="widgetNewsletter" xml:space="preserve">
+    <value>Newsletter</value>
+  </data>
+  <data name="widgetPageList" xml:space="preserve">
+    <value>Page List</value>
+  </data>
+  <data name="widgetPostList" xml:space="preserve">
+    <value>Post List</value>
+  </data>
+  <data name="widgetSearch" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="widgetTagCloud" xml:space="preserve">
+    <value>Tag Cloud</value>
+  </data>
+  <data name="widgetTextBox" xml:space="preserve">
+    <value>Text Box</value>
+  </data>
 </root>

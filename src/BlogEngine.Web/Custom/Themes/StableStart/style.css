@@ -27,7 +27,7 @@ Special Thanks To:
 
 
 
-body {	font : normal 70% Verdana, Tahoma, arial, sans-serif;	background : #bcbcbc url('images/bg_image.jpg') repeat-x;	background-position:top;	/*margin: 0 auto;*/margin: 0 0 100px 0;}
+body {	font : normal 87.5% Verdana, Tahoma, arial, sans-serif;	background : #bcbcbc url('images/bg_image.jpg') repeat-x;	background-position:top;	/*margin: 0 auto;*/margin: 0 0 100px 0;}
 
 h1 { 	font : normal 1.6em Arial, Sans-Serif;	color : #333333;	background-color:#F0F0F0;	border : 1px dotted #c8c8c8;	margin-bottom : 10px;padding-left:4px;}
 h1 a { 	padding-left:5px;	color:#444444; }
@@ -53,10 +53,10 @@ blockquote {background-color:transparent;	color:#888888;	margin:0 48px;	font-sty
 #wrapper {}
 
 /*==== Container =========================================================*/
-#container { background : #FFFFFF;	border : 1px solid #E0E0E0;	text-align : left;	width : 900px;	margin : 15px auto;	padding : 3px;} 
+#container { background : #FFFFFF;	border : 1px solid #E0E0E0;	text-align : left;	width : auto;	max-width : 1140px;	margin : 15px auto;	padding : 3px;} 
 
 /*==== Header ============================================================*/
-#header { 	background : #222 url('images/header.gif') no-repeat;	height : 150px;	margin-bottom : 1px;	border-bottom : 4px solid #aaaaaa;} 
+#header { 	background : #000 url('images/header.gif') no-repeat;	background-size : 100% 100%;	height : 150px;	margin-bottom : 1px;	border-bottom : 4px solid #aaaaaa;} 
 #header .title { 	padding-top : 40px;	text-align : right;} 
 #header .title .sitename a { 	border-bottom : 1px dashed #657382;	color : #ffffff;	font : normal 34px arial;	padding-bottom : 2px;	text-decoration : none;	margin-right : 20px;	background-color : transparent;} 
 #header .title a:hover { 	border-color : #f60;} 
@@ -81,7 +81,7 @@ blockquote {background-color:transparent;	color:#888888;	margin:0 48px;	font-sty
 #menu ul li a.feed img{	margin-right: 3px;	margin-bottom: -2px;}
 
 /*==== Disclaimer ========================================================*/
-#disclaimer { color : #484848;background : #f0f0f0;	clear : left;	border : 1px dashed #c8c8c8;	width : 180px;	font : normal 0.9em Tahoma, sans-serif;	padding : 5px 5px 5px 5px;	margin : 0px 5px 15px 10px;} 
+#disclaimer { color : #484848;background : #f0f0f0;	clear : left;	border : 1px dashed #c8c8c8;	width : 220px;	font : normal 0.9em Tahoma, sans-serif;	padding : 5px 5px 5px 5px;	margin : 0px 5px 15px 10px;} 
 
 /*==== ADMIN Menu ========================================================*/
 #adminmenu { 	padding : 3px 0 3px 78px;	text-align : left;	margin: 0 0 0 0;	background : #eeeeee url('images/icon_admin.gif') no-repeat;	border-bottom : 3px solid #666666;} 
@@ -92,13 +92,13 @@ blockquote {background-color:transparent;	color:#888888;	margin:0 48px;	font-sty
 
 
 /*==== Content ==========================================================*/
-#content {	background : #ffffff;	float : right;	width : 695px;color : #333333;}
+#content {	background : #ffffff;	float : right;	width : calc(100% - 260px);color : #333333;}
 
 #postnavigation{	margin-bottom: 10px;	text-align: center;	background : #F7F7F7;line-height:22px;font-size: 80%;border-bottom: 1px dotted #c8c8c8;}
 
 
 /*==== Side Menu (widgetbar) ============================================*/
-#sidepanel {color:#555555;	background : #F7F7F7;	float : left;	width : 200px;	padding : 5px 3px 20px 1px;	border-right : 1px solid #dddddd;	border-bottom : 1px solid #dddddd;	margin-bottom: 15px;}
+#sidepanel {color:#555555;	background : #F7F7F7;	float : left;	width : 240px;	padding : 5px 3px 20px 1px;	border-right : 1px solid #dddddd;	border-bottom : 1px solid #dddddd;	margin-bottom: 15px;}
 
 /*==== Footer ===========================================================*/
 #footer { background : #f5f5f5;	border : 1px solid #e3e4e4;	clear : both;	width : 100%;	text-align : center;	padding : 3px 0 3px 0;}
@@ -113,8 +113,8 @@ div.widgetzone .clear{clear: left;}
 div.widget{	margin-bottom: 10px;	z-index: 1;	min-width: 1px;}
 div.widget .content{line-height: 16px;color: #666666;padding: 0 5px 0 5px;}
 div.widget h4 {}
-div.widget a.edit{font-size: 10px;	font-weight: normal;	float: right;	z-index: 1;	margin-top:3px;}
-div.widget a.delete{font-weight: normal;	font-size:8px;color: #996600;	float: right;	margin: 3px 3px 0 5px;	padding: 0 2px 0 2px;	z-index: 1;	text-decoration: none;	border: solid 1px #cccccc;}
+div.widget a.edit{font-size: 11px;	font-weight: normal;	float: right;	z-index: 1;	margin-top:3px;}
+div.widget a.delete{font-weight: normal;	font-size:10px;color: #996600;	float: right;	margin: 3px 3px 0 5px;	padding: 0 2px 0 2px;	z-index: 1;	text-decoration: none;	border: solid 1px #cccccc;}
 div.widget a.delete:hover{	color: #ff9900;}
 .widgetzone .widget ul {	list-style-type: none;	margin: 0;	padding: 0;	text-transform: capitalize;}
 .widgetzone .widget ul li {	margin-bottom: 3px;}
@@ -129,7 +129,7 @@ div.widget a.delete:hover{	color: #ff9900;}
 .blogroll content {padding: 0 5px 0 0px;}
 #blogroll ul {list-style-type: none;}
 #blogroll ul li {}
-#blogroll ul li ul li a {	margin-left: 5px;	color: #666666;font-size: 10px;}
+#blogroll ul li ul li a {	margin-left: 5px;	color: #666666;font-size: 12px;}
 #blogroll ul li a img {	margin-right: 3px;}
 
 /* Calendar ------------------------------------*/
@@ -166,7 +166,7 @@ ul#monthList ul.open{	display: block;}
 .mostcomments td {}
 .mostcomments h4 {padding-left:18px;background : #F0F0F0 url('images/icon_mostcomments.gif') no-repeat scroll 0 0px;}
 .mostcomments img {}
-.mostcomments .vcard {font-size: 10px;}
+.mostcomments .vcard {font-size: 12px;}
 
 /* Newsletter ----------------------------------*/
 .newsletter {}
@@ -185,7 +185,7 @@ ul#monthList ul.open{	display: block;}
 /* Recent Comments -----------------------------*/
 .recentcomments {}
 .recentcomments h4 {padding-left:18px;background : #F0F0F0 url('images/icon_recentcomments.gif') no-repeat scroll 0 0px;}
-ul.recentComments li{	padding-bottom: 5px;	text-transform: none;font-size: 10px;}
+ul.recentComments li{	padding-bottom: 5px;	text-transform: none;font-size: 12px;}
 ul.recentComments li a.postTitle{	font-weight: normal; }
 ul.recentComments li a.moreLink{color:#444444;}
 
@@ -199,8 +199,8 @@ ul.recentPosts li a{font-weight: normal;white-space:nowrap;	display:block;}
 ul.recentPosts li span{text-indent: 0px;text-transform: none;	margin-right:10px;}
 
 /* Search --------------------------------------*/
-#searchbox {margin-top: 5px;	font-size: 10px;}
-#searchbox input {font-size: 10px;}
+#searchbox {margin-top: 5px;	font-size: 12px;}
+#searchbox input {font-size: 12px;}
 #searchbox #searchbutton {	margin-left: 5px;}
 #searchbox #searchfield {	width: 180px;}
 
@@ -210,11 +210,11 @@ ul.recentPosts li span{text-indent: 0px;text-transform: none;	margin-right:10px;
 .tagcloud li {	display: inline;}
 .tagcloud a {	margin-right: 3px;	display: inline;}
 .tagcloud a:hover{	color : #ff9900;}
-.tagcloud a.biggest {	font-size: 11px;	font-weight:bold;	color:#000000;}
-.tagcloud a.big {	font-size: 11px;	color:#000000;}
-.tagcloud a.medium {	font-size: 11px;	color:#333333;}
-.tagcloud a.small {	font-size: 10px;	color:#666666;}
-.tagcloud a.smallest {	font-size: 10px;	color:#999999;}
+.tagcloud a.biggest {	font-size: 16px;	font-weight:bold;	color:#000000;}
+.tagcloud a.big {	font-size: 15px;	color:#000000;}
+.tagcloud a.medium {	font-size: 14px;	color:#333333;}
+.tagcloud a.small {	font-size: 13px;	color:#666666;}
+.tagcloud a.smallest {	font-size: 12px;	color:#999999;}
 
 /* TextBox -------------------------------------*/
 .textbox h4 {padding-left:18px;background : #F0F0F0 url('images/icon_textbox.gif') no-repeat scroll 0 0px;}
@@ -234,11 +234,11 @@ div.post, .mceContentBody {	padding: 3px 10px;	margin-bottom: 20px;}
 div.post h1, .mceContentBody h1 {}
 div.post h1 {padding-left:24px;background : #F0F0F0 url('images/h_post.gif') no-repeat scroll 0 0px;margin:10px 0 2px 0;}
 
-div.post .author {	color: #666666;	font-size: 11px;	float: left;	text-transform: capitalize;}
-div.post .pubDate {	color: #666666;	font-size: 11px;	float: right;}
+div.post .author {	color: #666666;	font-size: 13px;	float: left;	text-transform: capitalize;}
+div.post .pubDate {	color: #666666;	font-size: 13px;	float: right;}
 div.post .text {	margin-top: 30px;}
 div.post .text h2 {	margin-bottom: -10px;}
-div.post .text h3 {	font-size: 11px;	margin-bottom: -10px;	padding: 0;}
+div.post .text h3 {	font-size: 1.1em;	margin-bottom: -10px;	padding: 0;}
 div.post .footer {	text-align: right;	border-top: 1px dashed silver;	padding-top: 4px;	padding-bottom: 2px;}
 div.post .bottom {	margin-bottom: 45px;}
 div.post .categories {	margin-bottom: 5px;	float: right;}
@@ -257,7 +257,7 @@ div.post .tags {	float: left;	margin-bottom: 5px;}
 h1#comment { font : bold 1.1em Arial, Sans-Serif;margin: 0 5px 0 5px;padding-left:18px;background : #F0F0F0 url('images/icon_recentcomments.gif') no-repeat scroll 0 0px;}
 
 .comment {border: 1px solid silver; background-color: white; padding: 3px 10px; margin-bottom: 10px;}
-.comment .date { font-size: 10px; color: #666666; text-align: right; margin: 0; padding: 3px 0px; border-bottom: 1px dashed silver;}
+.comment .date { font-size: 12px; color: #666666; text-align: right; margin: 0; padding: 3px 0px; border-bottom: 1px dashed silver;}
 .comment .author { margin: 0; padding: 3px 0px; border-top: 1px dashed silver; }
 
 #addcomment, #comment { font-size: 15px; letter-spacing:1px; font-weight: bold;}
@@ -280,7 +280,7 @@ h1#comment { font : bold 1.1em Arial, Sans-Serif;margin: 0 5px 0 5px;padding-lef
 
 .success { color: green; font-weight: bold; }
 
-.commentForm .bbcode { font-size:10px; float:right; position:relative; top:20px; padding: 3px; }
+.commentForm .bbcode { font-size:12px; float:right; position:relative; top:20px; padding: 3px; }
 .bbcode a { margin: 1px; padding: 1px 3px 1px 3px; background: #fff; border: 1px solid #ccc; }
 
 
@@ -357,7 +357,7 @@ h1#comment { font : bold 1.1em Arial, Sans-Serif;margin: 0 5px 0 5px;padding-lef
 #contact textarea{	display: block;		overflow: auto;	width: 75%;	height: 150px;	margin: 0;}
 
 /*==== Syntax Highlighter ================================================*/
-.code{	font-size: 12px;	color: black;	font-family: Consolas, "Courier New", Courier, Monospace;	background-color: #F1F1F1;  line-height: normal;}
+.code{	font-size: 13px;	color: black;	font-family: Consolas, "Courier New", Courier, Monospace;	background-color: #F1F1F1;  line-height: normal;}
 .code p{	padding: 5px;}
 .code .rem { color: #008000; }
 .code .kwrd { color: #0000ff; }
@@ -431,7 +431,10 @@ div.widget .widget-content ul { list-style-type: none; margin: 0; padding: 0; }
 .widget .post-item-img { display: none; }
 .widget h5.post-item-title { font: normal 1em Verdana, Tahoma, arial, sans-serif; border: none; margin: 0; color: #996600; }
 .widget .post-item-desc { margin: 2px 0; color: #666666; }
-.widget .post-item-date { display: block; color: #888888; font-size: 10px; }
+.widget .post-item-date { display: block; color: #888888; font-size: 12px; }
+/* Testo degli articoli più arioso */
+div.post .text, div.post .text p, #page p { line-height: 1.6em; }
+div.widget .content, div.widget .widget-content { line-height: 1.4em; }
 .postlist h4 { padding-left: 18px; background: #F0F0F0 url('images/icon_recentposts.gif') no-repeat scroll 0 0px; }
 .pagelist h4 { padding-left: 18px; background: #F0F0F0 url('images/icon_pagelist.gif') no-repeat scroll 0 0px; }
 .search { margin-bottom: 10px; }
@@ -453,7 +456,7 @@ div.post .text img, #page img { max-width: 100%; height: auto; }
 
 /* Schermi piccoli: le colonne vanno una sotto l'altra */
 @media (max-width: 920px) {
-	body { font-size: 85%; }
+	body { font-size: 100%; }
 	#container { width: auto; margin: 0; border: none; }
 	#header { height: auto; background-size: cover; overflow: hidden; }
 	#headimg3, #headimg4, #headimg5 { display: none; }

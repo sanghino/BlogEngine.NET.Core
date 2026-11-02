@@ -84,6 +84,37 @@ public sealed class WidgetCatalog(BlogEnginePaths paths)
     public WidgetInfo? Find(string name) =>
         GetWidgets().FirstOrDefault(w => string.Equals(w.Name, name, StringComparison.OrdinalIgnoreCase));
 
+    /// <summary>
+    /// Titolo da mostrare: quello scelto dall'amministratore oppure, se è ancora quello predefinito del
+    /// widget (o vuoto), la sua traduzione nella lingua del blog (etichetta "widget" + nome del widget).
+    /// <paramref name="translate"/> restituisce la chiave stessa quando la traduzione non esiste.
+    /// </summary>
+    public static string DisplayTitle(WidgetInfo widget, string? title, Func<string, string> translate)
+    {
+        if (!IsDefaultTitle(widget, title))
+        {
+            return title!.Trim();
+        }
+
+        var key = "widget" + widget.Name;
+        var translated = translate(key);
+        return translated == key ? widget.Title : translated;
+    }
+
+    /// <summary>
+    /// Titolo da salvare: se coincide con quello predefinito (anche tradotto) si salva quello del widget,
+    /// così continua a seguire la lingua del blog se questa cambia.
+    /// </summary>
+    public static string StoredTitle(WidgetInfo widget, string? title, Func<string, string> translate) =>
+        IsDefaultTitle(widget, title) || string.Equals(title!.Trim(), DisplayTitle(widget, null, translate), StringComparison.Ordinal)
+            ? widget.Title
+            : title.Trim();
+
+    private static bool IsDefaultTitle(WidgetInfo widget, string? title) =>
+        string.IsNullOrWhiteSpace(title)
+        || string.Equals(title.Trim(), widget.Title, StringComparison.Ordinal)
+        || string.Equals(title.Trim(), widget.Name, StringComparison.Ordinal);
+
     private static IEnumerable<WidgetInfo> Scan(string root, bool uploaded)
     {
         if (!Directory.Exists(root))
@@ -268,7 +299,7 @@ public sealed partial class WidgetService(
             {
                 Id = placement.Id,
                 Name = widget.Name,
-                Title = placement.Title,
+                Title = WidgetCatalog.DisplayTitle(widget, placement.Title, scope.Translate),
                 ShowTitle = placement.ShowTitle,
                 Zone = zone,
                 Settings = await GetSettingsAsync(placement.Id),

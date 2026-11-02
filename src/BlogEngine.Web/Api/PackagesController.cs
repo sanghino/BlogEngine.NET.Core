@@ -5,6 +5,7 @@ using BlogEngine.Web.Api.Models;
 using BlogEngine.Web.Hosting;
 using BlogEngine.Web.Themes;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Localization;
 
 namespace BlogEngine.Web.Api;
 
@@ -23,7 +24,8 @@ public sealed class PackagesController(
     ISettingsService settings,
     IRightsService rights,
     IBlogContext context,
-    IHostApplicationLifetime lifetime) : AdminApiController
+    IHostApplicationLifetime lifetime,
+    IStringLocalizer<Labels> labels) : AdminApiController
 {
     [HttpGet("")]
     public async Task<IEnumerable<Package>> Get(int take = 10, int skip = 0, string filter = "", string order = "")
@@ -203,7 +205,7 @@ public sealed class PackagesController(
     {
         Id = w.Name,
         PackageType = "Widget",
-        Title = w.Title,
+        Title = WidgetCatalog.DisplayTitle(w, null, T),
         Description = w.Description,
         LocalVersion = w.Version,
         Authors = w.Authors,
@@ -212,6 +214,8 @@ public sealed class PackagesController(
         Enabled = true,
         LastUpdated = string.Empty,
     });
+
+    private string T(string key) => labels[key] is { ResourceNotFound: false } value ? value.Value : key;
 
     private async Task DemandAsync(Rights right)
     {
@@ -237,7 +241,7 @@ public sealed class PackageExtraController : AdminApiController
 /// i template del tema usano il tag widget_zone.
 /// </summary>
 [Route("api/widgets")]
-public sealed class WidgetsController(IRightsService rights, ISettingsService settings, ThemeCatalog themes, WidgetCatalog catalog, WidgetService widgets) : AdminApiController
+public sealed class WidgetsController(IRightsService rights, ISettingsService settings, ThemeCatalog themes, WidgetCatalog catalog, WidgetService widgets, IStringLocalizer<Labels> labels) : AdminApiController
 {
     [HttpGet("")]
     public async Task<WidgetsVM> Get()
@@ -247,7 +251,7 @@ public sealed class WidgetsController(IRightsService rights, ISettingsService se
         var vm = new WidgetsVM
         {
             AvailableWidgets = catalog.GetWidgets()
-                .Select(w => new WidgetItem { Id = w.Name, Name = w.Name, Title = w.Title, ShowTitle = false, ShowUnistall = false })
+                .Select(w => new WidgetItem { Id = w.Name, Name = w.Name, Title = WidgetCatalog.DisplayTitle(w, null, T), ShowTitle = false, ShowUnistall = false })
                 .ToList(),
         };
 
@@ -263,7 +267,7 @@ public sealed class WidgetsController(IRightsService rights, ISettingsService se
             {
                 Id = zone,
                 Widgets = (await widgets.GetZoneAsync(zone, defaults))
-                    .Select(w => new WidgetItem { Id = w.Id, Name = w.Name, Title = w.Title, ShowTitle = w.ShowTitle })
+                    .Select(w => new WidgetItem { Id = w.Id, Name = w.Name, Title = catalog.Find(w.Name) is { } info ? WidgetCatalog.DisplayTitle(info, w.Title, T) : w.Title, ShowTitle = w.ShowTitle })
                     .ToList(),
             });
         }
@@ -292,7 +296,7 @@ public sealed class WidgetsController(IRightsService rights, ISettingsService se
                 {
                     Id = string.IsNullOrEmpty(w.Id) || int.TryParse(w.Id, out _) ? Guid.NewGuid().ToString() : w.Id,
                     Name = w.Name!,
-                    Title = string.IsNullOrWhiteSpace(w.Title) ? w.Name! : w.Title.Trim(),
+                    Title = WidgetCatalog.StoredTitle(catalog.Find(w.Name!)!, w.Title, T),
                     ShowTitle = true,
                 });
 
@@ -301,6 +305,8 @@ public sealed class WidgetsController(IRightsService rights, ISettingsService se
 
         return Ok(true);
     }
+
+    private string T(string key) => labels[key] is { ResourceNotFound: false } value ? value.Value : key;
 
     private async Task DemandAsync()
     {

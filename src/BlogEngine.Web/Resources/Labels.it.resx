@@ -3027,4 +3027,49 @@
   <data name="share" xml:space="preserve">
     <value>Condividi</value>
   </data>
+  <data name="widgetAdministration" xml:space="preserve">
+    <value>Amministrazione</value>
+  </data>
+  <data name="widgetAdvertisement" xml:space="preserve">
+    <value>Pubblicità</value>
+  </data>
+  <data name="widgetAuthorList" xml:space="preserve">
+    <value>Autori</value>
+  </data>
+  <data name="widgetBlogList" xml:space="preserve">
+    <value>Blog</value>
+  </data>
+  <data name="widgetBlogRoll" xml:space="preserve">
+    <value>Blogroll</value>
+  </data>
+  <data name="widgetCategoryList" xml:space="preserve">
+    <value>Categorie</value>
+  </data>
+  <data name="widgetCommentList" xml:space="preserve">
+    <value>Ultimi commenti</value>
+  </data>
+  <data name="widgetLinkList" xml:space="preserve">
+    <value>Link</value>
+  </data>
+  <data name="widgetMonthList" xml:space="preserve">
+    <value>Archivio mensile</value>
+  </data>
+  <data name="widgetNewsletter" xml:space="preserve">
+    <value>Newsletter</value>
+  </data>
+  <data name="widgetPageList" xml:space="preserve">
+    <value>Pagine</value>
+  </data>
+  <data name="widgetPostList" xml:space="preserve">
+    <value>Ultimi post</value>
+  </data>
+  <data name="widgetSearch" xml:space="preserve">
+    <value>Cerca</value>
+  </data>
+  <data name="widgetTagCloud" xml:space="preserve">
+    <value>Tag</value>
+  </data>
+  <data name="widgetTextBox" xml:space="preserve">
+    <value>Testo</value>
+  </data>
 </root>

@@ -46,6 +46,38 @@ public sealed class WidgetAdminTests
         Assert.AreEqual(HttpStatusCode.Unauthorized, (await anonymous.GetAsync("/api/widgets")).StatusCode);
     }
 
+    /// <summary>I titoli predefiniti dei widget seguono la lingua del blog; quelli scelti dall'amministratore no.</summary>
+    [TestMethod]
+    public async Task DefaultTitles_FollowBlogLanguage()
+    {
+        using var factory = new BlogWebFactory();
+        using var admin = await factory.InstallAsync();
+        admin.DefaultRequestHeaders.Add(BlogContextMiddleware.BlogInstanceHeader, Guid.Empty.ToString());
+
+        async Task<string> Home(string language)
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, "/");
+            request.Headers.Add("Accept-Language", language);
+            return await (await admin.SendAsync(request)).Content.ReadAsStringAsync();
+        }
+
+        StringAssert.Contains(await Home("it-IT"), ">Categorie</h4>");
+        StringAssert.Contains(await Home("en-US"), ">Category List</h4>");
+
+        // L'amministrazione in italiano mostra e rimanda il titolo tradotto: si salva quello predefinito,
+        // che continua a seguire la lingua. Un titolo scritto dall'amministratore resta invariato.
+        using var request = new HttpRequestMessage(HttpMethod.Put, "/api/widgets/update/item")
+        {
+            Content = new StringContent("""[{"Id":"sidebar","Widgets":[{"Id":"1","Name":"CategoryList","Title":"Categorie"},{"Id":"2","Name":"TagCloud","Title":"Argomenti"}]}]""", Encoding.UTF8, "application/json"),
+        };
+        request.Headers.Add("Accept-Language", "it-IT");
+        Assert.AreEqual(HttpStatusCode.OK, (await admin.SendAsync(request)).StatusCode);
+
+        var english = await Home("en-US");
+        StringAssert.Contains(english, ">Category List</h4>");
+        StringAssert.Contains(english, ">Argomenti</h4>");
+    }
+
     [TestMethod]
     public async Task EditPage_SavesSettingsDescribedInManifest()
     {
