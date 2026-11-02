@@ -3072,4 +3072,13 @@
   <data name="widgetTextBox" xml:space="preserve">
     <value>Testo</value>
   </data>
+  <data name="linkPickerNoResults" xml:space="preserve">
+    <value>Nessun post o pagina trovati</value>
+  </data>
+  <data name="linkPickerSearch" xml:space="preserve">
+    <value>Cerca per titolo...</value>
+  </data>
+  <data name="linkPickerTitle" xml:space="preserve">
+    <value>Link a un post o a una pagina</value>
+  </data>
 </root>

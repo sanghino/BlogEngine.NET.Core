@@ -116,6 +116,20 @@ public sealed class PageItem
     public int SortOrder { get; set; }
 }
 
+/// <summary>Post o pagina da collegare dall'editor (GET api/links).</summary>
+public sealed class InternalLink
+{
+    /// <summary>"post" o "page".</summary>
+    public string? Type { get; set; }
+
+    public string? Title { get; set; }
+
+    public string? Url { get; set; }
+
+    /// <summary>Data di creazione (yyyy-MM-dd, ora del blog).</summary>
+    public string? Date { get; set; }
+}
+
 public sealed class PageDetail
 {
     public bool IsChecked { get; set; }

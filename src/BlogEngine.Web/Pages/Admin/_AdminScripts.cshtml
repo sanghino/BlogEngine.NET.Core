@@ -34,7 +34,7 @@
         default:
             @* I plugin di TinyMCE non si caricano se compressi insieme agli altri script. *@
             <script src="~/admin/editors/tinymce/tinymce.min.js"></script>
-            <script src="~/admin/editors/tinymce/editor.js"></script>
+            <script src="~/admin/editors/tinymce/editor.js" asp-append-version="true"></script>
             break;
     }
 }

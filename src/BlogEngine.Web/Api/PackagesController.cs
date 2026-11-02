@@ -5,7 +5,6 @@ using BlogEngine.Web.Api.Models;
 using BlogEngine.Web.Hosting;
 using BlogEngine.Web.Themes;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Localization;
 
 namespace BlogEngine.Web.Api;
 
@@ -24,8 +23,7 @@ public sealed class PackagesController(
     ISettingsService settings,
     IRightsService rights,
     IBlogContext context,
-    IHostApplicationLifetime lifetime,
-    IStringLocalizer<Labels> labels) : AdminApiController
+    IHostApplicationLifetime lifetime) : AdminApiController
 {
     [HttpGet("")]
     public async Task<IEnumerable<Package>> Get(int take = 10, int skip = 0, string filter = "", string order = "")
@@ -215,8 +213,6 @@ public sealed class PackagesController(
         LastUpdated = string.Empty,
     });
 
-    private string T(string key) => labels[key] is { ResourceNotFound: false } value ? value.Value : key;
-
     private async Task DemandAsync(Rights right)
     {
         if (!await rights.IsAuthorizedAsync(right))
@@ -241,7 +237,7 @@ public sealed class PackageExtraController : AdminApiController
 /// i template del tema usano il tag widget_zone.
 /// </summary>
 [Route("api/widgets")]
-public sealed class WidgetsController(IRightsService rights, ISettingsService settings, ThemeCatalog themes, WidgetCatalog catalog, WidgetService widgets, IStringLocalizer<Labels> labels) : AdminApiController
+public sealed class WidgetsController(IRightsService rights, ISettingsService settings, ThemeCatalog themes, WidgetCatalog catalog, WidgetService widgets) : AdminApiController
 {
     [HttpGet("")]
     public async Task<WidgetsVM> Get()
@@ -305,8 +301,6 @@ public sealed class WidgetsController(IRightsService rights, ISettingsService se
 
         return Ok(true);
     }
-
-    private string T(string key) => labels[key] is { ResourceNotFound: false } value ? value.Value : key;
 
     private async Task DemandAsync()
     {
