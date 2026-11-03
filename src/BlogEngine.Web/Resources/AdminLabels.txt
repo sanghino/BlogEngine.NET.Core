@@ -644,6 +644,7 @@ showEnableWebsiteInComments
 showEnableWebsiteInCommentsDescription
 showIncludeComments
 showInList
+showInMenu
 showLivePreview
 showPingBacks
 showPostNavigation

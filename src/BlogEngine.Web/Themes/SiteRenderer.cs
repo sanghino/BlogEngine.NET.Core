@@ -176,7 +176,7 @@ public sealed class SiteRenderer(
     private async Task<BlogModel> BuildBlogAsync(BlogSettings blogSettings, ThemeInfo theme, string blogRoot, string appRoot)
     {
         var current = Http.Request.Path.Value ?? "/";
-        var visible = (await pages.GetVisiblePagesAsync()).Where(p => p.IsPublished && p.ShowInList).OrderBy(p => p.SortOrder).ToList();
+        var visible = (await pages.GetVisiblePagesAsync()).Where(p => p.IsPublished && p.ShowInMenu).OrderBy(p => p.SortOrder).ToList();
         var pageLinks = new List<PageLinkModel>();
         foreach (var parent in visible.Where(p => p.Parent == Guid.Empty || visible.All(x => x.Id != p.Parent)))
         {

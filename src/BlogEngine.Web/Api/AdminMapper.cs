@@ -81,6 +81,7 @@ public sealed class AdminMapper(
     {
         Id = page.Id,
         ShowInList = page.ShowInList,
+        ShowInMenu = page.ShowInMenu,
         Title = page.Title,
         Slug = page.Slug,
         Parent = ParentOption(page, allPages),
@@ -100,6 +101,7 @@ public sealed class AdminMapper(
         {
             Id = page.Id,
             ShowInList = page.ShowInList,
+            ShowInMenu = page.ShowInMenu,
             Title = page.Title,
             Slug = page.Slug,
             RelativeLink = await links.PageAsync(page).ConfigureAwait(false),

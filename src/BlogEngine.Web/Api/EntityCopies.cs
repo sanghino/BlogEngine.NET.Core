@@ -44,6 +44,7 @@ public static class EntityCopies
         IsDeleted = page.IsDeleted,
         IsFrontPage = page.IsFrontPage,
         ShowInList = page.ShowInList,
+        ShowInMenu = page.ShowInMenu,
         SortOrder = page.SortOrder,
         DateCreated = page.DateCreated,
         DateModified = page.DateModified,

@@ -116,6 +116,9 @@
                             <div class="newpage-widget">
                                 <label><input type="checkbox" data-ng-model="page.ShowInList" name="cbShowInList" /> {{lbl.showInList}}</label>
                             </div>
+                            <div class="newpage-widget">
+                                <label><input type="checkbox" data-ng-model="page.ShowInMenu" name="cbShowInMenu" /> {{lbl.showInMenu}}</label>
+                            </div>
                             <div class="newpage-widget" data-ng-show="lookups.PageOptions.ShowCustomFields">
                                 <label class="newpage-widget-title">{{lbl.customFields}}</label>
                                 <a class="btn btn-default btn-sm btn-block" id="btnCustomFields" ng-click="showCustom()" data-toggle="modal">{{lbl.add}}</a>

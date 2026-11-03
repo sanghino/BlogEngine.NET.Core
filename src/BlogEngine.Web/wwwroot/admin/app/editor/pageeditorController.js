@@ -247,5 +247,6 @@ var newPage = {
     "DateCreated": moment().format("YYYY-MM-DD HH:mm"),
     "Slug": "",
     "ShowInList": true,
+    "ShowInMenu": false,
     "IsPublished": false
 }

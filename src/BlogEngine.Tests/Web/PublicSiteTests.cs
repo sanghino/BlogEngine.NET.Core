@@ -130,6 +130,28 @@ public sealed partial class PublicSiteTests
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    /// <summary>Il menu del tema mostra solo le pagine con "Mostra nel menu", indipendentemente dall'elenco delle pagine.</summary>
+    [TestMethod]
+    public async Task Menu_ShowsOnlyPagesMarkedForMenu()
+    {
+        using var factory = new BlogWebFactory();
+        (await factory.InstallAsync()).Dispose();
+        await factory.RunAsSystemAsync(async services =>
+        {
+            var pages = services.GetRequiredService<IPageService>();
+            await pages.SaveAsync(new Page { Title = "Solo elenco", Content = "x", IsPublished = true, ShowInList = true });
+            await pages.SaveAsync(new Page { Title = "Solo menu", Content = "x", IsPublished = true, ShowInMenu = true });
+        });
+        using var visitor = factory.CreateBrowser();
+
+        var home = await visitor.GetStringAsync("/");
+        var start = home.IndexOf("<ul class=\"blog-nav\">", StringComparison.Ordinal);
+        Assert.IsTrue(start >= 0);
+        var menu = home[start..home.IndexOf("</ul>", start, StringComparison.Ordinal)];
+        StringAssert.Contains(menu, "Solo menu");
+        Assert.IsFalse(menu.Contains("Solo elenco"), "Una pagina nell'elenco non finisce più da sola nel menu.");
+    }
+
     [TestMethod]
     public async Task Filters_Archive_Search_Calendar_Contact_AndErrors()
     {
@@ -140,7 +162,7 @@ public sealed partial class PublicSiteTests
             var posts = services.GetRequiredService<IPostService>();
             await posts.SaveAsync(new Post { Title = "Ricetta della torta", Content = "<p>Farina e uova</p>", Author = "admin", Tags = ["Cucina Facile"], DateCreated = new DateTime(2024, 3, 15, 10, 0, 0, DateTimeKind.Utc) });
             await posts.SaveAsync(new Post { Title = "Bozza segreta", Content = "testo", Author = "admin", IsPublished = false });
-            await services.GetRequiredService<IPageService>().SaveAsync(new Page { Title = "Chi sono", Content = "<p>Presentazione</p>", IsPublished = true, ShowInList = true });
+            await services.GetRequiredService<IPageService>().SaveAsync(new Page { Title = "Chi sono", Content = "<p>Presentazione</p>", IsPublished = true, ShowInList = true, ShowInMenu = true });
         });
         using var visitor = factory.CreateBrowser();
 

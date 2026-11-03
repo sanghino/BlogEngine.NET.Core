@@ -103,6 +103,9 @@ public sealed class PageItem
 
     public bool ShowInList { get; set; }
 
+    /// <summary>Pagina presente nel menu di navigazione del tema.</summary>
+    public bool ShowInMenu { get; set; }
+
     public bool IsPublished { get; set; }
 
     public bool IsFrontPage { get; set; }
@@ -149,6 +152,9 @@ public sealed class PageDetail
     public string? Keywords { get; set; }
 
     public bool ShowInList { get; set; }
+
+    /// <summary>Pagina presente nel menu di navigazione del tema.</summary>
+    public bool ShowInMenu { get; set; }
 
     public bool IsPublished { get; set; }
 

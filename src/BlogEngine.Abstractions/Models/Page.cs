@@ -26,8 +26,11 @@ public sealed class Page : BlogEntity, IPublishable
     /// <summary>Pagina usata come home page del blog.</summary>
     public bool IsFrontPage { get; set; }
 
-    /// <summary>Mostra la pagina nei menu e nell'elenco delle pagine.</summary>
+    /// <summary>Mostra la pagina nell'elenco delle pagine (widget "Pagine").</summary>
     public bool ShowInList { get; set; }
+
+    /// <summary>Mostra la pagina nel menu di navigazione del tema.</summary>
+    public bool ShowInMenu { get; set; }
 
     public int SortOrder { get; set; }
 

@@ -532,7 +532,7 @@
     <value>Visualizza solo la descrizione del Post</value>
   </data>
   <data name="showInList" xml:space="preserve">
-    <value>Mostra come lista</value>
+    <value>Mostra nell'elenco delle pagine</value>
   </data>
   <data name="showLivePreview" xml:space="preserve">
     <value>Mostra anteprima dal vivo</value>
@@ -3080,5 +3080,8 @@
   </data>
   <data name="linkPickerTitle" xml:space="preserve">
     <value>Link a un post o a una pagina</value>
+  </data>
+  <data name="showInMenu" xml:space="preserve">
+    <value>Mostra nel menu di navigazione</value>
   </data>
 </root>

@@ -14,6 +14,8 @@ public abstract class StoreContractTests
     private static readonly DateTime Created = new(2025, 5, 4, 3, 2, 1, DateTimeKind.Utc);
 
     private TestStorage _storage = null!;
+
+    protected TestStorage Storage => _storage;
     private readonly List<ServiceProvider> _providers = [];
 
     protected abstract StorageKind Kind { get; }
@@ -33,7 +35,7 @@ public abstract class StoreContractTests
     }
 
     /// <summary>Nuova istanza del provider sugli stessi dati: simula un riavvio dell'applicazione.</summary>
-    private async Task<T> NewStoreAsync<T>()
+    protected async Task<T> NewStoreAsync<T>()
         where T : class
     {
         var (provider, _) = await _storage.CreateStoreAsync();
@@ -142,7 +144,7 @@ public abstract class StoreContractTests
         var blogId = Guid.NewGuid();
         var parent = Guid.NewGuid();
         await (await NewStoreAsync<IEntityStore<Page>>()).SaveAsync(
-            new Page { BlogId = blogId, Title = "Chi sono", Slug = "chi-sono", Content = "x", Parent = parent, IsFrontPage = true, SortOrder = 3, DateCreated = Created });
+            new Page { BlogId = blogId, Title = "Chi sono", Slug = "chi-sono", Content = "x", Parent = parent, IsFrontPage = true, ShowInList = true, ShowInMenu = false, SortOrder = 3, DateCreated = Created });
         await (await NewStoreAsync<IEntityStore<Category>>()).SaveAsync(new Category { BlogId = blogId, Title = "Senza padre", DateCreated = Created });
         await (await NewStoreAsync<IEntityStore<Category>>()).SaveAsync(new Category { BlogId = blogId, Title = "Con padre", Parent = parent, DateCreated = Created });
         await (await NewStoreAsync<IEntityStore<BlogRollItem>>()).SaveAsync(
@@ -154,6 +156,8 @@ public abstract class StoreContractTests
         Assert.AreEqual(parent, page.Parent);
         Assert.IsTrue(page.IsFrontPage);
         Assert.AreEqual(3, page.SortOrder);
+        Assert.IsTrue(page.ShowInList);
+        Assert.IsFalse(page.ShowInMenu, "Elenco delle pagine e menu sono opzioni separate.");
 
         var categories = await (await NewStoreAsync<IEntityStore<Category>>()).GetAllAsync(blogId);
         Assert.IsNull(categories.Single(c => c.Title == "Senza padre").Parent);
@@ -301,6 +305,24 @@ public sealed class MemoryStoreContractTests : StoreContractTests
 public sealed class XmlStoreContractTests : StoreContractTests
 {
     protected override StorageKind Kind => StorageKind.Xml;
+
+    /// <summary>Le pagine salvate prima dell'opzione "showInMenu" restano nel menu se erano nell'elenco.</summary>
+    [TestMethod]
+    public async Task Pages_WithoutShowInMenu_FollowShowInList()
+    {
+        var blogId = Guid.NewGuid();
+        await (await NewStoreAsync<IEntityStore<Page>>()).SaveAsync(new Page { BlogId = blogId, Title = "Vecchia", Content = "x", ShowInList = true });
+        await (await NewStoreAsync<IEntityStore<Page>>()).SaveAsync(new Page { BlogId = blogId, Title = "Nascosta", Content = "x", ShowInList = false });
+        foreach (var file in Directory.GetFiles(Storage.DataRoot, "*.xml", SearchOption.AllDirectories))
+        {
+            var text = File.ReadAllText(file);
+            File.WriteAllText(file, System.Text.RegularExpressions.Regex.Replace(text, @"\s*<showInMenu>[^<]*</showInMenu>", string.Empty));
+        }
+
+        var pages = await (await NewStoreAsync<IEntityStore<Page>>()).GetAllAsync(blogId);
+        Assert.IsTrue(pages.Single(p => p.Title == "Vecchia").ShowInMenu);
+        Assert.IsFalse(pages.Single(p => p.Title == "Nascosta").ShowInMenu);
+    }
 }
 
 [TestClass]

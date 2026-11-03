@@ -127,6 +127,7 @@ public sealed class PagesController(IPageService pages, IRightsService rights, A
         page.DateCreated = await mapper.ParseDateAsync(detail.DateCreated);
         page.IsPublished = detail.IsPublished;
         page.ShowInList = detail.ShowInList;
+        page.ShowInMenu = detail.ShowInMenu;
         page.IsDeleted = detail.IsDeleted;
         page.Content = detail.Content ?? string.Empty;
         page.Description = AdminMapper.DescriptionOrExcerpt(detail.Description, detail.Content);

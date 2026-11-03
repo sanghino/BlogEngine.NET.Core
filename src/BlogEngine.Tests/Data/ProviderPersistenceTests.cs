@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using BlogEngine.Models;
 using BlogEngine.Services;
 using BlogEngine.Tests.Fakes;
@@ -100,5 +101,42 @@ public sealed class ProviderPersistenceTests
         using var command = connection.CreateCommand();
         command.CommandText = "PRAGMA journal_mode;";
         Assert.AreEqual("delete", command.ExecuteScalar() as string);
+    }
+
+    /// <summary>La migrazione che separa menu ed elenco lascia nel menu le pagine che c'erano già.</summary>
+    [TestMethod]
+    public void Sqlite_ShowInMenuMigration_KeepsExistingMenu()
+    {
+        var file = Path.Combine(Path.GetTempPath(), $"be-migr-{Guid.NewGuid():N}.db");
+        try
+        {
+            var options = new Microsoft.EntityFrameworkCore.DbContextOptionsBuilder<BlogEngine.Data.Sqlite.BlogDbContext>()
+                .UseSqlite($"Data Source={file};Pooling=False").Options;
+            using (var db = new BlogEngine.Data.Sqlite.BlogDbContext(options))
+            {
+                var migrator = Microsoft.EntityFrameworkCore.Infrastructure.AccessorExtensions.GetService<Microsoft.EntityFrameworkCore.Migrations.IMigrator>(db.Database);
+                migrator.Migrate("20261022114139_RemoveSiteAggregation");
+                foreach (var (title, inList) in new[] { ("Nel menu", 1), ("Fuori", 0) })
+                {
+                    Microsoft.EntityFrameworkCore.RelationalDatabaseFacadeExtensions.ExecuteSqlRaw(db.Database,
+                        "INSERT INTO Pages (Id, Title, Slug, Content, Description, Keywords, Parent, IsPublished, IsDeleted, IsFrontPage, ShowInList, SortOrder, BlogId, DateCreated, DateModified) " +
+                        "VALUES ({0}, {1}, '', '', '', '', {2}, 1, 0, 0, {3}, 0, {2}, '2026-01-01', '2026-01-01')",
+                        Guid.NewGuid(), title, Guid.Empty, inList);
+                }
+
+                migrator.Migrate();
+            }
+
+            using (var db = new BlogEngine.Data.Sqlite.BlogDbContext(options))
+            {
+                var pages = db.Pages.ToList();
+                Assert.IsTrue(pages.Single(p => p.Title == "Nel menu").ShowInMenu);
+                Assert.IsFalse(pages.Single(p => p.Title == "Fuori").ShowInMenu);
+            }
+        }
+        finally
+        {
+            File.Delete(file);
+        }
     }
 }

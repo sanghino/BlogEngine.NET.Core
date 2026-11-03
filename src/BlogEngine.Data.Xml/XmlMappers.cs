@@ -138,6 +138,7 @@ internal static class XmlMappers
         Element("isDeleted", page.IsDeleted),
         Element("isFrontPage", page.IsFrontPage),
         Element("showInList", page.ShowInList),
+        Element("showInMenu", page.ShowInMenu),
         Element("sortOrder", page.SortOrder),
         Element("dateCreated", page.DateCreated),
         Element("dateModified", page.DateModified));
@@ -156,6 +157,8 @@ internal static class XmlMappers
         IsDeleted = e.Bool("isDeleted"),
         IsFrontPage = e.Bool("isFrontPage"),
         ShowInList = e.Bool("showInList"),
+        // Prima dell'opzione separata il menu seguiva "showInList": le pagine già salvate restano com'erano.
+        ShowInMenu = e.Bool("showInMenu", e.Bool("showInList")),
         SortOrder = e.Int("sortOrder"),
         DateCreated = e.Date("dateCreated"),
         DateModified = e.Date("dateModified"),

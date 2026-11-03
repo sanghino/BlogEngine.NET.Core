@@ -3083,4 +3083,7 @@
   <data name="linkPickerTitle" xml:space="preserve">
     <value>Link to a post or page</value>
   </data>
+  <data name="showInMenu" xml:space="preserve">
+    <value>Show in menu</value>
+  </data>
 </root>

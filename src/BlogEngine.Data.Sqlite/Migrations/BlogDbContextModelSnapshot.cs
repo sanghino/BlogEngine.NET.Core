@@ -15,7 +15,7 @@ namespace BlogEngine.Data.Sqlite.Migrations
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
-            modelBuilder.HasAnnotation("ProductVersion", "8.0.11");
+            modelBuilder.HasAnnotation("ProductVersion", "8.0.32");
 
             modelBuilder.Entity("BlogEngine.Core.Data.BlogRole", b =>
                 {
@@ -486,6 +486,9 @@ namespace BlogEngine.Data.Sqlite.Migrations
                         .HasColumnType("TEXT");
 
                     b.Property<bool>("ShowInList")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("ShowInMenu")
                         .HasColumnType("INTEGER");
 
                     b.Property<string>("Slug")
