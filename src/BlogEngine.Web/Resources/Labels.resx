@@ -3086,4 +3086,10 @@
   <data name="showInMenu" xml:space="preserve">
     <value>Show in menu</value>
   </data>
+  <data name="noCommentsYet" xml:space="preserve">
+    <value>No comments yet</value>
+  </data>
+  <data name="noPostsYet" xml:space="preserve">
+    <value>No posts yet</value>
+  </data>
 </root>

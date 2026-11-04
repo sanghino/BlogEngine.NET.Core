@@ -2,7 +2,7 @@
 <div id="page" class="page-global">
     <h2 class="page-global-title">{{ page.title }}</h2>
     <div>{{ page.content }}</div>
-    {%- if page.children.size > 0 %}
+    {%- if page.children.size > 0 and page.children_in_content == false %}
     <ul class="page-children">
         {%- for child in page.children %}<li><a href="{{ child.url }}">{{ child.title }}</a></li>{% endfor %}
     </ul>

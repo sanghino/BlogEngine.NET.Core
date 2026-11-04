@@ -271,6 +271,9 @@ public sealed class StaticPageModel
 
     public IReadOnlyList<PageLinkModel> Children { get; init; } = [];
 
+    /// <summary>L'elenco delle sottopagine è già nel testo (segnaposto [sottopagine]): il tema non lo ripete.</summary>
+    public bool ChildrenInContent { get; init; }
+
     public HtmlString AdminLinks { get; init; } = HtmlString.Empty;
 
     public string EditUrl { get; init; } = string.Empty;

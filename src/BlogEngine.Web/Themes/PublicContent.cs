@@ -318,6 +318,14 @@ public sealed class PublicContent(
             children.Add(new PageLinkModel { Title = child.Title, Url = await links.PageAsync(child), Description = child.Description });
         }
 
+        // Con il segnaposto [sottopagine] l'elenco va nel punto scelto invece che in fondo alla pagina.
+        var body = serving.Body;
+        var childrenInContent = SubpagesPlaceholder.IsIn(body);
+        if (childrenInContent)
+        {
+            body = SubpagesPlaceholder.Replace(body, children);
+        }
+
         var canEdit = await CanAsync(Rights.EditOwnPages);
         var adminLinks = new List<string>();
         if (canEdit)
@@ -336,12 +344,13 @@ public sealed class PublicContent(
             Title = page.Title,
             Url = url,
             AbsoluteUrl = links.ToAbsolute(url).ToString(),
-            Content = new HtmlString(serving.Body),
+            Content = new HtmlString(body),
             Description = page.Description,
             Keywords = page.Keywords,
             DateCreated = await clock.ToBlogTimeAsync(page.DateCreated),
             DateModified = await clock.ToBlogTimeAsync(page.DateModified),
             Children = children,
+            ChildrenInContent = childrenInContent,
             AdminLinks = adminLinks.Count == 0 ? HtmlString.Empty : new HtmlString($"<div class=\"page-adminlinks\">{string.Join(" | ", adminLinks)}</div>"),
             EditUrl = canEdit ? $"{links.BlogRoot}admin/app/editor/editpage.cshtml?id={page.Id}" : string.Empty,
         };

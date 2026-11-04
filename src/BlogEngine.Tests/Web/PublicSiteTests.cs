@@ -130,6 +130,40 @@ public sealed partial class PublicSiteTests
         Assert.AreEqual(HttpStatusCode.BadRequest, response.StatusCode);
     }
 
+    /// <summary>Il segnaposto [sottopagine] mette l'elenco delle sottopagine nel punto scelto, senza ripeterlo in fondo.</summary>
+    [TestMethod]
+    public async Task Subpages_Placeholder_PlacesListInContent()
+    {
+        using var factory = new BlogWebFactory();
+        (await factory.InstallAsync()).Dispose();
+        await factory.RunAsSystemAsync(async services =>
+        {
+            var pages = services.GetRequiredService<IPageService>();
+            var parent = new Page { Title = "Luoghi", Content = "<p>Prima</p><p>[Sottopagine]</p><p>Dopo</p>", IsPublished = true };
+            await pages.SaveAsync(parent);
+            await pages.SaveAsync(new Page { Title = "Musei", Content = "x", IsPublished = true, Parent = parent.Id });
+            var plain = new Page { Title = "Senza segnaposto", Content = "<p>Testo</p>", IsPublished = true };
+            await pages.SaveAsync(plain);
+            await pages.SaveAsync(new Page { Title = "Figlia", Content = "x", IsPublished = true, Parent = plain.Id });
+            await pages.SaveAsync(new Page { Title = "Vuota", Content = "<p>A</p><p>[subpages]</p>", IsPublished = true });
+        });
+        using var visitor = factory.CreateBrowser();
+
+        var html = await visitor.GetStringAsync("/page/luoghi");
+        Assert.AreEqual(1, html.Split("class=\"page-children\"").Length - 1, "L'elenco compare una volta sola.");
+        var list = html.IndexOf("class=\"page-children\"", StringComparison.Ordinal);
+        Assert.IsTrue(html.IndexOf("Prima", StringComparison.Ordinal) < list && list < html.IndexOf("Dopo", StringComparison.Ordinal), "...nel punto del segnaposto.");
+        StringAssert.Contains(html, ">Musei</a>");
+        Assert.IsFalse(html.Contains("[Sottopagine]"));
+
+        var plain = await visitor.GetStringAsync("/page/senza-segnaposto");
+        Assert.IsTrue(plain.IndexOf("class=\"page-children\"", StringComparison.Ordinal) > plain.IndexOf("Testo", StringComparison.Ordinal), "Senza segnaposto l'elenco resta in fondo.");
+
+        var empty = await visitor.GetStringAsync("/page/vuota");
+        Assert.IsFalse(empty.Contains("[subpages]"), "Senza sottopagine il segnaposto sparisce.");
+        Assert.IsFalse(empty.Contains("page-children"));
+    }
+
     /// <summary>Il menu del tema mostra solo le pagine con "Mostra nel menu", indipendentemente dall'elenco delle pagine.</summary>
     [TestMethod]
     public async Task Menu_ShowsOnlyPagesMarkedForMenu()

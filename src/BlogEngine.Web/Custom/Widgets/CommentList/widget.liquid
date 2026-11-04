@@ -9,7 +9,7 @@
                 <br />{{ item.author }} {{ 'wrote' | t }}: {{ item.text }}
             </li>
             {%- else %}
-            <li>{{ 'none' | t }}</li>
+            <li>{{ 'noCommentsYet' | t }}</li>
             {%- endfor %}
             {%- if widget.data.comments.size > 0 %}
             <li><a href="{{ widget.data.feed_url }}">Comment RSS <img alt="" src="{{ 'Content/images/blog/rssButton.png' | app_url }}" /></a></li>

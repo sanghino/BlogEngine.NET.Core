@@ -173,7 +173,7 @@ public sealed class AdminMapper(
             return description;
         }
 
-        var text = BlogEngine.Text.HtmlText.ToPlainText(content);
+        var text = BlogEngine.Text.HtmlText.ToPlainText(Themes.SubpagesPlaceholder.Remove(content));
         return text.Length > 100 ? text[..100] : text;
     }
 
