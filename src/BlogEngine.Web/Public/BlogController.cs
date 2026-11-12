@@ -598,6 +598,16 @@ public sealed class BlogController(
         var suggestions = new List<SearchResultModel>();
         if (code == StatusCodes.Status404NotFound && HttpContext.Features.Get<Microsoft.AspNetCore.Diagnostics.IStatusCodeReExecuteFeature>() is { } original)
         {
+            // Vecchi indirizzi di un blog importato da Bludit ("/titolo-del-post", "/bl-content/uploads/...").
+            var moved = await Import.BluditImporter.NewAddressAsync(original.OriginalPath, links.BlogRoot, async slug =>
+                await posts.GetBySlugAsync(slug) is { } post && await posts.IsVisibleAsync(post) ? await links.PostAsync(post)
+                : await pages.GetBySlugAsync(slug) is { } page && await pages.IsVisibleAsync(page) ? await links.PageAsync(page)
+                : null);
+            if (moved is not null)
+            {
+                return RedirectPermanent(moved);
+            }
+
             // Come error404.aspx: propone i contenuti che somigliano all'indirizzo richiesto.
             var words = original.OriginalPath.Replace('-', ' ').Replace('/', ' ').Replace('_', ' ');
             foreach (var hit in (await search.SearchAsync(words, includeComments: false)).Take(5))

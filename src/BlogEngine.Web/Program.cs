@@ -16,10 +16,21 @@ if (installation.IsInstalled)
     await app.Services.GetRequiredService<IDataStoreInitializer>().InitializeAsync();
     await app.Services.GetRequiredService<BlogEngine.Core.Extensions.ExtensionStates>().LoadAsync();
 }
+else if (args is ["import-bludit", ..])
+{
+    app.Logger.LogError("Prima di importare configura il blog: avvia il sito e apri /setup.");
+    return 1;
+}
 else
 {
     installation.EnsureSetupKey();
     app.Logger.LogWarning("Il blog non è ancora configurato: apri /setup e inserisci la chiave contenuta in {SetupKeyPath}.", installation.SetupKeyPath);
+}
+
+// Importazione da Bludit dal prompt dei comandi: BlogEngine.Web import-bludit <cartella bl-content> [autore]
+if (args is ["import-bludit", var bluditFolder, ..])
+{
+    return await BlogEngine.Web.Import.BluditCommand.RunAsync(app.Services, bluditFolder, args.Length > 2 ? args[2] : null);
 }
 
 if (!app.Environment.IsDevelopment())
@@ -74,6 +85,7 @@ app.MapFileEndpoints();
 app.MapAdminResources();
 
 app.Run();
+return 0;
 
 // Indirizzi con pagine di errore proprie (API, amministrazione, account, configurazione).
 static bool IsSystemPath(PathString path) =>

@@ -136,6 +136,7 @@ public static class WebServiceCollectionExtensions
         ConditionalCompressionMiddleware.Register(services);
         services.AddSingleton<Protocols.LinkbackSender>();
         services.AddScoped<Protocols.BlogMLService>();
+        services.AddScoped<Import.BluditImporter>();
         services.AddSingleton<FileLog>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 
