@@ -1,0 +1,75 @@
+<%@ Master Language="C#" AutoEventWireup="true" CodeFile="site.master.cs" Inherits="site" %>
+<%@ Import Namespace="BlogEngine.Core" %>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<head runat="server" profile="http://gmpg.org/xfn/11">
+  <title></title>
+    <link rel="stylesheet" href="style.css" type="text/css" />
+    <link rel="shortcut icon" href="~/pics/blogengine.ico" type="image/x-icon"/>
+</head>
+
+<script type="text/javascript">
+  window.google_analytics_uacct = "UA-687612-2";
+</script>
+
+<body>
+<form runat="Server" class="body">
+	<div id="container">
+
+		<div id="header">
+			<div id="headimg1"></div>
+			<div id="headimg2"></div>
+			<div id="headimg3"></div>
+			<div id="headimg4"></div>
+			<div id="headimg5"></div>
+			<div class="title">
+				<span class="sitename"><a id="A1" href="<%=Utils.AbsoluteWebRoot %>"><%=BlogSettings.Instance.Name %></a></span>
+				<div class="slogan"><%=BlogSettings.Instance.Description %></div>
+			</div>
+
+			<div id="navbar" class="navbar">
+				<div id="menu">
+					<a href="javascript:void(filterByAPML())" class="apmlfilter"><%=Resources.labels.filterByApml %></a>
+					<a href="<%=Utils.FeedUrl %>" class="subscribefeed" target="_blank"><%=Resources.labels.subscribe %></a>
+					<ul>
+						<li><a href="<%=Utils.AbsoluteWebRoot %>" rel="home"><%=Resources.labels.home %></a></li>
+						<li><a href="<%=Utils.AbsoluteWebRoot %>archive.aspx"><%=Resources.labels.archive %></a></li>
+						<li><a href="<%=Utils.AbsoluteWebRoot %>contact.aspx"><%=Resources.labels.contact %></a></li>
+						<li><span runat="server" id="aUser"></span><a runat="server" id="aLogin" /></li>
+					</ul>
+				</div>
+			</div>
+		</div>
+
+		<div id="wrapper">
+			<div id="content">
+				<blog:SearchOnSearch runat="server" MaxResults="3" Headline="You searched for" Text="Here are some results for the search term on this website" />
+				<asp:ContentPlaceHolder ID="cphBody" runat="server" />
+			</div>
+			<div id="sidepanel">
+				<blog:WidgetZone runat="server" ID="rightzone" />
+			</div>
+			<div id="disclaimer">
+                <strong>Disclaimer</strong><br />
+                Questo sito non rappresenta una testata giornalistica poiché non viene aggiornato con periodicità regolare. Non può pertanto considerarsi un prodotto editoriale ai sensi della legge n. 62/2001.
+                Tutti hanno diritto di manifestare liberamente il proprio pensiero con la parola, lo scrtto e ogni altro mezzo di diffusione. La stampa non può essere soggetta ad autorizzazioni o censure.
+                Le opinione espresse qui rappresentano il mio personale punto di vista e di eventuali collaboratori e non rappresentano in nessun modo l'opinione delle Società o degli Enti che potrebbero essere citate e/o descritte.
+                L'intestazione del blog contiene tre immagini tratte da <a href="http://commons.wikimedia.org/wiki/Category:Sesto_Fiorentino" target=_blank>Wikipedia</a> e rielaborate, tali immagini sono coperte da licenza "GNU Free Documentation License" disponibile <a href="http://it.wikipedia.org/wiki/Wikipedia:Testo_della_GNU_Free_Documentation_License" target="_blank">qui</a>
+                che ne garantisce la libera copia, distribuzione ed elaborazione avendo, Wikipedia, avuto dal soggetto che detiene i diritti (from the municipality of Sesto Fiorentino to it.wikipedia) la possibilità riservate dalla licenza sopra descritta (rif. Immagine stemma comunale).
+                L'immagine della <a href="http://commons.wikimedia.org/wiki/File:Museo_delle_porcellane_di_Firenze,_piatto_di_doccia,_1800-1810.JPG" target=_blank>Porcellana di Doccia</a> è sempre coperta dalla licenza sopra descritta con la limitazione dell'indicazione obbligatoria del licenziatario che è <a href="http://commons.wikimedia.org/wiki/User:Sailko" target=_blank>Sailko</a>.
+                L'immagine della <a href="http://commons.wikimedia.org/wiki/File:Pieve_di_san_martino.jpg" target="_blank">Chiesa di S.Martino</a> è sempre coperta dalla licenza sopra descritta ed è da attribure a <a href="http://commons.wikimedia.org/wiki/User:Vignaccia76" target=_blank>Vignaccia76</a>
+                <br /><br />
+                &copy; Copyright <%=DateTime.Now.Year %> <%=BlogSettings.Instance.Name %> 
+            </div>
+		    <div>
+        		<div id="footer">
+		        	Powered by: <a href="http://www.dotnetblogengine.net/" target="_blank">BlogEngine.NET</a> <%=BlogSettings.Instance.Version() %> | 
+			        Theme: <a href="http://www.thomasbosscher.com/thomas_bosscher/post/2008/01/28/Theme-StableStart-(Black).aspx" target="_blank"><%=BlogSettings.Instance.Theme%></a> | Design by: <a href="http://www.thomasbosscher.com" target="_blank">Thomas A. Bosscher</a>
+		        </div>
+        	</div>
+        </div>
+    </div>
+</form>
+</body>
+</html>
