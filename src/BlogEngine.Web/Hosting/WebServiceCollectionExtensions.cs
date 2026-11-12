@@ -137,6 +137,7 @@ public static class WebServiceCollectionExtensions
         services.AddSingleton<Protocols.LinkbackSender>();
         services.AddScoped<Protocols.BlogMLService>();
         services.AddScoped<Import.BluditImporter>();
+        services.AddScoped<Import.BlogEngineImporter>();
         services.AddSingleton<FileLog>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 

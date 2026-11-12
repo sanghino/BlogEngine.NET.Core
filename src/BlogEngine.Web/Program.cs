@@ -16,7 +16,7 @@ if (installation.IsInstalled)
     await app.Services.GetRequiredService<IDataStoreInitializer>().InitializeAsync();
     await app.Services.GetRequiredService<BlogEngine.Core.Extensions.ExtensionStates>().LoadAsync();
 }
-else if (args is ["import-bludit", ..])
+else if (args is ["import-bludit" or BlogEngine.Web.Import.BlogEngineCommand.Name, ..])
 {
     app.Logger.LogError("Prima di importare configura il blog: avvia il sito e apri /setup.");
     return 1;
@@ -31,6 +31,12 @@ else
 if (args is ["import-bludit", var bluditFolder, ..])
 {
     return await BlogEngine.Web.Import.BluditCommand.RunAsync(app.Services, bluditFolder, args.Length > 2 ? args[2] : null);
+}
+
+// Importazione dal BlogML di un vecchio BlogEngine.NET: BlogEngine.Web import-blogengine <BlogML.xml> [indirizzo vecchio sito] [fuso orario]
+if (args is [BlogEngine.Web.Import.BlogEngineCommand.Name, ..])
+{
+    return await BlogEngine.Web.Import.BlogEngineCommand.RunAsync(app.Services, args);
 }
 
 if (!app.Environment.IsDevelopment())

@@ -127,7 +127,7 @@ public sealed partial class BlogMLService(
         var categoryMap = new Dictionary<string, Guid>(StringComparer.OrdinalIgnoreCase);
         var parents = new List<(Guid Id, string ParentRef)>();
         var createdCategories = 0;
-        foreach (var element in blog.Element(ns + "categories")?.Elements(ns + "category") ?? [])
+        foreach (var element in blog.Elements(ns + "categories").Elements(ns + "category"))
         {
             var title = Value(element, ns, "title");
             if (title.Length == 0)
@@ -160,10 +160,12 @@ public sealed partial class BlogMLService(
         var importedPosts = 0;
         var importedComments = 0;
         var downloads = 0;
-        foreach (var element in blog.Element(ns + "posts")?.Elements(ns + "post") ?? [])
+        // BlogEngine.NET esporta le pagine statiche in un secondo blocco <posts> come type="article":
+        // qui non diventano post (le importa il comando import-blogengine).
+        foreach (var element in blog.Elements(ns + "posts").Elements(ns + "post"))
         {
             var title = Value(element, ns, "title");
-            if (title.Length == 0)
+            if (title.Length == 0 || string.Equals((string?)element.Attribute("type"), "article", StringComparison.OrdinalIgnoreCase))
             {
                 continue;
             }
