@@ -1,0 +1,12 @@
+{
+  "title": "Next Event",
+  "description": "Prossimo appuntamento di un calendario (partite, eventi, uscite): una riga per appuntamento nel formato \"2026-11-23 15:00 | Titolo | Dettagli | Luogo\". Si può incollare anche un elenco JSON con i campi data, titolo/avversario, descrizione/competizione e luogo. Il widget mostra gli appuntamenti non ancora conclusi.",
+  "version": "1.0.0",
+  "authors": "Francesco Mori",
+  "settings": [
+    { "key": "events", "type": "code", "label": "Calendario (una riga per appuntamento: data ora | titolo | dettagli | luogo)" },
+    { "key": "count", "type": "number", "label": "Appuntamenti da mostrare", "default": "1" },
+    { "key": "duration", "type": "number", "label": "Ore per cui un appuntamento resta visibile dopo l'inizio", "default": "2" },
+    { "key": "empty_text", "type": "text", "label": "Testo quando non ci sono appuntamenti", "default": "Nessun appuntamento in programma." }
+  ]
+}

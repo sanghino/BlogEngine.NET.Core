@@ -1,0 +1,91 @@
+{%- comment -%}
+  Prossimo appuntamento di un calendario. Il calendario è scritto nella pagina (codificato per l'HTML) e
+  lo script sceglie gli appuntamenti con l'orologio del visitatore: così il widget resta giusto anche con
+  le pagine in cache e senza ricaricare il sito. Formato: "2026-11-23 15:00 | Titolo | Dettagli | Luogo",
+  oppure un elenco JSON [{"data": "...", "avversario": "...", "competizione": "...", "luogo": "..."}].
+{%- endcomment -%}
+<div class="Widget widget nextevent" data-count="{{ widget.settings.count | default: '1' }}" data-duration="{{ widget.settings.duration | default: '2' }}">
+    {%- if widget.show_title and widget.title != '' %}<h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>{% endif %}
+    <div class="WidgetContent widget-content">
+        <div class="event-list"></div>
+        <p class="event-empty" hidden>{{ widget.settings.empty_text | default: 'Nessun appuntamento in programma.' }}</p>
+        <div class="event-data" hidden>{{ widget.settings.events }}</div>
+    </div>
+</div>
+<script>
+(function (box) {
+    if (!box || !box.classList.contains('nextevent')) {
+        return;
+    }
+
+    function parseDate(text) {
+        var m = /^(\d{4})-(\d{1,2})-(\d{1,2})(?:[T ](\d{1,2})[:.](\d{2}))?/.exec(String(text || '').trim());
+        if (!m) {
+            return null;
+        }
+        return { date: new Date(+m[1], m[2] - 1, +m[3], +(m[4] || 0), +(m[5] || 0)), hasTime: !!m[4] };
+    }
+
+    function add(list, when, title, detail, place) {
+        var parsed = parseDate(when);
+        if (parsed && title) {
+            list.push({ date: parsed.date, hasTime: parsed.hasTime, title: title, detail: detail || '', place: place || '' });
+        }
+    }
+
+    var raw = box.querySelector('.event-data').textContent.trim();
+    var events = [];
+    if (raw.charAt(0) === '[') {
+        try {
+            JSON.parse(raw).forEach(function (e) {
+                add(events, e.data || e.date, e.titolo || e.avversario || e.title, e.descrizione || e.competizione || e.description, e.luogo || e.place);
+            });
+        } catch (error) {
+            events = [];
+        }
+    } else {
+        raw.split(/\r?\n/).forEach(function (line) {
+            var parts = line.split('|').map(function (p) { return p.trim(); });
+            if (parts.length >= 2) {
+                add(events, parts[0], parts[1], parts[2], parts[3]);
+            }
+        });
+    }
+
+    var now = new Date();
+    var duration = (parseFloat(box.getAttribute('data-duration')) || 0) * 3600000;
+    var count = Math.max(1, parseInt(box.getAttribute('data-count'), 10) || 1);
+    var upcoming = events
+        .filter(function (e) { return e.date.getTime() + (e.hasTime ? duration : 86400000) > now.getTime(); })
+        .sort(function (a, b) { return a.date - b.date; })
+        .slice(0, count);
+
+    function two(n) { return (n < 10 ? '0' : '') + n; }
+    function format(e) {
+        var d = e.date;
+        var text = two(d.getDate()) + '/' + two(d.getMonth() + 1) + '/' + d.getFullYear();
+        return e.hasTime ? text + ' - ' + two(d.getHours()) + ':' + two(d.getMinutes()) : text;
+    }
+
+    var target = box.querySelector('.event-list');
+    upcoming.forEach(function (e) {
+        var item = document.createElement('div');
+        item.className = 'event';
+        var title = document.createElement('p');
+        title.className = 'event-title';
+        title.textContent = e.title;
+        var details = document.createElement('p');
+        details.className = 'event-details';
+        [e.detail, format(e), e.place].filter(function (t) { return t; }).forEach(function (t, i) {
+            if (i > 0) {
+                details.appendChild(document.createElement('br'));
+            }
+            details.appendChild(document.createTextNode(t));
+        });
+        item.appendChild(title);
+        item.appendChild(details);
+        target.appendChild(item);
+    });
+    box.querySelector('.event-empty').hidden = upcoming.length > 0;
+})(document.currentScript && document.currentScript.previousElementSibling);
+</script>

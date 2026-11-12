@@ -342,6 +342,7 @@ public sealed partial class PublicSiteTests
     [DataRow("Standard-2017")]
     [DataRow("Terminal")]
     [DataRow("StableStart")]
+    [DataRow("Fiorentina")]
     public async Task Themes_ReferenceOnlyExistingFiles(string theme)
     {
         using var factory = new BlogWebFactory();

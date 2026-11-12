@@ -1,0 +1,9 @@
+{
+  "title": "Fiorentina",
+  "description": "Il tema di Fiorentina.Info: logo viola, menu in alto, post con la data a calendario e barra laterale a destra con il prossimo impegno della Fiorentina. Tema originale di Mads Kristensen, adattato da Francesco Mori.",
+  "authors": "Mads Kristensen, Francesco Mori",
+  "version": "4.0.0",
+  "defaultWidgets": {
+    "sidebar": [ "NextEvent", "Advertisement", "TextBox", "Search", "Administration", "PageList", "PostList", "CommentList", "MonthList", "TagCloud" ]
+  }
+}

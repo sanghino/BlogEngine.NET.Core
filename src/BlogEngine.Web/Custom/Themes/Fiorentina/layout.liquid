@@ -1,0 +1,66 @@
+{%- comment -%}
+  Tema Fiorentina (porting di site.master di Fiorentina.Info): logo in alto a destra, menu, contenuto a
+  sinistra e widget a destra, piè di pagina con licenza Creative Commons.
+  Google Analytics va in Impostazioni → Script di tracciamento e AdSense nel widget Advertisement:
+  così partono solo dopo il consenso del visitatore, se il banner dei cookie è attivo.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{{ page_title }}</title>
+    <link rel="icon" href="{{ 'favicon.ico' | app_url }}" sizes="any" />
+    <link rel="icon" href="{{ 'Content/images/brand/icon.svg' | app_url }}" type="image/svg+xml" />
+    {{ content_for_header }}
+    <link href="{{ 'style.css' | theme_url }}" rel="stylesheet" />
+</head>
+<body class="template-{{ template }}">
+<div id="all-document">
+    <div id="header">
+        <a id="logo" href="{{ blog.url }}" rel="home" title="{{ blog.name }}">
+            <img src="{{ 'images/logo-fiorentina-info.png' | theme_url }}" width="382" height="75" alt="{{ blog.name }} - {{ blog.description }}" />
+        </a>
+    </div>
+
+    <div id="menu">
+        <ul>
+            <li><a href="{{ blog.url }}" rel="home">{{ 'home' | t }}</a></li>
+            <li><a href="{{ blog.archive_url }}">{{ 'archive' | t }}</a></li>
+            {%- for p in blog.pages %}
+            <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+            {%- endfor %}
+            <li><a href="{{ blog.contact_url }}">{{ 'contact' | t }}</a></li>
+            <li><a href="{{ blog.feed_url }}" class="feed"><img src="{{ 'Content/images/blog/rssButton.png' | app_url }}" alt="" width="14" height="14" />{{ 'subscribe' | t }}</a></li>
+            {%- if user.is_authenticated %}
+            <li class="user"><span class="welcome">{{ 'welcome' | t }} {{ user.name }}!</span></li>
+            {%- if user.can_access_admin %}<li><a href="{{ blog.admin_url }}">{{ 'widgetAdministration' | t }}</a></li>{% endif %}
+            <li><a href="{{ blog.logout_url }}">{{ 'logoff' | t }}</a></li>
+            {%- else %}
+            <li><a href="{{ blog.login_url }}">{{ 'login' | t }}</a></li>
+            {%- endif %}
+        </ul>
+    </div>
+
+    <div id="body">
+        <div id="content">
+            {{ content_for_layout }}
+
+            <p id="credits">
+                Powered by ExtraGeek-BlogEngine<br />
+                {{ 'theme' | t }}: Fiorentina, di Mads Kristensen, adattato da <a href="https://www.extrageek.com">Francesco Mori</a><br />
+                <a href="#" class="cookie-preferences" onclick="if (window.BlogEngineConsent) { BlogEngineConsent.open(); } return false;">Gestisci i cookie</a><br />
+                <a href="https://creativecommons.org/licenses/by-nc-sa/2.5/it/" rel="license"><img alt="Licenza Creative Commons" src="https://licensebuttons.net/l/by-nc-sa/2.5/it/88x31.png" width="88" height="31" /></a><br />
+                Quest'opera è pubblicata sotto una <a href="https://creativecommons.org/licenses/by-nc-sa/2.5/it/" rel="license">Licenza Creative Commons</a>.<br />
+                &copy; {{ blog.year }} {{ blog.name }}
+            </p>
+        </div>
+
+        <div id="sidepanel">
+            {% widget_zone 'sidebar' %}
+        </div>
+    </div>
+</div>
+{{ content_for_footer }}
+</body>
+</html>

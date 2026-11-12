@@ -1,0 +1,20 @@
+{%- comment -%}
+  Tema Fiorentina: post precedente (più vecchio, a sinistra) e successivo (più recente, a destra)
+  in due riquadri separati, ognuno con l'etichetta e il titolo.
+{%- endcomment -%}
+<nav id="postnavigation" class="post-nav" aria-label="Navigazione tra i post">
+    {%- if navigation.previous_url != '' %}
+    <a href="{{ navigation.previous_url }}" class="nav-prev" rel="prev">
+        <span class="nav-label">&larr; Post precedente</span>
+        <span class="nav-title">{{ navigation.previous_title }}</span>
+    </a>
+    {%- else %}
+    <span class="nav-empty"></span>
+    {%- endif %}
+    {%- if navigation.next_url != '' %}
+    <a href="{{ navigation.next_url }}" class="nav-next" rel="next">
+        <span class="nav-label">Post successivo &rarr;</span>
+        <span class="nav-title">{{ navigation.next_title }}</span>
+    </a>
+    {%- endif %}
+</nav>
