@@ -1,7 +1,8 @@
 {%- comment -%}
   Tema Fiorentina (porting di PostView.ascx): data a calendario, titolo, autore, testo, annuncio a fine
   post (solo nel post singolo), tag e categorie, condivisione e link. L'annuncio parte solo con il
-  consenso "marketing"; editore e slot si cambiano in Personalizza → Temi → campi personalizzati.
+  consenso "marketing". Editore (ca-pub-...) e slot si impostano in Personalizza → Temi → campi
+  personalizzati: finché sono vuoti l'annuncio non compare.
 {%- endcomment -%}
 <div class="post xfolkentry" id="post{{ post.index }}">
     <div class="post-header">
@@ -19,8 +20,8 @@
     <div class="text">{{ post.body }}</div>
 
     {%- if location == 'single' %}
-    {%- assign ad_client = 'AdSense editore' | theme_field: 'ca-pub-4722663105257057' | strip -%}
-    {%- assign ad_slot = 'AdSense slot fine post' | theme_field: '6011690130' | strip -%}
+    {%- assign ad_client = 'AdSense editore' | theme_field: '' | strip -%}
+    {%- assign ad_slot = 'AdSense slot fine post' | theme_field: '' | strip -%}
     {%- if ad_client != '' and ad_slot != '' %}
     {%- capture ad_code -%}
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ ad_client }}" crossorigin="anonymous"></script>
