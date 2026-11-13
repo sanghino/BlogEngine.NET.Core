@@ -50,15 +50,8 @@ public sealed class SmtpEmailSender(
 
             mail.Body = body.ToMessageBody();
 
-            using var client = new SmtpClient { Timeout = (int)Timeout.TotalMilliseconds };
-            await client.ConnectAsync(blogSettings.SmtpServer, blogSettings.SmtpServerPort, Security(blogSettings), cancellationToken).ConfigureAwait(false);
-            if (!string.IsNullOrWhiteSpace(blogSettings.SmtpUserName))
-            {
-                await client.AuthenticateAsync(blogSettings.SmtpUserName, blogSettings.SmtpPassword ?? string.Empty, cancellationToken).ConfigureAwait(false);
-            }
-
-            await client.SendAsync(mail, cancellationToken).ConfigureAwait(false);
-            await client.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
+            await DeliverAsync(mail, blogSettings.SmtpServer, blogSettings.SmtpServerPort, blogSettings.EnableSsl,
+                blogSettings.SmtpUserName, blogSettings.SmtpPassword, cancellationToken).ConfigureAwait(false);
         }
         catch (Exception ex) when (ex is not OperationCanceledException)
         {
@@ -73,8 +66,27 @@ public sealed class SmtpEmailSender(
 
     private static readonly TimeSpan Timeout = TimeSpan.FromSeconds(30);
 
-    private static SecureSocketOptions Security(BlogSettings settings) =>
-        !settings.EnableSsl ? SecureSocketOptions.None
-        : settings.SmtpServerPort == 465 ? SecureSocketOptions.SslOnConnect
+    /// <summary>
+    /// Consegna un messaggio al server SMTP indicato. Usato dall'invio normale e dalla prova delle impostazioni
+    /// nell'amministrazione, così la prova si comporta esattamente come le email vere (anche con l'SSL diretto
+    /// sulla porta 465 di smtps.aruba.it, che System.Net.Mail.SmtpClient non supporta).
+    /// </summary>
+    public static async Task DeliverAsync(MimeMessage mail, string server, int port, bool enableSsl, string? userName, string? password, CancellationToken cancellationToken = default)
+    {
+        using var client = new SmtpClient { Timeout = (int)Timeout.TotalMilliseconds };
+        await client.ConnectAsync(server, port, Security(enableSsl, port), cancellationToken).ConfigureAwait(false);
+        if (!string.IsNullOrWhiteSpace(userName))
+        {
+            await client.AuthenticateAsync(userName, password ?? string.Empty, cancellationToken).ConfigureAwait(false);
+        }
+
+        await client.SendAsync(mail, cancellationToken).ConfigureAwait(false);
+        await client.DisconnectAsync(true, cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>Con SSL attivo la porta 465 usa SSL diretto e le altre STARTTLS; senza SSL la connessione resta in chiaro.</summary>
+    public static SecureSocketOptions Security(bool enableSsl, int port) =>
+        !enableSsl ? SecureSocketOptions.None
+        : port == 465 ? SecureSocketOptions.SslOnConnect
         : SecureSocketOptions.StartTls;
 }

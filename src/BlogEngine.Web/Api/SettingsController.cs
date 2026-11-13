@@ -1,6 +1,7 @@
 using System.Net;
-using System.Net.Mail;
 using BlogEngine.Core.Caching;
+using BlogEngine.Core.Services;
+using MimeKit;
 using BlogEngine.Security;
 using BlogEngine.Services;
 using BlogEngine.Settings;
@@ -59,31 +60,31 @@ public sealed class SettingsController(
         }
     }
 
+    /// <summary>
+    /// Messaggio di prova all'indirizzo del blog con i dati SMTP del modulo (anche non ancora salvati), inviato
+    /// con lo stesso codice delle email vere. Restituisce il motivo dell'errore, null se l'invio è riuscito.
+    /// </summary>
     private async Task<string?> SendTestEmailAsync(SettingsDto dto)
     {
         try
         {
-            using var mail = new MailMessage
+            using var mail = new MimeMessage();
+            var from = new MailboxAddress(dto.SmtpUserName ?? string.Empty, dto.Email ?? string.Empty);
+            mail.From.Add(from);
+            mail.To.Add(from);
+            mail.Subject = $"Test mail from {dto.SmtpUserName}";
+            mail.Body = new TextPart(MimeKit.Text.TextFormat.Html)
             {
-                From = new MailAddress(dto.Email ?? string.Empty, dto.SmtpUserName),
-                Subject = $"Test mail from {dto.SmtpUserName}",
-                IsBodyHtml = true,
-                Body = "<div style=\"font: 11px verdana, arial\">Success<br /><br />"
+                Text = "<div style=\"font: 11px verdana, arial\">Success<br /><br />"
                     + $"<strong>IP address:</strong> {WebUtility.HtmlEncode(HttpContext.Connection.RemoteIpAddress?.ToString())}<br />"
                     + $"<strong>User-agent:</strong> {WebUtility.HtmlEncode(Request.Headers.UserAgent.ToString())}</div>",
             };
-            mail.To.Add(mail.From);
 
-            using var client = new SmtpClient(dto.SmtpServer, dto.SmtpServerPort) { EnableSsl = dto.EnableSsl };
-            if (!string.IsNullOrWhiteSpace(dto.SmtpUserName))
-            {
-                client.Credentials = new NetworkCredential(dto.SmtpUserName, dto.SmtpPassword);
-            }
-
-            await client.SendMailAsync(mail, HttpContext.RequestAborted);
+            await SmtpEmailSender.DeliverAsync(mail, dto.SmtpServer ?? string.Empty, dto.SmtpServerPort, dto.EnableSsl,
+                dto.SmtpUserName, dto.SmtpPassword, HttpContext.RequestAborted);
             return null;
         }
-        catch (Exception ex) when (ex is SmtpException or FormatException or ArgumentException or InvalidOperationException)
+        catch (Exception ex) when (ex is not OperationCanceledException)
         {
             return ex.Message;
         }
