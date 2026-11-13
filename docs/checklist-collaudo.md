@@ -50,7 +50,7 @@ Conviene usare due browser, oppure una finestra normale e una in incognito: uno 
 - [ ] Le impostazioni di un'estensione si salvano. Un campo obbligatorio lasciato vuoto mostra il messaggio nella lingua del blog.
 
 ## H. Impostazioni ed email
-- [ ] **Impostazioni → Email → Prova**: arriva l'email di prova (con Aruba: `smtps.aruba.it`, porta 465, SSL).
+- [ ] **Impostazioni → Email → Prova**: arriva l'email di prova (con Aruba: `smtp.` + dominio, porta 587, SSL disattivo; vedi `deploy-aruba.md`).
 - [ ] Il modulo **Contatti** (`/contact`) invia il messaggio all'indirizzo del blog.
 - [ ] Cambiando la **lingua** del blog (Impostazioni → Base) da Italiano a English, l'interfaccia e i messaggi di errore cambiano lingua. Poi rimetti l'italiano.
 - [ ] Il **fuso orario** scelto si riflette nell'ora dei post.

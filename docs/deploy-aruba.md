@@ -132,17 +132,20 @@ Quando l'installazione riesce, sei già collegato come amministratore e vieni po
 
 ### Email (Impostazioni → Email)
 
-Con una casella di posta Aruba:
+Con una casella di posta Aruba del dominio del blog (configurazione verificata su Fiorentina.Info, novembre 2026):
 
 | Campo | Valore |
 |---|---|
-| Server SMTP | `smtps.aruba.it` |
-| Porta | `465` |
-| SSL | attivo |
+| Indirizzo email (mittente) | la stessa casella usata come nome utente |
+| Server SMTP | `smtp.` + il dominio, per esempio `smtp.tuodominio.it` |
+| Porta | `587` |
+| SSL | **disattivo** |
 | Nome utente | l'indirizzo email completo |
 | Password | la password della casella |
 
-Con il pulsante di prova invii un messaggio di test.
+È la configurazione "senza SSL" della guida Aruba ([parametri di configurazione della posta](https://guide.aruba.it/hosting-e-domini/email/configurazione-posta/parametri-configurazione-posta)). Quella "consigliata" per i programmi di posta (`smtps.aruba.it`, porta 465, SSL) **dall'hosting non funziona**: la connessione va in timeout. Non funzionano nemmeno `smtps.aruba.it` sulla porta 587 (connessione rifiutata) e `smtp.tuodominio.it` sulla 587 con SSL attivo (il certificato è intestato ad Aruba e non al dominio). La password viaggia in chiaro, ma solo tra il server del sito e quello di posta, tutti e due di Aruba. Se la 587 non risponde, prova la porta `25`.
+
+Con il pulsante di prova invii un messaggio di test: usa lo stesso invio delle email vere e, se qualcosa non va, mostra il motivo.
 
 ## 3. Aggiornare il sito
 
