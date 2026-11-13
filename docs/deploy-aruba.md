@@ -77,7 +77,7 @@ Nella cartella `artifacts\aruba\<data-ora>\sito\` devono esserci solo `web.confi
    ```
 
 3. Dal pannello Aruba (Pannello di controllo → Hosting → Gestione permessi) dai alla cartella `App_Data` i **permessi di scrittura**. Senza, il sito non riesce a salvare nulla e non parte.
-4. Con il pacchetto predefinito abilita l'eseguibile del blog: Hosting Windows → .NET → **Abilitazione degli eseguibili**, inserisci `app/BlogEngine.Web.exe` e premi Aggiungi. Aruba blocca tutti gli eseguibili non abilitati. Con il pacchetto `-Mode FrameworkDependent` questo passo non serve, perché il sito viene avviato dal .NET di Aruba.
+4. Con il pacchetto predefinito abilita gli eseguibili del blog: Hosting Windows → .NET → **Abilitazione degli eseguibili**, inserisci `app/BlogEngine.Web.exe` e premi Aggiungi, poi fai lo stesso con `app/createdump.exe` (lo strumento del runtime .NET che scrive i dati di diagnosi se il programma si blocca). Aruba blocca tutti gli eseguibili non abilitati. Con il pacchetto `-Mode FrameworkDependent` questo passo non serve, perché il sito viene avviato dal .NET di Aruba.
 5. Se nella root c'è la pagina di benvenuto di Aruba (per esempio `index.html` o `default.asp`), cancellala, altrimenti verrebbe mostrata al posto del blog. Non cancellare le cartelle di Aruba.
 
 ### Passo 3: caricare il sito via FTP
@@ -166,7 +166,7 @@ I pacchetti creati prima del 1° novembre 2026 mettevano tutti i file del progra
 1. Fai il backup e carica `app_offline.htm`, come sempre.
 2. Dalla root cancella tutti i vecchi file e le vecchie cartelle del programma. Lascia solo `app_offline.htm`, `App_Data` e le cartelle di Aruba (`public`, `mdb-database`, `cgi-bin`...).
 3. Carica `web.config` e la cartella `app`.
-4. Nel pannello Aruba, in **Abilitazione degli eseguibili**, revoca `BlogEngine.Web.exe` e aggiungi `app/BlogEngine.Web.exe`.
+4. Nel pannello Aruba, in **Abilitazione degli eseguibili**, revoca `BlogEngine.Web.exe` (e `createdump.exe`, se c'era) e aggiungi `app/BlogEngine.Web.exe` e `app/createdump.exe`.
 5. Cancella `app_offline.htm`.
 
 Il `web.config` del pacchetto si può sovrascrivere senza problemi: contiene già il **Full Trust** impostato dal pannello Aruba. La riga `compilation tempDirectory=...` che Aruba aggiunge al file la rimette il pannello da solo.

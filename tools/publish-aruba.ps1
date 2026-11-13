@@ -131,7 +131,7 @@ Tutto va nella ROOT del sito (la cartella con il nome del dominio), NON nella ca
 3. Carica il contenuto di sito\ nella root (sovrascrivendo): web.config e la cartella app\.
    Non cancellare le cartelle di Aruba (public, App_Data, mdb-database, cgi-bin...).
 4. Cancella app_offline.htm dalla root e apri il sito.
-L'eseguibile da abilitare nel pannello Aruba (Hosting Windows -> .NET) è app/BlogEngine.Web.exe.
+Gli eseguibili da abilitare nel pannello Aruba (Hosting Windows -> .NET) sono app/BlogEngine.Web.exe e app/createdump.exe.
 "@ | Set-Content -Path (Join-Path $output 'LEGGIMI.txt') -Encoding utf8
 
 $zip = "$output.zip"
