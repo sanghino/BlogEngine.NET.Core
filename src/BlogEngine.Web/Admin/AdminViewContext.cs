@@ -17,7 +17,11 @@ public sealed class AdminViewContext(
     IOptions<BlogEngineOptions> options,
     ILinkGenerator links)
 {
-    /// <summary>Nome e versione del programma (meta generator, feed, diagnostica), con il .NET in uso.</summary>
+    /// <summary>
+    /// Nome e versione generica del programma per le pagine pubbliche (meta generator, feed, temi). Il numero
+    /// esatto della build (<see cref="Hosting.BuildInfo"/>) si vede solo nell'amministrazione, per non aiutare
+    /// chi cerca siti non aggiornati.
+    /// </summary>
     public static readonly string Version = $"ExtraGeek-BlogEngine 4.0 (.NET {Environment.Version.Major})";
 
     private bool _loaded;

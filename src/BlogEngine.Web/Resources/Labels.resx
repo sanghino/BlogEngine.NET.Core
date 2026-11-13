@@ -2687,6 +2687,9 @@
   <data name="diagSystem" xml:space="preserve">
     <value>System</value>
   </data>
+  <data name="diagLocalChanges" xml:space="preserve">
+    <value>local changes</value>
+  </data>
   <data name="diagVersion" xml:space="preserve">
     <value>Version</value>
   </data>

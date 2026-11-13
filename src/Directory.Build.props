@@ -15,6 +15,41 @@
     <Deterministic>true</Deterministic>
     <Product>BlogEngine.NET</Product>
     <Version>4.0.0</Version>
+    <!-- Il numero di build lo calcola il target BlogEngineBuildVersion: niente "+hash" aggiunto dall'SDK. -->
+    <IncludeSourceRevisionInInformationalVersion>false</IncludeSourceRevisionInInformationalVersion>
   </PropertyGroup>
+
+  <!--
+    Numero di versione automatico: 4.0.N, dove N è il numero di commit del repository (cresce a ogni modifica).
+    Nell'assembly finiscono anche il commit (GitCommit), le modifiche non committate (GitDirty) e data e ora
+    della compilazione (BuildDate, UTC): li mostra l'amministrazione (Diagnostica, Informazioni).
+    Senza git (per esempio da uno zip dei sorgenti) la versione resta 4.0.0.
+  -->
+  <Target Name="BlogEngineBuildVersion" BeforeTargets="GetAssemblyVersion;GenerateAssemblyInfo" Condition="'$(BlogEngineBuildVersion)' != 'false'">
+    <Exec Command="git rev-list --count HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low" EchoOff="true">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_BlogEngineCommitCount" />
+      <Output TaskParameter="ExitCode" PropertyName="_BlogEngineGitExit" />
+    </Exec>
+    <Exec Command="git rev-parse --short HEAD" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low" EchoOff="true" Condition="'$(_BlogEngineGitExit)' == '0'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_BlogEngineCommit" />
+    </Exec>
+    <Exec Command="git status --porcelain --untracked-files=no" ConsoleToMSBuild="true" IgnoreExitCode="true" StandardOutputImportance="low" StandardErrorImportance="low" EchoOff="true" Condition="'$(_BlogEngineGitExit)' == '0'">
+      <Output TaskParameter="ConsoleOutput" PropertyName="_BlogEngineGitStatus" />
+    </Exec>
+    <PropertyGroup>
+      <_BlogEngineDirty>false</_BlogEngineDirty>
+      <_BlogEngineDirty Condition="'$(_BlogEngineGitStatus)' != ''">true</_BlogEngineDirty>
+    </PropertyGroup>
+    <PropertyGroup Condition="'$(_BlogEngineGitExit)' == '0'">
+      <Version>4.0.$(_BlogEngineCommitCount)</Version>
+      <FileVersion>4.0.$(_BlogEngineCommitCount).0</FileVersion>
+      <InformationalVersion>4.0.$(_BlogEngineCommitCount)+$(_BlogEngineCommit)</InformationalVersion>
+    </PropertyGroup>
+    <ItemGroup>
+      <AssemblyMetadata Include="GitCommit" Value="$(_BlogEngineCommit)" />
+      <AssemblyMetadata Include="GitDirty" Value="$(_BlogEngineDirty)" />
+      <AssemblyMetadata Include="BuildDate" Value="$([System.DateTime]::UtcNow.ToString('yyyy-MM-ddTHH:mm:ssZ'))" />
+    </ItemGroup>
+  </Target>
 
 </Project>

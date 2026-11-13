@@ -44,7 +44,7 @@ public sealed class DiagnosticsModel(
 
         var process = Process.GetCurrentProcess();
         Sections.Add((T("diagSystem"), [
-            new(T("diagVersion"), AdminViewContext.Version),
+            new(T("diagVersion"), "ExtraGeek-BlogEngine " + Hosting.BuildInfo.Current.Describe(T("diagLocalChanges"))),
             new(".NET", RuntimeInformation.FrameworkDescription),
             new(T("diagOperatingSystem"), RuntimeInformation.OSDescription),
             new(T("diagProcess"), $"{RuntimeInformation.ProcessArchitecture}, {(Environment.Is64BitProcess ? "64" : "32")} bit, {process.ProcessName}"),
