@@ -23,7 +23,11 @@ public static class CustomFolderFiles
         {
             RequestPath = requestPath,
             FileProvider = new CompositeFileProvider(providers),
-            OnPrepareResponse = context => context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff",
+            OnPrepareResponse = context =>
+            {
+                context.Context.Response.Headers["X-Content-Type-Options"] = "nosniff";
+                StaticFileCaching.Apply(context);
+            },
         });
     }
 }

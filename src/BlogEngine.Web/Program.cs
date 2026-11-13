@@ -45,7 +45,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<SecurityHeadersMiddleware>();
-app.UseStaticFiles();
+// Script, stili e template dell'amministrazione vengono ricontrollati a ogni uso (vedi StaticFileCaching).
+app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = StaticFileCaching.Apply });
 
 // File dei temi e dei widget (CSS, immagini, script) dalle cartelle Custom/ e da quelle caricate in App_Data.
 // I template .liquid non vengono mai serviti: hanno un'estensione sconosciuta ai file statici.
