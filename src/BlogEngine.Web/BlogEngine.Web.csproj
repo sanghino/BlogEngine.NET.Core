@@ -46,4 +46,23 @@
     <None Remove="App_Data\**" />
   </ItemGroup>
 
+  <!-- TinyMCE (licenza GPL) non sta nel repository: lo scarica tools/get-tinymce.ps1, con verifica dell'impronta,
+       quando la cartella manca o lo script è cambiato (nuova versione). Poi finisce nella build e nei pacchetti. -->
+  <PropertyGroup>
+    <TinyMceScript>$(MSBuildProjectDirectory)\..\..\tools\get-tinymce.ps1</TinyMceScript>
+    <TinyMceStamp>$(MSBuildProjectDirectory)\wwwroot\lib\tinymce\version.txt</TinyMceStamp>
+    <TinyMcePowerShell Condition="'$(OS)' == 'Windows_NT'">powershell.exe</TinyMcePowerShell>
+    <TinyMcePowerShell Condition="'$(OS)' != 'Windows_NT'">pwsh</TinyMcePowerShell>
+  </PropertyGroup>
+
+  <Target Name="DownloadTinyMce" BeforeTargets="BeforeBuild" Condition="'$(DesignTimeBuild)' != 'true'"
+          Inputs="$(TinyMceScript)" Outputs="$(TinyMceStamp)">
+    <Exec Command="$(TinyMcePowerShell) -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;$(TinyMceScript)&quot;" />
+    <!-- I file appena scaricati non c'erano quando il progetto è stato letto: si aggiungono qui ai file del sito. -->
+    <ItemGroup>
+      <Content Remove="wwwroot\lib\tinymce\**" />
+      <Content Include="wwwroot\lib\tinymce\**" CopyToPublishDirectory="PreserveNewest" />
+    </ItemGroup>
+  </Target>
+
 </Project>

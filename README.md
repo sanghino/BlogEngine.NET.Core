@@ -26,6 +26,8 @@ dotnet run --project BlogEngine.Web
 
 Al primo avvio il sito chiede la configurazione iniziale. La chiave da inserire si trova in `src/BlogEngine.Web/App_Data/setup-key.txt`. I test si avviano con `dotnet test` dalla cartella `src`.
 
+La prima compilazione scarica da npm l'editor TinyMCE e la sua traduzione italiana (serve la connessione a Internet). Lo fa `tools/get-tinymce.ps1`, che fissa la versione e controlla l'impronta di ogni archivio.
+
 ## Pubblicazione
 
 - [Guida alla pubblicazione su Aruba](docs/deploy-aruba.md) (pacchetto creato con `tools/publish-aruba.ps1`)
@@ -37,3 +39,5 @@ Il logo si rigenera con `tools/brand/make_logo.py`. Usa il font Cascadia Mono, c
 ## Licenza
 
 Codice rilasciato con licenza MS-RL. Il progetto deriva da BlogEngine.NET (Copyright 2007–2023 BlogEngine), distribuito con la stessa licenza.
+
+L'editor TinyMCE (dalla versione 7 con licenza GPL) non fa parte del repository: viene scaricato durante la compilazione ed entra solo nei pacchetti dei siti.

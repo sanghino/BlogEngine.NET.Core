@@ -1,0 +1,5 @@
+Immagini delle faccine usate dall'estensione Smilies.
+
+Provengono dal plugin "emoticons" di TinyMCE 4 (Copyright (c) Moxiecode Systems AB / Ephox Corporation),
+distribuito con licenza GNU Lesser General Public License versione 2.1:
+https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html

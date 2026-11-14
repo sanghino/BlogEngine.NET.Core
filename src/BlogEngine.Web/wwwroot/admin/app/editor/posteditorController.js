@@ -93,7 +93,7 @@
         $scope.post.Content = editorGetHtml();
         if ($scope.post.Content.length == 0) {
             toastr.error('Content field is required');
-            tinymce.execCommand('mceFocus', false, 'txtContent');
+            editorFocus();
             return false;
         }
         spinOn();       

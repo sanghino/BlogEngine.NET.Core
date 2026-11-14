@@ -32,8 +32,9 @@
             <script src="~/admin/editors/summernote/editor.js"></script>
             break;
         default:
-            @* I plugin di TinyMCE non si caricano se compressi insieme agli altri script. *@
-            <script src="~/admin/editors/tinymce/tinymce.min.js"></script>
+            @* TinyMCE 8 è scaricato in wwwroot/lib/tinymce da tools/get-tinymce.ps1 (licenza GPL, fuori dal repository).
+               Carica da solo, da quella cartella, plugin, temi e traduzioni. *@
+            <script src="~/lib/tinymce/tinymce.min.js" asp-append-version="true"></script>
             <script src="~/admin/editors/tinymce/editor.js" asp-append-version="true"></script>
             break;
     }

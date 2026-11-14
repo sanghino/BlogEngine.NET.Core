@@ -3099,4 +3099,16 @@
   <data name="warningSharedEmail" xml:space="preserve">
     <value>Attenzione: questo indirizzo email è condiviso con l'utente {0}.</value>
   </data>
+  <data name="editorCode" xml:space="preserve">
+    <value>Codice</value>
+  </data>
+  <data name="editorCodeLanguage" xml:space="preserve">
+    <value>Linguaggio</value>
+  </data>
+  <data name="editorCodeTitle" xml:space="preserve">
+    <value>Inserisci codice</value>
+  </data>
+  <data name="editorMoreTooltip" xml:space="preserve">
+    <value>Inserisci [more]: negli elenchi dei post il testo si ferma qui</value>
+  </data>
 </root>

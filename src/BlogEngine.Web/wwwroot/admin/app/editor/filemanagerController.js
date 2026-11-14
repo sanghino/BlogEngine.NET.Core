@@ -41,20 +41,18 @@
         }
 
         if (action === "append") {
+            var html = "";
             var j = checked.length;
             while (j--) {
                 var item = checked[j];
-                var editorHtml = editorGetHtml();
                 if (item.FileType === 1) {
-                    var fileTag = "<p><a href='" + SiteVars.RelativeWebRoot + "file.axd?file=" + item.FullPath + "' target='_blank'>" + item.Name + " (" + item.FileSize + ")</a></p>";
-                    editorSetHtml(editorHtml + fileTag);
+                    html += "<p><a href='" + SiteVars.RelativeWebRoot + "file.axd?file=" + item.FullPath + "' target='_blank'>" + item.Name + " (" + item.FileSize + ")</a></p>";
                 }
                 if (item.FileType === 2) {
-                    editorSetHtml(editorHtml + "<img src='" + SiteVars.RelativeWebRoot + "image.axd?picture=" + item.FullPath + "' />");
+                    html += "<img src='" + SiteVars.RelativeWebRoot + "image.axd?picture=" + item.FullPath + "' />";
                 }
             }
-            toastr.success($rootScope.lbl.completed);
-            $("#modal-file-manager").modal('hide');
+            insertIntoEditor(html);
         }
         if (action === "delete") {
             spinOn();
@@ -144,10 +142,22 @@
             s = "<p><a class=\"download\" href=\"" + SiteVars.RelativeWebRoot + "file.axd?file=" +
                 file.FullPath + "\" alt=\"" + file.Name + "\">" + file.Name + " (" + file.FileSize + ")</a></p>";
         }
-        // get hold on TinyMce editor and inject link
-        var wm = top.tinymce.activeEditor.windowManager;
-        wm.getParams().ed.insertContent(s);
-        wm.getWindows()[0].close();
+        insertIntoEditor(s);
+    }
+
+    // Inserisce i file scelti nell'editor. Con TinyMCE il file manager è una finestra (iframe) dell'editor e il codice
+    // gli arriva con postMessage; con gli altri editor è una finestra della stessa pagina.
+    function insertIntoEditor(html) {
+        if (!html) {
+            return;
+        }
+        if (window.parent !== window) {
+            window.parent.postMessage({ mceAction: 'blogInsertFile', content: html }, window.location.origin);
+            return;
+        }
+        editorSetHtml(editorGetHtml() + html);
+        toastr.success($rootScope.lbl.completed);
+        $("#modal-file-manager").modal('hide');
     }
 
     $scope.load('');

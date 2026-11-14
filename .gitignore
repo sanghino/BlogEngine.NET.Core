@@ -194,3 +194,6 @@ src/BlogEngine.Web/App_Data/
 
 # Pacchetti per Aruba creati da tools/publish-aruba.ps1
 /artifacts/
+
+# TinyMCE (licenza GPL): scaricato da tools/get-tinymce.ps1 durante la build, non fa parte del repository
+src/BlogEngine.Web/wwwroot/lib/tinymce/

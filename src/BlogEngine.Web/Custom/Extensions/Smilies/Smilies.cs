@@ -1,5 +1,5 @@
 // Trasforma gli emoticon scritti nei commenti, come :) o :D, in immagini.
-// Porting dell'estensione Smilies di BlogEngine.NET (usa le immagini del plugin emoticons di TinyMCE).
+// Porting dell'estensione Smilies di BlogEngine.NET (usa le immagini del plugin emoticons di TinyMCE 4, in wwwroot/Content/images/smilies).
 
 [Extension("Converts ASCII smilies into real smilies in the comments", "4.0", "ExtraGeek-BlogEngine")]
 public sealed class Smilies : IBlogExtension
@@ -30,7 +30,7 @@ public sealed class SmiliesHandler(IPageResources page) : IEventHandler<ServingE
         var body = blogEvent.Body;
         foreach (var (code, name, alt) in Codes)
         {
-            body = body.Replace(code, $"<img src=\"{page.ApplicationRoot}admin/editors/tinymce/plugins/emoticons/img/smiley-{name}.gif\" class=\"flag\" alt=\"{alt}\" />", StringComparison.Ordinal);
+            body = body.Replace(code, $"<img src=\"{page.ApplicationRoot}Content/images/smilies/smiley-{name}.gif\" class=\"flag\" alt=\"{alt}\" />", StringComparison.Ordinal);
         }
 
         blogEvent.Body = body;

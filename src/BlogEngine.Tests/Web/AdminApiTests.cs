@@ -56,7 +56,13 @@ public sealed partial class AdminApiTests
 
         var editor = await _admin.GetStringAsync("/admin/app/editor/editpost.cshtml");
         StringAssert.Contains(editor, "PostEditorController");
-        StringAssert.Contains(editor, "tinymce.min.js");
+        StringAssert.Contains(editor, "/lib/tinymce/tinymce.min.js");
+        // TinyMCE 8 è scaricato dalla build (tools/get-tinymce.ps1) con la traduzione italiana.
+        foreach (var file in new[] { "/lib/tinymce/tinymce.min.js", "/lib/tinymce/langs/it.js", "/lib/tinymce/themes/silver/theme.min.js", "/admin/editors/tinymce/editor.js" })
+        {
+            Assert.AreEqual(HttpStatusCode.OK, (await _admin.GetAsync(file)).StatusCode, file);
+        }
+        Assert.AreEqual(HttpStatusCode.OK, (await _admin.GetAsync("/Content/images/smilies/smiley-smile.gif")).StatusCode, "Le faccine dei commenti.");
 
         StringAssert.Contains(await _admin.GetStringAsync("/admin/app/editor/editpage.cshtml"), "PageEditorController");
         StringAssert.Contains(await _admin.GetStringAsync("/admin/app/editor/filemanager.cshtml"), "FileManagerController");

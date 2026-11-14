@@ -788,3 +788,7 @@ enableMaintenanceMode
 enableMaintenanceModeHelp
 maintenanceMessage
 maintenanceDefaultText
+editorCode
+editorCodeLanguage
+editorCodeTitle
+editorMoreTooltip

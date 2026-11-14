@@ -39,6 +39,8 @@ public static class AdminResourcesEndpoint
                 ["GenericPageSize"] = options.Value.GenericPageSize.ToString(System.Globalization.CultureInfo.InvariantCulture),
                 ["GalleryFeedUrl"] = string.Empty,
                 ["Version"] = AdminViewContext.Version,
+                // Lingua dell'amministrazione: l'editor dei post usa la stessa.
+                ["Language"] = System.Globalization.CultureInfo.CurrentUICulture.Name,
             };
 
             var i18n = LabelKeys.Value.ToDictionary(k => k, k => labels[k].Value, StringComparer.Ordinal);

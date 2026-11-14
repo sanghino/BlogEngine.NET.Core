@@ -3101,4 +3101,16 @@
   <data name="warningSharedEmail" xml:space="preserve">
     <value>Note: this email address is shared with user {0}.</value>
   </data>
+  <data name="editorCode" xml:space="preserve">
+    <value>Code</value>
+  </data>
+  <data name="editorCodeLanguage" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="editorCodeTitle" xml:space="preserve">
+    <value>Insert code</value>
+  </data>
+  <data name="editorMoreTooltip" xml:space="preserve">
+    <value>Insert [more]: in post lists the post stops here</value>
+  </data>
 </root>
