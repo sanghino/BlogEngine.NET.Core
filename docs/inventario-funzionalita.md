@@ -132,7 +132,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ☑ | Feed RSS 2.0 / Atom, per categoria, tag, autore, commenti | `SyndicationHandler` (`syndication.axd`), `SyndicationGenerator` | `FeedController`: stessi parametri e estensioni (dc, slash, wfw, pingback, trackback, betag), anche `category/feed/`, `tag/feed/`, `post/feed/`, risposta 304 |
 | ☑ | Feed alternativo (es. FeedBurner), numero voci | `AlternateFeedUrl`, `PostsPerFeed` | Link del feed nelle pagine e `maxitems` |
-| ☑ | Sitemap XML | `SiteMap` (`sitemap.axd`) | `SemanticController` |
+| ☑ | Sitemap XML | `SiteMap` (`sitemap.axd`, anche `sitemap.xml`) | `SemanticController` |
 | ☑ | MetaWeblog / XML-RPC (Windows Live Writer, Open Live Writer) | `API/MetaWeblog` (`metaweblog.axd`), `wlwmanifest.xml`, `AppCode/Wlw` | `MetaWeblogController`: metaWeblog.*, blogger.*, wp.* (pagine, autori, tag), immagini; tentativi limitati. Tolto il pulsante "Tags" di Live Writer (TagMiniView) |
 | ☑ | RSD | `RsdHandler` (`rsd.axd`) | `SemanticController` |
 | ☑ | Pingback e trackback, in ricezione e invio | `PingbackHandler`, `TrackbackHandler`, `Services/Messaging/Ping` | `LinkbackController` (verifica della pagina d'origine), `LinkbackSender`; le pagine esterne si scaricano solo da indirizzi pubblici |

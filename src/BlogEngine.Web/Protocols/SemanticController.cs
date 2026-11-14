@@ -33,8 +33,12 @@ public sealed class SemanticController(
 
     private string Root => links.ToAbsolute(links.BlogRoot).ToString();
 
-    /// <summary>Mappa del sito per i motori di ricerca (porting di SiteMap).</summary>
+    /// <summary>
+    /// Mappa del sito per i motori di ricerca (porting di SiteMap). Risponde anche a /sitemap.xml, l'indirizzo
+    /// che strumenti e motori di ricerca provano per primo (e che vecchie configurazioni di Search Console usano).
+    /// </summary>
     [HttpGet("/sitemap.axd")]
+    [HttpGet("/sitemap.xml")]
     public async Task<IActionResult> SiteMap()
     {
         if (!await rights.IsAuthorizedAsync(Rights.ViewPublicPosts))

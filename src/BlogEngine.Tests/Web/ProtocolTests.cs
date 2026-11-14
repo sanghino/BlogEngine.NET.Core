@@ -62,6 +62,7 @@ public sealed class ProtocolTests
 
     [DataTestMethod]
     [DataRow("/sitemap.axd", "urlset")]
+    [DataRow("/sitemap.xml", "urlset")]
     [DataRow("/rsd.axd", "rsd")]
     [DataRow("/opensearch.axd", "OpenSearchDescription")]
     [DataRow("/opml.axd", "opml")]
@@ -78,7 +79,7 @@ public sealed class ProtocolTests
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode, url);
         var document = XDocument.Parse(await response.Content.ReadAsStringAsync());
         Assert.AreEqual(root, document.Root!.Name.LocalName);
-        if (url == "/sitemap.axd")
+        if (root == "urlset")
         {
             StringAssert.Contains(document.ToString(), "http://localhost/post/");
         }
