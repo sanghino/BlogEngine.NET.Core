@@ -173,7 +173,8 @@ public sealed class AdminMapper(
             return description;
         }
 
-        var text = BlogEngine.Text.HtmlText.ToPlainText(Themes.SubpagesPlaceholder.Remove(content));
+        // Il marcatore [more] (interruzione del post nell'elenco) non fa parte del testo.
+        var text = BlogEngine.Text.HtmlText.ToPlainText(Themes.SubpagesPlaceholder.Remove(content)?.Replace("[more]", " ", StringComparison.OrdinalIgnoreCase)).Trim();
         return text.Length > 100 ? text[..100] : text;
     }
 

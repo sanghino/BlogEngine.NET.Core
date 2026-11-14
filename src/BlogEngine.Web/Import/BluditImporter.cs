@@ -127,6 +127,10 @@ public sealed partial class BluditImporter(
 
             var content = await File.ReadAllTextAsync(Path.Combine(root, "pages", key, "index.txt"), cancellationToken);
             content = await ConvertContentAsync(blogId, content, siteHosts, targets, cancellationToken);
+
+            // Il "Leggi tutto" di Bludit: nei post diventa [more] (l'estensione BreakPost taglia il testo
+            // nell'elenco e aggiunge il pulsante "Prosegue"), nelle pagine non serve.
+            content = PageBreak().Replace(content, target.IsPage ? string.Empty : "[more]");
             if ((string?)entry["coverImage"] is { Length: > 0 } cover)
             {
                 content = AddCoverImage(content, (string?)entry["uuid"], cover, title);
@@ -331,6 +335,25 @@ public sealed partial class BluditImporter(
             changed = true;
         }
 
+        // Bludit scrive la lingua come "it_IT": date ed etichette del tema seguono la lingua del blog.
+        if (blogSettings.Language == new BlogSettings().Language && (string?)site?["language"] is { Length: > 0 } language)
+        {
+            var culture = language.Replace('_', '-');
+            try
+            {
+                culture = System.Globalization.CultureInfo.GetCultureInfo(culture).Name;
+                if (culture.Length > 0 && culture != blogSettings.Language)
+                {
+                    blogSettings.Language = culture;
+                    changed = true;
+                }
+            }
+            catch (System.Globalization.CultureNotFoundException)
+            {
+                logger.LogWarning("Lingua di Bludit non riconosciuta: {Language}.", language);
+            }
+        }
+
         if (changed)
         {
             await settings.SaveAsync(blogSettings, blogId, cancellationToken);
@@ -407,4 +430,7 @@ public sealed partial class BluditImporter(
 
     [GeneratedRegex(@"\s+style=""(?<css>[^""]*)""", RegexOptions.IgnoreCase)]
     private static partial Regex StyleAttribute();
+
+    [GeneratedRegex(@"<!--\s*pagebreak\s*-->", RegexOptions.IgnoreCase)]
+    private static partial Regex PageBreak();
 }

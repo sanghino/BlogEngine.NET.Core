@@ -48,6 +48,18 @@ public sealed class BluditImportTests
             StringAssert.Contains(post, "style=\"text-align: center;\"", "Gli stili utili restano.");
             Assert.IsFalse(post.Contains("font-family: Roboto", StringComparison.Ordinal), "Gli stili copiati da altri siti vengono tolti.");
             StringAssert.Contains(post, "Sicurezza informatica");
+            StringAssert.Contains(post, "Il resto dell'articolo.", "Il post singolo è completo.");
+            Assert.IsFalse(post.Contains("pagebreak", StringComparison.Ordinal) || post.Contains("[more]", StringComparison.Ordinal));
+
+            // Nell'elenco (con un tema che mostra il testo dei post) il post si ferma al "Leggi tutto" di Bludit.
+            var home = await anonymous.GetStringAsync("/?theme=ExtraGeek");
+            StringAssert.Contains(home, "class=\"more\"");
+            Assert.IsFalse(home.Contains("Il resto dell'articolo.", StringComparison.Ordinal), "Nell'elenco c'è solo l'inizio del post.");
+
+            string? language = null;
+            await factory.RunAsSystemAsync(async services =>
+                language = (await services.GetRequiredService<BlogEngine.Services.ISettingsService>().GetAsync()).Language);
+            Assert.AreEqual("it-IT", language, "La lingua di Bludit diventa quella del blog.");
 
             var moved = await anonymous.GetAsync("/patch-alla-7.1.4");
             Assert.AreEqual(HttpStatusCode.MovedPermanently, moved.StatusCode);
@@ -81,7 +93,7 @@ public sealed class BluditImportTests
             File.WriteAllText(full, text);
         }
 
-        Write("databases/site.php", PhpGuard + """{"title":"Geek","slogan":"Benvenuti","url":"https://www.example.com","timezone":"Europe/Rome"}""");
+        Write("databases/site.php", PhpGuard + """{"title":"Geek","slogan":"Benvenuti","url":"https://www.example.com","timezone":"Europe/Rome","language":"it_IT"}""");
         Write("databases/categories.php", PhpGuard + """{"news":{"name":"News","description":"","list":["patch-alla-7.1.4"]},"videos":{"name":"Videos","description":"","list":[]}}""");
         Write("databases/pages.php", PhpGuard + """
             {
@@ -96,7 +108,8 @@ public sealed class BluditImportTests
         Write("pages/patch-alla-7.1.4/index.txt",
             "<p style=\"color: #474b4f; font-family: Roboto, sans-serif; text-align: center;\">Aggiornate subito.</p>\n" +
             $"<p><img src=\"data:image/png;base64,{Png}\" /></p>\n" +
-            "<p><a href=\"https://www.example.com/chi-sono\">Chi sono</a></p>");
+            "<p><a href=\"https://www.example.com/chi-sono\">Chi sono</a><!-- pagebreak --></p>\n" +
+            "<p>Il resto dell'articolo.</p>");
         Write("pages/bozza/index.txt", "<p>Non ancora pronta.</p>");
         Write("pages/chi-sono/index.txt", "<p>Scrivo di informatica.</p>");
         Write("pages/autosave-123/index.txt", "<p>...</p>");

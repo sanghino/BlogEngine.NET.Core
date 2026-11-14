@@ -1,0 +1,66 @@
+{%- comment -%}
+  Tema ExtraGeek: riga con prompt >_, data, autore e categorie, poi titolo, testo, annuncio a fine post
+  (solo nel post singolo), tag, condivisione e link. L'annuncio parte solo con il consenso "marketing".
+  Editore (ca-pub-...) e slot si impostano in Personalizza → Temi → campi personalizzati: finché sono
+  vuoti l'annuncio non compare.
+{%- endcomment -%}
+<article class="post xfolkentry" id="post{{ post.index }}">
+    <header class="post-header">
+        <p class="post-meta">
+            <span class="prompt" aria-hidden="true">&gt;_</span>
+            <time datetime="{{ post.date_created | date_format: 'yyyy-MM-dd' }}">{{ post.date_created | date_format: 'd MMMM yyyy' }}</time>
+            <span class="sep">&middot;</span>
+            <a href="{{ post.author_url }}" class="author">{{ post.author_name }}</a>
+            {%- for c in post.categories %}
+            <a href="{{ c.url }}" class="category">{{ c.title }}</a>
+            {%- endfor %}
+        </p>
+        {%- if location == 'single' %}
+        <h1 class="post-title"><a href="{{ post.url }}" class="taggedlink">{{ post.title }}</a></h1>
+        {%- else %}
+        <h2 class="post-title"><a href="{{ post.url }}" class="taggedlink">{{ post.title }}</a></h2>
+        {%- endif %}
+    </header>
+
+    <div class="text">{{ post.body }}</div>
+
+    {%- if location == 'single' %}
+    {%- assign ad_client = 'AdSense editore' | theme_field: '' | strip -%}
+    {%- assign ad_slot = 'AdSense slot fine post' | theme_field: '' | strip -%}
+    {%- if ad_client != '' and ad_slot != '' %}
+    {%- capture ad_code -%}
+        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client={{ ad_client }}" crossorigin="anonymous"></script>
+        <ins class="adsbygoogle" style="display:block" data-ad-format="auto" data-full-width-responsive="true" data-ad-client="{{ ad_client }}" data-ad-slot="{{ ad_slot }}"></ins>
+        <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+    {%- endcapture %}
+    <div class="ads-post-bottom">{{ ad_code | consent: 'marketing' }}</div>
+    {%- endif %}
+    {%- endif %}
+
+    {{ post.rating_html }}
+
+    {%- if post.tags.size > 0 %}
+    <p class="tags"><span class="label">{{ 'tags' | t }}:</span> {% for tag in post.tags %}<a href="{{ tag.url }}" rel="tag">#{{ tag.title }}</a>{% endfor %}</p>
+    {%- endif %}
+
+    <footer class="footer">
+        {%- if location == 'single' %}
+        <div class="social-share">
+            <span class="label">Condividi:</span>
+            <a class="share whatsapp" href="https://api.whatsapp.com/send?text={{ post.title | append: ' - ' | append: post.absolute_url | url_encode }}" target="_blank" rel="noopener nofollow">WhatsApp</a>
+            <a class="share telegram" href="https://telegram.me/share/url?url={{ post.absolute_url | url_encode }}&amp;text={{ post.title | url_encode }}" target="_blank" rel="noopener nofollow">Telegram</a>
+            <a class="share x" href="https://twitter.com/intent/tweet?text={{ post.title | url_encode }}&amp;url={{ post.absolute_url | url_encode }}" target="_blank" rel="noopener nofollow">X</a>
+            <a class="share linkedin" href="https://www.linkedin.com/sharing/share-offsite/?url={{ post.absolute_url | url_encode }}" target="_blank" rel="noopener nofollow">LinkedIn</a>
+            <a class="share facebook" href="https://www.facebook.com/sharer/sharer.php?u={{ post.absolute_url | url_encode }}" target="_blank" rel="noopener nofollow">Facebook</a>
+        </div>
+        {%- endif %}
+        <div class="post-links">
+            <span>
+                <a rel="bookmark" href="{{ post.absolute_url }}" class="permalink">Permalink</a> &middot;
+                <a rel="nofollow" href="{{ post.url }}#comment">{{ 'comments' | t }} ({{ post.comments_count }})</a> &middot;
+                <a rel="nofollow" href="{{ post.feed_url }}">RSS commenti</a>
+            </span>
+            {%- if post.admin_links != '' %}<span class="post-adminlinks">{{ post.admin_links }}</span>{% endif %}
+        </div>
+    </footer>
+</article>

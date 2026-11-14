@@ -1,0 +1,9 @@
+{
+  "title": "ExtraGeek",
+  "description": "Il tema di ExtraGeek.com, con i colori del logo del canale YouTube: sfondo blu notte con un motivo a circuito, azzurro per i link e arancio per i pulsanti. Barra laterale a destra.",
+  "authors": "Francesco Mori",
+  "version": "1.0.0",
+  "defaultWidgets": {
+    "sidebar": [ "Search", "Administration", "PageList", "PostList", "CategoryList", "TagCloud", "MonthList" ]
+  }
+}

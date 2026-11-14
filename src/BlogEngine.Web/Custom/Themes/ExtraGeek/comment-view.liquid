@@ -1,0 +1,26 @@
+{%- comment -%}
+  Tema ExtraGeek (porting di CommentView.ascx): intestazione con avatar, autore e data, testo e link.
+  Gli id "id_..." e "replies_..." servono a blog.js per inserire le risposte nel punto giusto.
+{%- endcomment -%}
+<div id="id_{{ comment.id }}" class="vcard comment{% if comment.is_by_post_author %} self{% endif %}">
+    <div class="comment_header">
+        <span class="gravatar">{{ comment.avatar }}</span>
+        <div class="visitor">
+            {%- if comment.website != '' %}<a href="{{ comment.website }}" rel="nofollow" class="url fn">{{ comment.author }}</a>{% else %}<span class="fn">{{ comment.author }}</span>{% endif %}
+            {{ comment.flag }}
+            <div class="date">{{ comment.date_created | date_format: 'g' }} <a href="#id_{{ comment.id }}">#</a></div>
+        </div>
+    </div>
+    <div class="comment_body">
+        <div class="content">{{ comment.text }}</div>
+        <p class="author">
+            {%- if comment.admin_links != '' %}{{ comment.admin_links }}{% endif %}
+            {%- if comment.reply_link != '' %}<span class="reply">{{ comment.reply_link }}</span>{% endif %}
+        </p>
+    </div>
+    <div class="comment-replies" id="replies_{{ comment.id }}"{% if comment.replies.size == 0 %} style="display:none;"{% endif %}>
+        {%- for reply in comment.replies %}
+        {% include 'comment-view', comment: reply %}
+        {%- endfor %}
+    </div>
+</div>

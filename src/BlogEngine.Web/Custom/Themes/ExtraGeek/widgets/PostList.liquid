@@ -1,0 +1,24 @@
+{%- comment -%}
+  Tema ExtraGeek: "Post recenti" come elenco di righe separate, ognuna con titolo e data
+  (la data c'è sempre, per capire subito dove finisce un titolo e inizia il successivo).
+  Immagine e descrizione restano facoltative, come nel widget comune.
+{%- endcomment -%}
+<div class="Widget widget postlist">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul class="recent-posts">
+            {%- for item in widget.data.posts %}
+            <li>
+                <a href="{{ item.url }}">
+                    {%- if widget.data.show_image and item.first_image != '' %}<img src="{{ item.first_image }}" class="recent-post-img" alt="" />{% endif %}
+                    <span class="recent-post-title">{{ item.title }}</span>
+                    {%- if widget.data.show_description %}<span class="recent-post-desc">{{ item.description }}</span>{% endif %}
+                    <span class="recent-post-date">{{ item.date_created | date_format: 'd MMMM yyyy' }}</span>
+                </a>
+            </li>
+            {%- else %}
+            <li class="recent-post-empty">{{ 'noPostsYet' | t }}</li>
+            {%- endfor %}
+        </ul>
+    </div>
+</div>

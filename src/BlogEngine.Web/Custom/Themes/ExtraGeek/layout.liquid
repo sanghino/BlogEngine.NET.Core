@@ -1,0 +1,67 @@
+{%- comment -%}
+  Tema ExtraGeek: i colori del logo del canale YouTube (blu notte, azzurro delle lenti, arancio del prompt).
+  Testata con gli occhiali e la scritta EXTRA GEEK, menu, contenuto a sinistra e widget a destra.
+  Google Analytics va in Impostazioni → Script di tracciamento e AdSense nel widget Advertisement:
+  così partono solo dopo il consenso del visitatore, se il banner dei cookie è attivo.
+{%- endcomment -%}
+<!DOCTYPE html>
+<html lang="{{ blog.language }}" dir="{{ blog.direction }}">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a1227" />
+    <title>{{ page_title }}</title>
+    <link rel="icon" href="{{ 'images/logo.svg' | theme_url }}" type="image/svg+xml" />
+    <link rel="icon" href="{{ 'favicon.ico' | app_url }}" sizes="any" />
+    {{ content_for_header }}
+    <link href="{{ 'style.css' | theme_url }}" rel="stylesheet" />
+</head>
+<body class="template-{{ template }}">
+<a class="skip-link" href="#content">Vai al contenuto</a>
+<div id="all-document">
+    <header id="header">
+        <a id="logo" href="{{ blog.url }}" rel="home" title="{{ blog.name }}">
+            <img src="{{ 'images/logo.svg' | theme_url }}" width="132" height="52" alt="" />
+            <span class="wordmark"><span class="extra">Extra</span><span class="geek">Geek</span></span>
+        </a>
+        {%- if blog.description != '' %}<p class="tagline">{{ blog.description }}</p>{% endif %}
+    </header>
+
+    <nav id="menu" aria-label="Menu principale">
+        <ul>
+            <li><a href="{{ blog.url }}" rel="home">{{ 'home' | t }}</a></li>
+            <li><a href="{{ blog.archive_url }}">{{ 'archive' | t }}</a></li>
+            {%- for p in blog.pages %}
+            <li><a href="{{ p.url }}">{{ p.title }}</a></li>
+            {%- endfor %}
+            <li><a href="{{ blog.contact_url }}">{{ 'contact' | t }}</a></li>
+            <li><a href="{{ blog.feed_url }}" class="feed">RSS</a></li>
+            {%- if user.is_authenticated %}
+            <li class="user"><span class="welcome">{{ 'welcome' | t }} {{ user.name }}!</span></li>
+            {%- if user.can_access_admin %}<li><a href="{{ blog.admin_url }}">{{ 'widgetAdministration' | t }}</a></li>{% endif %}
+            <li><a href="{{ blog.logout_url }}">{{ 'logoff' | t }}</a></li>
+            {%- else %}
+            <li><a href="{{ blog.login_url }}">{{ 'login' | t }}</a></li>
+            {%- endif %}
+        </ul>
+    </nav>
+
+    <div id="body">
+        <main id="content">
+            {{ content_for_layout }}
+        </main>
+
+        <aside id="sidepanel">
+            {% widget_zone 'sidebar' %}
+        </aside>
+    </div>
+
+    <footer id="credits">
+        <img src="{{ 'images/logo.svg' | theme_url }}" width="66" height="26" alt="" />
+        <p>&copy; {{ blog.year }} {{ blog.name }} &middot; <a href="#" class="cookie-preferences" onclick="if (window.BlogEngineConsent) { BlogEngineConsent.open(); } return false;">Gestisci i cookie</a></p>
+        <p class="powered">Powered by ExtraGeek-BlogEngine &middot; {{ 'theme' | t }}: ExtraGeek, di Francesco Mori</p>
+    </footer>
+</div>
+{{ content_for_footer }}
+</body>
+</html>

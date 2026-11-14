@@ -1,0 +1,25 @@
+{%- comment -%}
+  Tema ExtraGeek: "Commenti recenti" con lo stesso stile di "Post recenti": una riga per commento con
+  autore e data, l'inizio del testo e il post commentato. Tutta la riga porta ai commenti del post.
+{%- endcomment -%}
+<div class="Widget widget recentcomments">
+    <h4 class="WidgetHeader widget-header">{{ widget.title }}</h4>
+    <div class="WidgetContent widget-content">
+        <ul id="recentComments" class="recent-posts recent-comments">
+            {%- for item in widget.data.comments %}
+            <li>
+                <a href="{{ item.post_url }}">
+                    <span class="recent-comment-author">{{ item.author }}</span>
+                    <span class="recent-comment-text">{{ item.text }}</span>
+                    <span class="recent-post-date">{{ item.date_created | date_format: 'd MMMM yyyy' }} · su <span class="recent-comment-post">{{ item.post_title }}</span> ({{ item.post_comments }})</span>
+                </a>
+            </li>
+            {%- else %}
+            <li class="recent-post-empty">{{ 'noCommentsYet' | t }}</li>
+            {%- endfor %}
+        </ul>
+        {%- if widget.data.comments.size > 0 %}
+        <p class="recent-comments-feed"><a href="{{ widget.data.feed_url }}"><img alt="" src="{{ 'Content/images/blog/rssButton.png' | app_url }}" width="14" height="14" /> RSS dei commenti</a></p>
+        {%- endif %}
+    </div>
+</div>
