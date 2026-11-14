@@ -2,6 +2,7 @@ using BlogEngine.Core;
 using BlogEngine.Web.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace BlogEngine.Web.Api;
 
@@ -36,6 +37,31 @@ public sealed class ApiExceptionFilterAttribute : ExceptionFilterAttribute
         };
 
         context.ExceptionHandled = context.Result is not null;
+        if (context.ExceptionHandled)
+        {
+            LogRejected(context, translator);
+        }
+    }
+
+    /// <summary>
+    /// Registra nel log del sito le richieste dell'amministrazione rifiutate (dati non validi, permessi, elementi
+    /// inesistenti): l'utente vede il messaggio nella finestra, l'amministratore lo ritrova in Log anche dopo.
+    /// Si registra il motivo, mai i dati inviati (potrebbero contenere password).
+    /// </summary>
+    private static void LogRejected(ExceptionContext context, MessageTranslator translator)
+    {
+        var http = context.HttpContext;
+        var reason = context.Exception switch
+        {
+            BlogValidationException validation => string.Join(" ", translator.Translate(validation.Errors).Select(e => $"{e.Key}: {e.Value}")),
+            UnauthorizedAccessException => "permessi insufficienti",
+            _ => translator[context.Exception.Message],
+        };
+
+        http.RequestServices.GetRequiredService<ILoggerFactory>().CreateLogger("BlogEngine.Web.Api")
+            .LogWarning("Amministrazione: richiesta {Method} {Path} rifiutata ({Status}) per l'utente {User}. Motivo: {Reason}",
+                http.Request.Method, http.Request.Path.Value, (context.Result as IStatusCodeActionResult)?.StatusCode,
+                http.User.Identity?.Name ?? "anonimo", reason);
     }
 
     private static BadRequestObjectResult Validation(IReadOnlyDictionary<string, string> errors) =>

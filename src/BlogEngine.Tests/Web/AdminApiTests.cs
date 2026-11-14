@@ -293,6 +293,25 @@ public sealed partial class AdminApiTests
     }
 
     [TestMethod]
+    public async Task RejectedRequests_AreWrittenToTheLog()
+    {
+        await SendAsync(HttpMethod.Post, "/api/users", """{ "UserName": "Mario Rossi", "Email": "mario@example.com", "Password": "Segreta-Mai-Nel-Log" }""",
+            HttpStatusCode.BadRequest);
+
+        var log = string.Join("\n", (await GetJsonAsync<JsonArray>("/api/logs/getlog/file")).Select(e => e!["OptionValue"]!.GetValue<string>()));
+        StringAssert.Contains(log, "POST /api/users rifiutata (400)");
+        StringAssert.Contains(log, "per l&#39;utente " + BlogWebFactory.AdminUser);
+        StringAssert.Contains(log, "UserName:", "Il motivo è nel log.");
+        Assert.IsFalse(log.Contains("Segreta-Mai-Nel-Log", StringComparison.Ordinal), "I dati inviati, password comprese, non finiscono nel log.");
+
+        // Anche la conferma di un'email condivisa lascia traccia.
+        await SendAsync(HttpMethod.Post, "/api/users", """{ "UserName": "mario", "Email": "famiglia@example.com", "Password": "Password-Mario-1" }""", HttpStatusCode.Created);
+        await SendAsync(HttpMethod.Post, "/api/users", """{ "UserName": "anna", "Email": "famiglia@example.com", "Password": "Password-Anna-1", "AllowSharedEmail": true }""", HttpStatusCode.Created);
+        log = string.Join("\n", (await GetJsonAsync<JsonArray>("/api/logs/getlog/file")).Select(e => e!["OptionValue"]!.GetValue<string>()));
+        StringAssert.Contains(log, "con un&#39;email condivisa");
+    }
+
+    [TestMethod]
     public async Task CustomFields_SafeFilterOnly()
     {
         await SendAsync(HttpMethod.Post, "/api/customfields", """{ "CustomType": "POST", "ObjectId": "1", "Key": "colore", "Value": "rosso" }""", HttpStatusCode.Created);

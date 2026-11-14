@@ -14,7 +14,8 @@ public sealed class UsersController(
     IUserService users,
     IProfileService profiles,
     IRightsService rights,
-    IBlogContext context) : AdminApiController
+    IBlogContext context,
+    ILogger<UsersController> logger) : AdminApiController
 {
     /// <summary>Elenco degli utenti; con il parametro "id" (usato dalla scheda utente) restituisce solo quell'utente.</summary>
     [HttpGet("")]
@@ -64,6 +65,7 @@ public sealed class UsersController(
         await SaveProfileAsync(item, created.Email);
         item.Password = string.Empty;
         item.Warning = await SharedEmailWarningAsync(created.Email, created.UserName);
+        LogSharedEmail(item.Warning, created.UserName);
         return StatusCode(StatusCodes.Status201Created, item);
     }
 
@@ -118,7 +120,9 @@ public sealed class UsersController(
             }
         }
 
-        return Ok(new { Warning = await SharedEmailWarningAsync(item.Email, user.UserName) });
+        var warning = await SharedEmailWarningAsync(item.Email, user.UserName);
+        LogSharedEmail(warning, user.UserName);
+        return Ok(new { Warning = warning });
     }
 
     [HttpPut("saveprofile/{id?}")]
@@ -255,6 +259,15 @@ public sealed class UsersController(
         string.IsNullOrWhiteSpace(email) || await OtherUserWithEmailAsync(email.Trim(), userName) is not { } other
             ? null
             : T(Messages.Format("warningSharedEmail", other));
+
+    /// <summary>Nel log resta traccia di chi ha confermato un'email condivisa (senza scrivere l'indirizzo).</summary>
+    private void LogSharedEmail(string? warning, string userName)
+    {
+        if (warning is not null)
+        {
+            logger.LogWarning("Utenti: {Admin} ha salvato l'utente {User} con un'email condivisa. {Warning}", context.UserName, userName, warning);
+        }
+    }
 
     private async Task<string?> OtherUserWithEmailAsync(string email, string? userName) =>
         (await users.GetUsersAsync())
