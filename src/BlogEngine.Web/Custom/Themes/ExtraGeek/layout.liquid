@@ -1,6 +1,9 @@
 {%- comment -%}
   Tema ExtraGeek: i colori del logo del canale YouTube (blu notte, azzurro delle lenti, arancio del prompt).
-  Testata con gli occhiali e la scritta EXTRA GEEK, menu, contenuto a sinistra e widget a destra.
+  Testata con il logo (occhiali e scritta EXTRA GEEK), menu, contenuto a sinistra e widget a destra.
+  images/logo.svg è il logo orizzontale (EXTRA, occhiali, GEEK), logo-glasses.svg solo gli occhiali, favicon.svg l'icona quadrata.
+  Le altre varianti restano in images per poterle riprendere: logo-orizzontale.svg (copia di logo.svg),
+  logo-verticale.svg (occhiali sopra la scritta) e logo-primo-tema.svg (gli occhiali della prima versione del tema).
   Google Analytics va in Impostazioni → Script di tracciamento e AdSense nel widget Advertisement:
   così partono solo dopo il consenso del visitatore, se il banner dei cookie è attivo.
 {%- endcomment -%}
@@ -11,7 +14,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#0a1227" />
     <title>{{ page_title }}</title>
-    <link rel="icon" href="{{ 'images/logo.svg' | theme_url }}" type="image/svg+xml" />
+    <link rel="icon" href="{{ 'images/favicon.svg' | theme_url }}" type="image/svg+xml" />
     <link rel="icon" href="{{ 'favicon.ico' | app_url }}" sizes="any" />
     {{ content_for_header }}
     <link href="{{ 'style.css' | theme_url }}" rel="stylesheet" />
@@ -21,8 +24,7 @@
 <div id="all-document">
     <header id="header">
         <a id="logo" href="{{ blog.url }}" rel="home" title="{{ blog.name }}">
-            <img src="{{ 'images/logo.svg' | theme_url }}" width="132" height="52" alt="" />
-            <span class="wordmark"><span class="extra">Extra</span><span class="geek">Geek</span></span>
+            <img src="{{ 'images/logo.svg' | theme_url }}" width="1270" height="137" alt="{{ blog.name }}" />
         </a>
         {%- if blog.description != '' %}<p class="tagline">{{ blog.description }}</p>{% endif %}
     </header>
@@ -57,7 +59,7 @@
     </div>
 
     <footer id="credits">
-        <img src="{{ 'images/logo.svg' | theme_url }}" width="66" height="26" alt="" />
+        <img src="{{ 'images/logo-glasses.svg' | theme_url }}" width="81" height="27" alt="" />
         <p>&copy; {{ blog.year }} {{ blog.name }} &middot; <a href="#" class="cookie-preferences" onclick="if (window.BlogEngineConsent) { BlogEngineConsent.open(); } return false;">Gestisci i cookie</a></p>
         <p class="powered">Powered by ExtraGeek-BlogEngine &middot; {{ 'theme' | t }}: ExtraGeek, di Francesco Mori</p>
     </footer>

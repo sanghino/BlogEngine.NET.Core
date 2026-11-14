@@ -174,38 +174,18 @@ img {
 }
 
 #header #logo {
-	display: inline-flex;
-	align-items: center;
-	gap: 22px;
+	display: inline-block;
+	max-width: calc(100% - 32px);
 	text-decoration: none;
 }
 
+/* Logo orizzontale: EXTRA, gli occhiali, GEEK. */
 #header #logo img {
 	display: block;
-	width: 132px;
+	width: 520px;
+	max-width: 100%;
 	height: auto;
 	filter: drop-shadow(0 0 14px rgba(56, 189, 248, 0.35));
-}
-
-#header .wordmark {
-	display: flex;
-	flex-direction: column;
-	align-items: flex-start;
-	line-height: 0.95;
-	text-transform: uppercase;
-	font-weight: 800;
-}
-
-#header .wordmark .extra {
-	color: var(--eg-sky);
-	font-size: 26px;
-	letter-spacing: 1px;
-}
-
-#header .wordmark .geek {
-	color: var(--eg-white);
-	font-size: 52px;
-	letter-spacing: -0.5px;
 }
 
 #header .tagline {
@@ -1456,20 +1436,8 @@ input[type="file"] {
 		padding: 22px 0 12px 0;
 	}
 
-	#header #logo {
-		gap: 14px;
-	}
-
 	#header #logo img {
-		width: 92px;
-	}
-
-	#header .wordmark .extra {
-		font-size: 19px;
-	}
-
-	#header .wordmark .geek {
-		font-size: 38px;
+		width: 340px;
 	}
 
 	#header .tagline {
