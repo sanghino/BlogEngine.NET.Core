@@ -57,6 +57,28 @@ public sealed class UserServiceTests
     }
 
     [TestMethod]
+    public async Task SharedEmail_OnlyAdministratorsCanForceIt()
+    {
+        using var host = new TestBlogHost().AsAdmin();
+        var users = host.Get<IUserService>();
+        await users.CreateUserAsync("mario", "famiglia@example.com", "password-1");
+        await users.CreateUserAsync("editor", "editor@example.com", "password-1", [SystemRoles.Editors]);
+
+        var inUse = await Assert.ThrowsExceptionAsync<BlogValidationException>(() => users.CreateUserAsync("anna", "famiglia@example.com", "password-1"));
+        Assert.AreEqual(Messages.EmailInUse, inUse.Errors["Email"], "Senza conferma l'email già usata resta un errore.");
+
+        // L'amministratore conferma: due utenti con la stessa email, ognuno con il suo accesso.
+        await users.CreateUserAsync("anna", "Famiglia@example.com", "password-2", allowSharedEmail: true);
+        Assert.IsNotNull(await users.ValidateCredentialsAsync("anna", "password-2"));
+        Assert.IsNotNull(await users.ValidateCredentialsAsync("mario", "password-1"));
+
+        // Chi non è amministratore non può forzarla, nemmeno chiamando direttamente il servizio.
+        host.AsEditor();
+        var forced = await Assert.ThrowsExceptionAsync<BlogValidationException>(() => users.UpdateEmailAsync("editor", "famiglia@example.com", allowSharedEmail: true));
+        Assert.AreEqual(Messages.EmailInUse, forced.Errors["Email"]);
+    }
+
+    [TestMethod]
     public async Task Register_OnlyWhenEnabledAndNeverAsAdministrator()
     {
         using var host = new TestBlogHost().AsAnonymous();

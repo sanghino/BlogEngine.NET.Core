@@ -84,7 +84,7 @@ public sealed class SetupService(InstallationState installation, IServiceScopeFa
             var administrator = await users.GetUserAsync(request.UserName, cancellationToken);
             if (administrator is null)
             {
-                administrator = await users.CreateUserAsync(request.UserName, request.Email, request.Password, [SystemRoles.Administrators], cancellationToken);
+                administrator = await users.CreateUserAsync(request.UserName, request.Email, request.Password, [SystemRoles.Administrators], cancellationToken: cancellationToken);
             }
             else
             {

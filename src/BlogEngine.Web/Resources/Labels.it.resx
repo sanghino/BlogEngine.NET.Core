@@ -3093,4 +3093,10 @@
   <data name="noPostsYet" xml:space="preserve">
     <value>Ancora nessun post</value>
   </data>
+  <data name="confirmSharedEmail" xml:space="preserve">
+    <value>L'indirizzo email {0} è già usato dall'utente {1}. Vuoi usarlo anche per questo utente?</value>
+  </data>
+  <data name="warningSharedEmail" xml:space="preserve">
+    <value>Attenzione: questo indirizzo email è condiviso con l'utente {0}.</value>
+  </data>
 </root>

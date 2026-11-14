@@ -94,7 +94,7 @@ angular.module('blogAdmin').controller('BlogListController', ["$rootScope", "$sc
                 txtBlogName: { required: true },
                 txtUserName: { required: true },
                 txtEmail: { required: true, email: true },
-                txtPassword: { required: true },
+                txtPassword: { required: true, minlength: 8 },
                 txtConfirmPassword: { required: true, equalTo: '#txtPassword' }
             }
         });

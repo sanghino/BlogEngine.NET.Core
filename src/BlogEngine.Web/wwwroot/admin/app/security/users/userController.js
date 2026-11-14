@@ -68,40 +68,41 @@
         if (!$('#form').valid()) {
             return false;
         }
+        save(false);
+    }
+
+    // allowSharedEmail: l'amministratore ha confermato di usare un'email che appartiene già a un altro utente.
+    function save(allowSharedEmail) {
         spinOn();
         $scope.editItem.roles = $scope.roles;
-        if ($scope.isNewItem) {
-            dataService.addItem("/api/users", $scope.editItem)
-            .success(function (data) {
-                toastr.success($rootScope.lbl.userAdded);
-                $scope.load();
-                spinOff();
-                $("#modal-user-edit").modal('hide');
-                $scope.focusInput = false;
-            })
-            .error(function () {
-                toastr.error($rootScope.lbl.errorAddingNewUser);
-                spinOff();
-                $("#modal-user-edit").modal('hide');
-                $scope.focusInput = false;
-            });
-        }
-        else {
-            dataService.updateItem("/api/users/update/item", $scope.editItem)
-            .success(function (data) {
-                toastr.success($rootScope.lbl.userUpdatedShort);
-                $scope.load();
-                spinOff();
-                $("#modal-user-edit").modal('hide');
-                $scope.focusInput = false;
-            })
-            .error(function () {
-                toastr.error($rootScope.lbl.updateFailed);
-                spinOff();
-                $("#modal-user-edit").modal('hide');
-                $scope.focusInput = false;
-            });
-        }
+        $scope.editItem.AllowSharedEmail = allowSharedEmail;
+        var request = $scope.isNewItem
+            ? dataService.addItem("/api/users", $scope.editItem)
+            : dataService.updateItem("/api/users/update/item", $scope.editItem);
+
+        request
+        .success(function (data) {
+            toastr.success($scope.isNewItem ? $rootScope.lbl.userAdded : $rootScope.lbl.userUpdatedShort);
+            if (data && data.Warning) {
+                toastr.warning(data.Warning);
+            }
+            $scope.load();
+            spinOff();
+            $("#modal-user-edit").modal('hide');
+            $scope.focusInput = false;
+        })
+        .error(function (data, status) {
+            spinOff();
+            // Email già usata da un altro utente: un amministratore può confermare e usarla lo stesso.
+            if (status === 409 && data && data.CanShareEmail && !allowSharedEmail) {
+                if (window.confirm(data.Message)) {
+                    save(true);
+                }
+                return;
+            }
+            // Il motivo (nome con spazi, password corta, email già usata...) e la finestra resta aperta per correggere.
+            toastr.error(serverMessage(data, $scope.isNewItem ? $rootScope.lbl.errorAddingNewUser : $rootScope.lbl.updateFailed));
+        });
     }
 
     $scope.processChecked = function (action) {
@@ -115,7 +116,7 @@
             rules: {
                 txtEmail: { required: true, email: true },
                 txtUserName: { required: true },
-                txtPassword: { required: true },
+                txtPassword: { required: true, minlength: 8 },
                 txtConfirmPassword: { required: true, equalTo: '#txtPassword' }
             }
         });

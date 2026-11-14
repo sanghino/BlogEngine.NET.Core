@@ -264,6 +264,35 @@ public sealed partial class AdminApiTests
     }
 
     [TestMethod]
+    public async Task Users_SharedEmailNeedsAdministratorConfirmation()
+    {
+        await SendAsync(HttpMethod.Post, "/api/users", """{ "UserName": "mario", "Email": "famiglia@example.com", "Password": "Password-Mario-1" }""", HttpStatusCode.Created);
+
+        // Prima volta: domanda di conferma (409) con il nome dell'altro utente, non un errore.
+        var question = await SendJsonAsync<JsonObject>(HttpMethod.Post, "/api/users",
+            """{ "UserName": "anna", "Email": "famiglia@example.com", "Password": "Password-Anna-1" }""", HttpStatusCode.Conflict);
+        Assert.IsTrue(question["CanShareEmail"]!.GetValue<bool>());
+        Assert.AreEqual("mario", question["SharedWith"]!.GetValue<string>());
+        StringAssert.Contains(question["Message"]!.GetValue<string>(), "mario");
+
+        // Se ci sono anche altri errori, quelli vengono prima: niente domanda.
+        await SendAsync(HttpMethod.Post, "/api/users", """{ "UserName": "anna", "Email": "famiglia@example.com", "Password": "corta" }""", HttpStatusCode.BadRequest);
+
+        // Confermato: l'utente viene creato e la risposta contiene l'avviso.
+        var created = await SendJsonAsync<JsonObject>(HttpMethod.Post, "/api/users",
+            """{ "UserName": "anna", "Email": "famiglia@example.com", "Password": "Password-Anna-1", "AllowSharedEmail": true }""", HttpStatusCode.Created);
+        StringAssert.Contains(created["Warning"]!.GetValue<string>(), "mario");
+
+        // Anche cambiando l'email di un utente esistente serve la conferma.
+        await SendAsync(HttpMethod.Post, "/api/users", """{ "UserName": "luca", "Email": "luca@example.com", "Password": "Password-Luca-1" }""", HttpStatusCode.Created);
+        await SendAsync(HttpMethod.Put, "/api/users/update/item", """{ "UserName": "luca", "Email": "famiglia@example.com" }""", HttpStatusCode.Conflict);
+        var updated = await SendJsonAsync<JsonObject>(HttpMethod.Put, "/api/users/update/item",
+            """{ "UserName": "luca", "Email": "famiglia@example.com", "AllowSharedEmail": true }""", HttpStatusCode.OK);
+        Assert.IsNotNull(updated["Warning"]?.GetValue<string>());
+        Assert.AreEqual("famiglia@example.com", (await GetJsonAsync<JsonObject>("/api/users?id=luca"))["Email"]!.GetValue<string>());
+    }
+
+    [TestMethod]
     public async Task CustomFields_SafeFilterOnly()
     {
         await SendAsync(HttpMethod.Post, "/api/customfields", """{ "CustomType": "POST", "ObjectId": "1", "Key": "colore", "Value": "rosso" }""", HttpStatusCode.Created);

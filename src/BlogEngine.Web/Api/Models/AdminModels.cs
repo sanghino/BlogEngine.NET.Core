@@ -360,6 +360,15 @@ public sealed class BlogUserDto
 
     public string? OldPassword { get; set; }
 
+    /// <summary>
+    /// L'amministratore ha confermato di voler usare un'email che appartiene già a un altro utente
+    /// (per gli altri utenti il server la rifiuta comunque).
+    /// </summary>
+    public bool AllowSharedEmail { get; set; }
+
+    /// <summary>Avviso non bloccante da mostrare dopo il salvataggio (es. email condivisa con un altro utente).</summary>
+    public string? Warning { get; set; }
+
     public ProfileDto? Profile { get; set; }
 
     public List<RoleItem>? Roles { get; set; }

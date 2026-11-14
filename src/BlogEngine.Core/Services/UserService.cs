@@ -22,13 +22,17 @@ public interface IUserService
     /// <summary>Restituisce l'utente se nome e password sono corretti e ne registra l'accesso.</summary>
     Task<BlogUser?> ValidateCredentialsAsync(string userName, string password, CancellationToken cancellationToken = default);
 
-    /// <summary>Crea un account (richiede il permesso CreateNewUsers).</summary>
-    Task<BlogUser> CreateUserAsync(string userName, string email, string password, IEnumerable<string>? roles = null, CancellationToken cancellationToken = default);
+    /// <summary>
+    /// Crea un account (richiede il permesso CreateNewUsers). Con <paramref name="allowSharedEmail"/> un amministratore
+    /// può dare all'account un indirizzo email già usato da un altro utente; per gli altri resta un errore.
+    /// </summary>
+    Task<BlogUser> CreateUserAsync(string userName, string email, string password, IEnumerable<string>? roles = null, bool allowSharedEmail = false, CancellationToken cancellationToken = default);
 
     /// <summary>Registrazione autonoma di un visitatore, se abilitata nelle impostazioni, con il ruolo iniziale configurato.</summary>
     Task<BlogUser> RegisterAsync(string userName, string email, string password, CancellationToken cancellationToken = default);
 
-    Task UpdateEmailAsync(string userName, string email, CancellationToken cancellationToken = default);
+    /// <summary>Cambia l'email; <paramref name="allowSharedEmail"/> come in <see cref="CreateUserAsync"/>.</summary>
+    Task UpdateEmailAsync(string userName, string email, bool allowSharedEmail = false, CancellationToken cancellationToken = default);
 
     /// <summary>Cambio password dell'utente corrente, che deve indicare quella attuale.</summary>
     Task<bool> ChangePasswordAsync(string currentPassword, string newPassword, CancellationToken cancellationToken = default);
@@ -139,10 +143,10 @@ public sealed class UserService(
         return user;
     }
 
-    public async Task<BlogUser> CreateUserAsync(string userName, string email, string password, IEnumerable<string>? roles = null, CancellationToken cancellationToken = default)
+    public async Task<BlogUser> CreateUserAsync(string userName, string email, string password, IEnumerable<string>? roles = null, bool allowSharedEmail = false, CancellationToken cancellationToken = default)
     {
         await DemandAsync(Rights.CreateNewUsers, cancellationToken).ConfigureAwait(false);
-        var user = await AddUserAsync(userName, email, password, cancellationToken).ConfigureAwait(false);
+        var user = await AddUserAsync(userName, email, password, allowSharedEmail && rights.IsAdministrator, cancellationToken).ConfigureAwait(false);
         if (roles is not null)
         {
             await SetUserRolesAsync(user.UserName, roles, bypassRights: true, cancellationToken).ConfigureAwait(false);
@@ -159,7 +163,7 @@ public sealed class UserService(
             throw new UnauthorizedAccessException("La registrazione non è abilitata.");
         }
 
-        var user = await AddUserAsync(userName, email, password, cancellationToken).ConfigureAwait(false);
+        var user = await AddUserAsync(userName, email, password, allowSharedEmail: false, cancellationToken).ConfigureAwait(false);
         var role = (await GetRolesAsync(cancellationToken).ConfigureAwait(false))
             .FirstOrDefault(r => UserRepository.SameName(r.Name, blogSettings.SelfRegistrationInitialRole));
 
@@ -172,11 +176,11 @@ public sealed class UserService(
         return user;
     }
 
-    public async Task UpdateEmailAsync(string userName, string email, CancellationToken cancellationToken = default)
+    public async Task UpdateEmailAsync(string userName, string email, bool allowSharedEmail = false, CancellationToken cancellationToken = default)
     {
         var user = await GetRequiredUserAsync(userName, cancellationToken).ConfigureAwait(false);
         await DemandForUserAsync(user.UserName, Rights.EditOwnUser, Rights.EditOtherUsers, cancellationToken).ConfigureAwait(false);
-        await ValidateEmailAsync(email, user.UserName, cancellationToken).ConfigureAwait(false);
+        await ValidateEmailAsync(email, user.UserName, allowSharedEmail && rights.IsAdministrator, cancellationToken).ConfigureAwait(false);
 
         user.Email = email.Trim();
         await repository.SaveUserAsync(user, cancellationToken).ConfigureAwait(false);
@@ -313,7 +317,7 @@ public sealed class UserService(
         }
     }
 
-    private async Task<BlogUser> AddUserAsync(string userName, string email, string password, CancellationToken cancellationToken)
+    private async Task<BlogUser> AddUserAsync(string userName, string email, string password, bool allowSharedEmail, CancellationToken cancellationToken)
     {
         // Tutti gli errori insieme, così il modulo li mostra in una volta sola.
         var name = userName?.Trim() ?? string.Empty;
@@ -323,7 +327,7 @@ public sealed class UserService(
             ("UserName", name.Length > 100 || name.Any(c => char.IsWhiteSpace(c) || char.IsControl(c) || c is '/' or '\\' or '<' or '>' or '"'),
                 Messages.UserNameInvalid),
             ("UserName", name.Length > 0 && await GetUserAsync(name, cancellationToken).ConfigureAwait(false) is not null, Messages.UserNameInUse),
-            .. await EmailRulesAsync(email, null, cancellationToken).ConfigureAwait(false),
+            .. await EmailRulesAsync(email, null, allowSharedEmail, cancellationToken).ConfigureAwait(false),
             PasswordRule(password),
         ]);
 
@@ -332,17 +336,18 @@ public sealed class UserService(
         return user;
     }
 
-    private async Task ValidateEmailAsync(string email, string? ownerUserName, CancellationToken cancellationToken) =>
-        BlogValidationException.ThrowIfInvalid([.. await EmailRulesAsync(email, ownerUserName, cancellationToken).ConfigureAwait(false)]);
+    private async Task ValidateEmailAsync(string email, string? ownerUserName, bool allowSharedEmail, CancellationToken cancellationToken) =>
+        BlogValidationException.ThrowIfInvalid([.. await EmailRulesAsync(email, ownerUserName, allowSharedEmail, cancellationToken).ConfigureAwait(false)]);
 
-    private async Task<(string Field, bool IsInvalid, string Message)[]> EmailRulesAsync(string email, string? ownerUserName, CancellationToken cancellationToken)
+    /// <summary>Email valida e, salvo <paramref name="allowSharedEmail"/> (solo amministratori), non usata da un altro utente.</summary>
+    private async Task<(string Field, bool IsInvalid, string Message)[]> EmailRulesAsync(string email, string? ownerUserName, bool allowSharedEmail, CancellationToken cancellationToken)
     {
         var address = email?.Trim() ?? string.Empty;
         var other = address.Length == 0 ? null : await GetUserByEmailAsync(address, cancellationToken).ConfigureAwait(false);
         return
         [
             ("Email", !MailAddress.TryCreate(address, out _), Messages.EmailInvalid),
-            ("Email", other is not null && (ownerUserName is null || !UserRepository.SameName(other.UserName, ownerUserName)), Messages.EmailInUse),
+            ("Email", !allowSharedEmail && other is not null && (ownerUserName is null || !UserRepository.SameName(other.UserName, ownerUserName)), Messages.EmailInUse),
         ];
     }
 

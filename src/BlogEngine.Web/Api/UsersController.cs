@@ -1,4 +1,5 @@
 using System.Globalization;
+using BlogEngine.Core;
 using BlogEngine.Core.Services;
 using BlogEngine.Models;
 using BlogEngine.Security;
@@ -49,10 +50,20 @@ public sealed class UsersController(
             return BadRequest(new { Message = T("errorMissingRequiredFields") });
         }
 
-        var created = await users.CreateUserAsync(item.UserName, item.Email, item.Password, CheckedRoles(item));
+        BlogEngine.Core.Data.BlogUser created;
+        try
+        {
+            created = await users.CreateUserAsync(item.UserName, item.Email, item.Password, CheckedRoles(item), item.AllowSharedEmail);
+        }
+        catch (BlogValidationException ex) when (CanConfirmSharedEmail(ex, item))
+        {
+            return await SharedEmailConflictAsync(item, null);
+        }
+
         item.UserName = created.UserName;
         await SaveProfileAsync(item, created.Email);
         item.Password = string.Empty;
+        item.Warning = await SharedEmailWarningAsync(created.Email, created.UserName);
         return StatusCode(StatusCodes.Status201Created, item);
     }
 
@@ -69,7 +80,14 @@ public sealed class UsersController(
             return NotFound();
         }
 
-        await users.UpdateEmailAsync(user.UserName, item.Email);
+        try
+        {
+            await users.UpdateEmailAsync(user.UserName, item.Email, item.AllowSharedEmail);
+        }
+        catch (BlogValidationException ex) when (CanConfirmSharedEmail(ex, item))
+        {
+            return await SharedEmailConflictAsync(item, user.UserName);
+        }
 
         // Cambio password dalla scheda utente: serve la password attuale se si modifica il proprio account.
         if (!string.IsNullOrEmpty(item.Password))
@@ -100,7 +118,7 @@ public sealed class UsersController(
             }
         }
 
-        return Ok();
+        return Ok(new { Warning = await SharedEmailWarningAsync(item.Email, user.UserName) });
     }
 
     [HttpPut("saveprofile/{id?}")]
@@ -215,6 +233,35 @@ public sealed class UsersController(
             AboutMe = p.AboutMe ?? string.Empty,
         });
     }
+
+    /// <summary>
+    /// Se l'unico problema è l'email già usata da un altro utente e chi salva è un amministratore, invece dell'errore
+    /// restituisce 409 con la domanda di conferma: l'amministrazione la mostra e, se confermata, salva di nuovo con
+    /// <see cref="BlogUserDto.AllowSharedEmail"/>. Negli altri casi resta l'errore normale.
+    /// </summary>
+    private bool CanConfirmSharedEmail(BlogValidationException ex, BlogUserDto item) =>
+        !item.AllowSharedEmail && rights.IsAdministrator && ex.Errors.Count == 1
+        && ex.Errors.TryGetValue("Email", out var error) && error == Messages.EmailInUse;
+
+    private async Task<IActionResult> SharedEmailConflictAsync(BlogUserDto item, string? ownerUserName)
+    {
+        var email = item.Email!.Trim();
+        var other = await OtherUserWithEmailAsync(email, ownerUserName ?? item.UserName);
+        return Conflict(new { Message = T(Messages.Format("confirmSharedEmail", email, other ?? string.Empty)), CanShareEmail = true, SharedWith = other });
+    }
+
+    /// <summary>Avviso dopo il salvataggio se l'email è anche di un altro utente.</summary>
+    private async Task<string?> SharedEmailWarningAsync(string? email, string userName) =>
+        string.IsNullOrWhiteSpace(email) || await OtherUserWithEmailAsync(email.Trim(), userName) is not { } other
+            ? null
+            : T(Messages.Format("warningSharedEmail", other));
+
+    private async Task<string?> OtherUserWithEmailAsync(string email, string? userName) =>
+        (await users.GetUsersAsync())
+            .Where(u => string.Equals(u.Email, email, StringComparison.OrdinalIgnoreCase)
+                && !string.Equals(u.UserName, userName, StringComparison.OrdinalIgnoreCase))
+            .Select(u => u.UserName)
+            .FirstOrDefault();
 
     private static List<string> CheckedRoles(BlogUserDto item) =>
         (item.Roles ?? []).Where(r => r.IsChecked && !string.IsNullOrWhiteSpace(r.RoleName)).Select(r => r.RoleName!).ToList();

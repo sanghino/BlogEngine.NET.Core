@@ -64,6 +64,11 @@ function spinOff() {
     $("#global-loading").hide();
 }
 
+// Messaggio d'errore restituito dal server ({ Message: "..." }, già tradotto), oppure il testo generico.
+function serverMessage(data, fallback) {
+    return data && typeof data.Message === "string" && data.Message.length > 0 ? data.Message : fallback;
+}
+
 function loading(id) {
     $("#" + id + "-spinner").removeClass("loaded");
     $("#" + id + "-spinner").addClass("loading");
