@@ -18,8 +18,8 @@ public sealed record BluditImportResult(int Posts, int Pages, int Categories, in
 /// <summary>
 /// Importa un blog Bludit dalla sua cartella "bl-content": articoli, pagine statiche, categorie, tag e immagini.
 /// I contenuti vengono scritti direttamente nei dati del blog, senza passare dagli eventi di pubblicazione:
-/// così l'importazione non invia newsletter né ping. Può essere ripetuta: post e pagine con lo stesso
-/// indirizzo vengono aggiornati invece che duplicati.
+/// così l'importazione non invia newsletter né ping. Può essere ripetuta: i post con lo stesso indirizzo vengono
+/// aggiornati invece che duplicati, le pagine già importate restano come sono state modificate nel nuovo blog.
 /// </summary>
 public sealed partial class BluditImporter(
     EntityRepository<Post> posts,
@@ -139,7 +139,15 @@ public sealed partial class BluditImporter(
             var description = AdminApiDescription((string?)entry["description"], content);
             if (target.IsPage)
             {
-                var page = (await pages.FindAsync(blogId, target.Id, cancellationToken)) ?? new Page { Id = target.Id, BlogId = blogId };
+                // Le pagine già importate restano come sono state sistemate nel nuovo blog (titolo, testo,
+                // menu, ordine): ripetendo l'importazione arrivano solo le pagine nuove.
+                if (await pages.FindAsync(blogId, target.Id, cancellationToken) is not null)
+                {
+                    skipped.Add($"{key} (pagina già importata, lasciata com'è)");
+                    continue;
+                }
+
+                var page = new Page { Id = target.Id, BlogId = blogId };
                 page.Title = title;
                 page.Slug = target.Slug;
                 page.Content = content;

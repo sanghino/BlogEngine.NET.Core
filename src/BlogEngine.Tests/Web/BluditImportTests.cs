@@ -29,7 +29,14 @@ public sealed class BluditImportTests
                 var blog = (await services.GetRequiredService<BlogEngine.Core.Services.BlogsCache>().GetAllAsync()).First(b => b.IsPrimary);
                 result = await services.GetRequiredService<BluditImporter>().ImportAsync(blog.Id, Path.GetDirectoryName(folder)!);
 
-                // Ripetere l'importazione aggiorna i contenuti invece di duplicarli.
+                // Una pagina sistemata nel nuovo blog dopo la prima importazione...
+                var pageStore = services.GetRequiredService<BlogEngine.Core.Caching.EntityRepository<BlogEngine.Models.Page>>();
+                var imported = (await pageStore.GetAllAsync(blog.Id)).Single(p => p.Slug == "chi-sono");
+                imported.Title = "Chi sono (sistemata)";
+                imported.ShowInMenu = false;
+                await pageStore.SaveAsync(imported);
+
+                // ...resta com'è quando si ripete l'importazione, che aggiorna i post invece di duplicarli.
                 await services.GetRequiredService<BluditImporter>().ImportAsync(blog.Id, folder);
             });
 
@@ -64,6 +71,8 @@ public sealed class BluditImportTests
             var moved = await anonymous.GetAsync("/patch-alla-7.1.4");
             Assert.AreEqual(HttpStatusCode.MovedPermanently, moved.StatusCode);
             Assert.AreEqual("/post/patch-alla-714", PathOf(moved.Headers.Location!));
+
+            StringAssert.Contains(await anonymous.GetStringAsync("/page/chi-sono"), "Chi sono (sistemata)", "La pagina modificata non viene sovrascritta.");
 
             var page = await anonymous.GetAsync("/chi-sono");
             Assert.AreEqual(HttpStatusCode.MovedPermanently, page.StatusCode);
