@@ -1167,8 +1167,8 @@ input[type="submit"]:hover, input[type="button"]:hover, button:hover {
 
 	/* Le immagini affiancate al testo nei vecchi post (float scritto nel post, spesso su un div di Windows Live Writer,
 	   o attributo align) vanno sopra il testo, centrate. */
-	div.post .text [style*="float"],
-	#page [style*="float"],
+	div.post .text [style*="float"]:not(table),
+	#page [style*="float"]:not(table),
 	div.post .text img,
 	#page img {
 		float: none !important;

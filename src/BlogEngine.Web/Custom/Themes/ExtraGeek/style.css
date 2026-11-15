@@ -1478,8 +1478,8 @@ input[type="file"] {
 	}
 
 	/* Le immagini affiancate al testo vanno sopra il testo, centrate. */
-	.post .text [style*="float"],
-	#page [style*="float"],
+	.post .text [style*="float"]:not(table),
+	#page [style*="float"]:not(table),
 	.post .text img,
 	#page img {
 		float: none !important;
