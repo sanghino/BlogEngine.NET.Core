@@ -34,7 +34,7 @@
             $scope.isNewItem = false;
         }
         spinOn();
-        dataService.getItems('/api/users?id=' + id)
+        dataService.getItems('/api/users/' + encodeURIComponent(id))
         .success(function (data) {
             angular.copy(data, $scope.editItem);
             $("#modal-user-edit").modal();
@@ -52,7 +52,7 @@
         if (!id) {
             id = "fakeusername";
         }
-        dataService.getItems('/api/roles/getuserroles/' + id)
+        dataService.getItems('/api/roles/getuserroles/' + encodeURIComponent(id))
             .success(function (data) {
                 angular.copy(data, $scope.roles);
                 gridInit($scope, $filter);
@@ -74,7 +74,7 @@
     // allowSharedEmail: l'amministratore ha confermato di usare un'email che appartiene già a un altro utente.
     function save(allowSharedEmail) {
         spinOn();
-        $scope.editItem.roles = $scope.roles;
+        $scope.editItem.Roles = $scope.roles;
         $scope.editItem.AllowSharedEmail = allowSharedEmail;
         var request = $scope.isNewItem
             ? dataService.addItem("/api/users", $scope.editItem)

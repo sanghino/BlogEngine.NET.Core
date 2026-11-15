@@ -6,7 +6,7 @@
     $scope.focusInput = false;
 
     if ($scope.id) {
-        dataService.getItems('/api/categories', { Id: $scope.id })
+        dataService.getItems('/api/categories/' + encodeURIComponent($scope.id))
             .success(function (data) { angular.copy(data, $scope.category); })
             .error(function () { toastr.error($rootScope.lbl.errorLoadingCategory); });
         $("#modal-add-cat").modal();

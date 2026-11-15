@@ -79,6 +79,8 @@ app.Use((http, next) =>
 });
 
 app.UseRequestLocalization();
+// Errori delle API dell'amministrazione nel log (anche le chiamate a indirizzi inesistenti).
+app.UseWhen(http => http.Request.Path.StartsWithSegments("/api"), branch => branch.UseMiddleware<ApiErrorLoggingMiddleware>());
 app.UseRouting();
 app.UseRateLimiter();
 app.UseAuthentication();

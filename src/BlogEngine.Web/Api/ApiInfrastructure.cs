@@ -51,6 +51,7 @@ public sealed class ApiExceptionFilterAttribute : ExceptionFilterAttribute
     private static void LogRejected(ExceptionContext context, MessageTranslator translator)
     {
         var http = context.HttpContext;
+        http.Items[ApiErrorLoggingMiddleware.LoggedItem] = true;
         var reason = context.Exception switch
         {
             BlogValidationException validation => string.Join(" ", translator.Translate(validation.Errors).Select(e => $"{e.Key}: {e.Value}")),

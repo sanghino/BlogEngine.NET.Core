@@ -318,6 +318,17 @@ public sealed partial class AdminApiTests
     }
 
     [TestMethod]
+    public async Task ApiCallsToMissingAddresses_AreWrittenToTheLog()
+    {
+        // Una pagina dell'amministrazione che chiama un'API inesistente (era il caso della modifica dei ruoli).
+        await SendAsync(HttpMethod.Get, "/api/roles/get/Registered", null, HttpStatusCode.NotFound);
+
+        var log = string.Join("\n", (await GetJsonAsync<JsonArray>("/api/logs/getlog/file")).Select(e => e!["OptionValue"]!.GetValue<string>()));
+        StringAssert.Contains(log, "GET /api/roles/get/Registered rifiutata (404)");
+        StringAssert.Contains(log, "indirizzo inesistente");
+    }
+
+    [TestMethod]
     public async Task CustomFields_SafeFilterOnly()
     {
         await SendAsync(HttpMethod.Post, "/api/customfields", """{ "CustomType": "POST", "ObjectId": "1", "Key": "colore", "Value": "rosso" }""", HttpStatusCode.Created);

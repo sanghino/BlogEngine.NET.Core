@@ -25,10 +25,11 @@
         }
         else {
             $scope.newItem = false;
+            $scope.editItem = { RoleName: id };
             $scope.loadCurrentRole(id);
         }
         spinOn();
-        dataService.getItems('/api/roles/getrights/' + id)
+        dataService.getItems('/api/roles/getrights/' + encodeURIComponent(id))
         .success(function (data) {
             angular.copy(data, $scope.rights);
             $("#modal-edit").modal();
@@ -43,11 +44,9 @@
 
     $scope.loadCurrentRole = function (id) {
         spinOn();
-        dataService.getItems('/api/roles/get/' + id)
+        dataService.getItems('/api/roles/' + encodeURIComponent(id))
         .success(function (data) {
             angular.copy(data, $scope.editItem);
-            $("#modal-edit").modal();
-            $scope.focusInput = true;
             spinOff();
         })
         .error(function () {
@@ -89,7 +88,7 @@
 
     $scope.saveRights = function () {
         spinOn();
-        dataService.updateItem("/api/roles/saverights/" + $scope.editItem.RoleName, $scope.rights)
+        dataService.updateItem("/api/roles/saverights/" + encodeURIComponent($scope.editItem.RoleName), $scope.rights)
         .success(function (data) {
             toastr.success($rootScope.lbl.rightsSaved);
             $scope.load();
