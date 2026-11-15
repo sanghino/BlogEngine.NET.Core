@@ -186,6 +186,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Provider SQLite | `setup/SQLite` + `DbBlogProvider` | `BlogEngine.Data.Sqlite` (EF Core) |
 | ☑ | File system dei file caricati | `XmlFileSystemProvider` | `FileStore`: disco, in `App_Data/files`, serviti da `/file.axd` e `/image.axd` |
 | ☑ | Configurazione iniziale via browser (provider, admin) | `SetupController`, `setup/` | Razor Page |
+| ☐ | Conversione dei dati da XML a SQLite e viceversa | (nuovo) | Oggi il provider è fissato alla configurazione (`installation.json`) e il BlogML porta solo post, pagine, categorie e commenti. Da fare: copia completa (utenti, ruoli, impostazioni, widget, estensioni, blogroll…) attraverso gli store comuni, in manutenzione, con controllo dei conteggi e i vecchi dati lasciati come backup |
 | ☑ | Pagina di diagnostica (permessi, versione runtime, percorsi) | (nuovo) | `/admin/diagnostics` (link dalla pagina "Informazioni") |
 | ☑ | Percorso dati configurabile, cartelle create all'avvio | (nuovo) | `BlogEnginePaths` (Fase 1) |
 | ☑ | Pacchetto e procedura di pubblicazione su Aruba | (nuovo) | `tools/publish-aruba.ps1` (.NET 10 self-contained, out-of-process), `docs/deploy-aruba.md` con backup e rollback, `docs/checklist-collaudo.md` |
