@@ -565,31 +565,25 @@ div.widget.advertisement .ad-label {
 	overflow-wrap: break-word;
 }
 
-/* Gli articoli importati possono contenere colori scritti nel testo: sul fondo scuro restano leggibili */
-.post .text [style*="color"],
-#page [style*="color"] {
-	color: inherit !important;
+/* Le scelte fatte nell'editor (colore del testo, sfondo, bordi) prevalgono sul tema: lo stile scritto nel post
+   vince sulle regole qui sotto, che valgono solo dove nell'editor non si è scelto nulla.
+   Unica eccezione: il grigio chiaro (#ced4d9) che il vecchio editor metteva da solo alle tabelle, senza che
+   fosse una scelta. Quelle tabelle (e le righe con un bordo al loro interno) usano le linee del tema da 1px. */
+/* Colore dei bordi delle tabelle quando nell'editor non se ne sceglie uno. */
+.post .text table,
+#page table {
+	border-color: var(--eg-line);
 }
 
-.post .text [style*="background"],
-#page [style*="background"] {
-	background: transparent !important;
-}
-
-.post .text [style*="border"]:not(table, tr, td, th),
-#page [style*="border"]:not(table, tr, td, th) {
+.post .text table[style*="ced4d9" i],
+#page table[style*="ced4d9" i],
+.post .text table[style*="ced4d9" i] [style*="border"],
+#page table[style*="ced4d9" i] [style*="border"] {
 	border-color: var(--eg-line) !important;
 }
 
-/* Tabelle e celle tengono il colore del bordo scelto nell'editor; solo il grigio chiaro che TinyMCE
-   metteva da solo nei vecchi articoli diventa il colore delle linee del tema. */
-.post .text :is(table, tr, td, th)[style*="ced4d9" i],
-#page :is(table, tr, td, th)[style*="ced4d9" i] {
-	border-color: var(--eg-line) !important;
-}
-
-.post .text table[style*="border"],
-#page table[style*="border"] {
+.post .text table[style*="ced4d9" i],
+#page table[style*="ced4d9" i] {
 	border-width: 1px !important;
 }
 
