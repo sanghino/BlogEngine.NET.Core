@@ -576,8 +576,15 @@ div.widget.advertisement .ad-label {
 	background: transparent !important;
 }
 
-.post .text [style*="border"],
-#page [style*="border"] {
+.post .text [style*="border"]:not(table, tr, td, th),
+#page [style*="border"]:not(table, tr, td, th) {
+	border-color: var(--eg-line) !important;
+}
+
+/* Tabelle e celle tengono il colore del bordo scelto nell'editor; solo il grigio chiaro che TinyMCE
+   metteva da solo nei vecchi articoli diventa il colore delle linee del tema. */
+.post .text :is(table, tr, td, th)[style*="ced4d9" i],
+#page :is(table, tr, td, th)[style*="ced4d9" i] {
 	border-color: var(--eg-line) !important;
 }
 
