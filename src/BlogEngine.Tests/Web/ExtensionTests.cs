@@ -18,8 +18,8 @@ public sealed partial class ExtensionTests
 {
     private static readonly string[] Bundled =
     [
-        "AkismetFilter", "BBCode", "BreakPost", "MediaElementPlayer", "Recaptcha", "ResolveLinks",
-        "SendCommentMail", "SendNewsletters", "SendPings", "SimpleCaptcha", "Smilies", "StopForumSpam",
+        "AkismetFilter", "BBCode", "BreakPost", "Gallery", "MediaElementPlayer", "Recaptcha", "ResolveLinks",
+        "SendCommentMail", "SendNewsletters", "SendPings", "SimpleCaptcha", "Smilies", "StopForumSpam", "YouTube",
     ];
 
     [TestMethod]
@@ -103,6 +103,53 @@ public sealed partial class ExtensionTests
 
         await admin.PutAsync("/api/packages/processchecked/enable", Json("""[ { "Id": "BBCode", "IsChecked": true } ]"""));
         StringAssert.Contains(await admin.GetStringAsync("/post/Estensioni"), "<strong>grassetto</strong>");
+    }
+
+    [TestMethod]
+    public async Task OldBlogEngineCodes_GalleriesAndYouTubeVideos_AreRendered()
+    {
+        using var factory = new BlogWebFactory();
+        using var admin = await factory.InstallAsync();
+        admin.DefaultRequestHeaders.Add(BlogContextMiddleware.BlogInstanceHeader, Guid.Empty.ToString());
+
+        await factory.RunAsSystemAsync(async services =>
+        {
+            // Le immagini della galleria stanno tra i file del blog, con le miniature in "thumbs".
+            var files = services.GetRequiredService<BlogEngine.Core.Files.FileStore>();
+            var blogId = services.GetRequiredService<IBlogContext>().Blog.Id;
+            var folder = files.Resolve(blogId, "/public/gallery/protagonisti");
+            Directory.CreateDirectory(Path.Combine(folder, "thumbs"));
+            File.WriteAllBytes(Path.Combine(folder, "rui_costa.jpg"), [1]);
+            File.WriteAllBytes(Path.Combine(folder, "thumbs", "rui_costa.jpg"), [1]);
+            File.WriteAllBytes(Path.Combine(folder, "baggio.png"), [1]);
+            File.WriteAllText(Path.Combine(folder, "leggimi.txt"), "non è un'immagine");
+
+            await services.GetRequiredService<IPageService>().SaveAsync(new Page
+            {
+                Title = "Galleria",
+                IsPublished = true,
+                Content = "<p>[usercontrol: /user controls/gallery.ascx ImageUrl=/public/gallery/protagonisti;RepeatColumns=4;Width=160]</p>"
+                    + "<p>[usercontrol: /user controls/gallery.ascx ImageUrl=/public/gallery/sparita;RepeatColumns=4;Width=160]</p>",
+            });
+            await services.GetRequiredService<IPostService>().SaveAsync(new Post
+            {
+                Title = "Video",
+                Author = "admin",
+                Content = "<p style=\"text-align: center;\">[youtube:2EiG3CY54fg]</p>",
+            });
+        });
+
+        var gallery = await admin.GetStringAsync("/page/Galleria");
+        Assert.IsFalse(gallery.Contains("[usercontrol", StringComparison.OrdinalIgnoreCase), "Il codice non resta nel testo, nemmeno per una cartella che non c'è.");
+        StringAssert.Contains(gallery, "max-width:664px");
+        StringAssert.Contains(gallery, "<a href=\"/image.axd?picture=/public/gallery/protagonisti/rui_costa.jpg\" target=\"_blank\" title=\"rui costa\">"
+            + "<img src=\"/image.axd?picture=/public/gallery/protagonisti/thumbs/rui_costa.jpg\"");
+        StringAssert.Contains(gallery, "<img src=\"/image.axd?picture=/public/gallery/protagonisti/baggio.png\"", "Senza miniatura si usa l'immagine stessa.");
+        Assert.IsFalse(gallery.Contains("leggimi.txt"));
+
+        var video = await admin.GetStringAsync("/post/Video");
+        Assert.IsFalse(video.Contains("[youtube:"));
+        StringAssert.Contains(video, "<iframe src=\"https://www.youtube-nocookie.com/embed/2EiG3CY54fg\"");
     }
 
     [TestMethod]
