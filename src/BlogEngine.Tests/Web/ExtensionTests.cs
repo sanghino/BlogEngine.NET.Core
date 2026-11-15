@@ -135,7 +135,13 @@ public sealed partial class ExtensionTests
             {
                 Title = "Video",
                 Author = "admin",
-                Content = "<p style=\"text-align: center;\">[youtube:2EiG3CY54fg]</p>",
+                Content = "<p style=\"text-align: center;\">[youtube:2EiG3CY54fg]</p>"
+                    // Vecchio lettore Flash con <object> e <embed>, e un <embed> da solo.
+                    + "<p><object classid=\"clsid:d27cdb6e-ae6d-11cf-96b8-444553540000\" width=\"425\" height=\"373\">"
+                    + "<param name=\"movie\" value=\"http://www.youtube.com/v/iabXQJdfRVI&amp;rel=0&amp;hl=en\" />"
+                    + "<embed type=\"application/x-shockwave-flash\" width=\"425\" height=\"373\" src=\"http://www.youtube.com/v/iabXQJdfRVI&amp;rel=0&amp;hl=en\"></embed>"
+                    + "</object></p>"
+                    + "<p><embed src=\"http://www.youtube.com/v/sxPuD50zJ8k&amp;hl=en\" type=\"application/x-shockwave-flash\" width=\"425\" height=\"350\"></embed></p>",
             });
         });
 
@@ -150,6 +156,10 @@ public sealed partial class ExtensionTests
         var video = await admin.GetStringAsync("/post/Video");
         Assert.IsFalse(video.Contains("[youtube:"));
         StringAssert.Contains(video, "<iframe src=\"https://www.youtube-nocookie.com/embed/2EiG3CY54fg\"");
+        Assert.IsFalse(Regex.IsMatch(video, "<iframe[^>]*youtube[^>]*loading=\"lazy\""), "Con loading=lazy alcuni browser non mostrano il video.");
+        StringAssert.Contains(video, "<iframe src=\"https://www.youtube-nocookie.com/embed/iabXQJdfRVI\"");
+        StringAssert.Contains(video, "<iframe src=\"https://www.youtube-nocookie.com/embed/sxPuD50zJ8k\"");
+        Assert.IsFalse(video.Contains("shockwave-flash", StringComparison.OrdinalIgnoreCase), "Non resta nulla del vecchio lettore Flash.");
     }
 
     [TestMethod]
