@@ -155,6 +155,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | URL senza `.aspx` e redirect da quelli vecchi | `RedirectToRemoveFileExtension` | `LegacyUrlMiddleware`: redirect permanenti (post, pagine, default, archivio, ricerca, account, post.aspx?id=, page.aspx?id=) |
 | ☑ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | `/error/{codice}` con il tema e suggerimenti di contenuti simili |
 | ☑ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | `ReferrerMiddleware` (se attivato nelle impostazioni) |
+| ☑ | Statistiche delle visite (nuovo) | — | `VisitTrackingMiddleware` e `VisitStatistics`: pagine viste, visitatori, post più letti e provenienza nella dashboard (`api/visits`). Contate dal server senza cookie né IP salvati, esclusi robot e utenti collegati; salvate ogni 5 minuti in `App_Data/stats`. Impostazione EnableVisitStatistics (Controlli) |
 
 ## 10. Email, contatti, newsletter
 

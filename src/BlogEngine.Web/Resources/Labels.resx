@@ -3113,4 +3113,58 @@
   <data name="editorMoreTooltip" xml:space="preserve">
     <value>Insert [more]: in post lists the post stops here</value>
   </data>
+  <data name="visits" xml:space="preserve">
+    <value>Visits</value>
+  </data>
+  <data name="visitors" xml:space="preserve">
+    <value>Visitors</value>
+  </data>
+  <data name="pageViews" xml:space="preserve">
+    <value>Page views</value>
+  </data>
+  <data name="today" xml:space="preserve">
+    <value>Today</value>
+  </data>
+  <data name="visitsLast7Days" xml:space="preserve">
+    <value>Last 7 days</value>
+  </data>
+  <data name="visitsLastDays" xml:space="preserve">
+    <value>Last {0} days</value>
+  </data>
+  <data name="topPages" xml:space="preserve">
+    <value>Most read</value>
+  </data>
+  <data name="visitSources" xml:space="preserve">
+    <value>Where visitors come from</value>
+  </data>
+  <data name="sourceSearch" xml:space="preserve">
+    <value>Search engines</value>
+  </data>
+  <data name="sourceSocial" xml:space="preserve">
+    <value>Social networks</value>
+  </data>
+  <data name="sourceSites" xml:space="preserve">
+    <value>Other sites</value>
+  </data>
+  <data name="sourceDirect" xml:space="preserve">
+    <value>Direct</value>
+  </data>
+  <data name="topSites" xml:space="preserve">
+    <value>Referring sites</value>
+  </data>
+  <data name="mobileVisitors" xml:space="preserve">
+    <value>from mobile</value>
+  </data>
+  <data name="visitsDisabled" xml:space="preserve">
+    <value>Visit statistics are turned off (Settings → Controls).</value>
+  </data>
+  <data name="visitsNote" xml:space="preserve">
+    <value>Counted by the site without cookies: robots and signed-in users are excluded. Numbers are usually higher than Analytics, which only counts visitors who accept cookies.</value>
+  </data>
+  <data name="enableVisitStatistics" xml:space="preserve">
+    <value>Count visits for the dashboard</value>
+  </data>
+  <data name="enableVisitStatisticsHelp" xml:space="preserve">
+    <value>Page views and visitors are counted by the site without cookies and without storing IP addresses, so no consent is needed. Robots and signed-in users are not counted.</value>
+  </data>
 </root>

@@ -132,6 +132,8 @@ public sealed class SettingsDto
 
     public bool EnableCookieConsent { get; set; }
 
+    public bool EnableVisitStatistics { get; set; }
+
     public string? CookiePolicyUrl { get; set; }
 
     public int DaysCommentsAreEnabled { get; set; }

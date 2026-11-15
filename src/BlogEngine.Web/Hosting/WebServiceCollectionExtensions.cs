@@ -139,6 +139,8 @@ public static class WebServiceCollectionExtensions
         services.AddScoped<Import.BluditImporter>();
         services.AddScoped<Import.BlogEngineImporter>();
         services.AddSingleton<FileLog>();
+        services.AddSingleton<VisitStatistics>();
+        services.AddHostedService<VisitStatisticsWriter>();
         services.AddSingleton<ILoggerProvider, FileLoggerProvider>();
 
         return services;

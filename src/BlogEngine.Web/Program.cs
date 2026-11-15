@@ -87,6 +87,8 @@ app.UseAuthentication();
 app.UseMiddleware<UserContextMiddleware>();
 app.UseMiddleware<MaintenanceMiddleware>();
 app.UseAuthorization();
+// Statistiche delle visite: conta le pagine pubbliche viste, dopo l'autenticazione per escludere chi è collegato.
+app.UseMiddleware<VisitTrackingMiddleware>();
 
 app.MapRazorPages();
 app.MapControllers();

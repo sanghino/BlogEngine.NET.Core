@@ -219,6 +219,9 @@ public sealed class BlogSettings
 
     public int NumberOfReferrerDays { get; set; } = 1;
 
+    /// <summary>Statistiche delle visite nella dashboard, contate dal server senza cookie.</summary>
+    public bool EnableVisitStatistics { get; set; } = true;
+
     // ---- Registrazione utenti ----
 
     public bool EnableSelfRegistration { get; set; }

@@ -3111,4 +3111,58 @@
   <data name="editorMoreTooltip" xml:space="preserve">
     <value>Inserisci [more]: negli elenchi dei post il testo si ferma qui</value>
   </data>
+  <data name="visits" xml:space="preserve">
+    <value>Visite</value>
+  </data>
+  <data name="visitors" xml:space="preserve">
+    <value>Visitatori</value>
+  </data>
+  <data name="pageViews" xml:space="preserve">
+    <value>Pagine viste</value>
+  </data>
+  <data name="today" xml:space="preserve">
+    <value>Oggi</value>
+  </data>
+  <data name="visitsLast7Days" xml:space="preserve">
+    <value>Ultimi 7 giorni</value>
+  </data>
+  <data name="visitsLastDays" xml:space="preserve">
+    <value>Ultimi {0} giorni</value>
+  </data>
+  <data name="topPages" xml:space="preserve">
+    <value>I più letti</value>
+  </data>
+  <data name="visitSources" xml:space="preserve">
+    <value>Da dove arrivano</value>
+  </data>
+  <data name="sourceSearch" xml:space="preserve">
+    <value>Motori di ricerca</value>
+  </data>
+  <data name="sourceSocial" xml:space="preserve">
+    <value>Social</value>
+  </data>
+  <data name="sourceSites" xml:space="preserve">
+    <value>Altri siti</value>
+  </data>
+  <data name="sourceDirect" xml:space="preserve">
+    <value>Accesso diretto</value>
+  </data>
+  <data name="topSites" xml:space="preserve">
+    <value>Siti che portano visite</value>
+  </data>
+  <data name="mobileVisitors" xml:space="preserve">
+    <value>da cellulare</value>
+  </data>
+  <data name="visitsDisabled" xml:space="preserve">
+    <value>Le statistiche delle visite sono spente (Impostazioni → Controlli).</value>
+  </data>
+  <data name="visitsNote" xml:space="preserve">
+    <value>Contate dal sito senza cookie, esclusi robot e utenti collegati. Di solito sono più alte di Analytics, che conta solo chi accetta i cookie.</value>
+  </data>
+  <data name="enableVisitStatistics" xml:space="preserve">
+    <value>Conta le visite per la dashboard</value>
+  </data>
+  <data name="enableVisitStatisticsHelp" xml:space="preserve">
+    <value>Pagine viste e visitatori vengono contati dal sito senza cookie e senza salvare gli indirizzi IP, quindi non serve il consenso. Robot e utenti collegati non vengono contati.</value>
+  </data>
 </root>

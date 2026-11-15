@@ -47,6 +47,83 @@
         <a ng-click="openLogFile()" ng-if="vm.Logs.length > 0" class="icon-header-dashboard icon-header-logs pull-right" angular-tooltip tooltip="lbl.logs"><i class="fa fa-warning"></i></a>
     </div>
     <div class="content-inner content-dashboard">
+        <style>
+            .dashboard-visits .visits-totals { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 15px; }
+            .dashboard-visits .visits-total { flex: 1 1 140px; background: #f6f6f6; border-radius: 3px; padding: 10px 12px; }
+            .dashboard-visits .visits-total-label { font-size: 12px; text-transform: uppercase; color: #999; }
+            .dashboard-visits .visits-total-views { font-size: 26px; font-weight: 500; color: #333; line-height: 1.2; }
+            .dashboard-visits .visits-total-visitors { font-size: 12px; color: #888; }
+            .dashboard-visits .visits-chart { width: 100%; height: 170px; display: block; }
+            .dashboard-visits .visits-chart .bar-views { fill: #a8e0cc; }
+            .dashboard-visits .visits-chart .bar-visitors { fill: #1cac7b; }
+            .dashboard-visits .visits-chart .bar-hover { fill: transparent; cursor: pointer; }
+            .dashboard-visits .visits-chart .bar-hover:hover { fill: rgba(0,0,0,.06); }
+            .dashboard-visits .visits-ticks { display: flex; justify-content: space-between; font-size: 11px; color: #999; }
+            .dashboard-visits .visits-legend { font-size: 12px; color: #888; margin: 4px 0 15px; }
+            .dashboard-visits .visits-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 2px; margin: 0 4px 0 12px; vertical-align: -1px; }
+            .dashboard-visits .visits-day { font-size: 12px; color: #666; min-height: 18px; text-align: right; }
+            .dashboard-visits h5 { font-size: 13px; font-weight: 500; color: #555; margin: 0 0 8px; }
+            .dashboard-visits .visits-list { list-style: none; padding: 0; margin: 0 0 15px; }
+            .dashboard-visits .visits-list li { display: flex; gap: 8px; padding: 4px 0; border-bottom: 1px solid #f0f0f0; font-size: 13px; }
+            .dashboard-visits .visits-list li > :first-child { flex: 1; min-width: 0; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+            .dashboard-visits .visits-list .count { color: #888; }
+            .dashboard-visits .visits-share { height: 4px; background: #eee; border-radius: 2px; margin-top: 3px; }
+            .dashboard-visits .visits-share span { display: block; height: 4px; background: #1cac7b; border-radius: 2px; }
+            .dashboard-visits .visits-note { font-size: 12px; color: #999; margin: 0; }
+        </style>
+        <div class="row" ng-if="visits">
+            <div class="col-sm-12">
+                <div class="panel panel-default dashboard-visits">
+                    <div class="panel-heading">
+                        <div class="panel-title">{{lbl.visits}}</div>
+                    </div>
+                    <div class="panel-body">
+                        <p class="text-muted" ng-if="!visits.Enabled">{{lbl.visitsDisabled}}</p>
+                        <div class="visits-totals">
+                            <div class="visits-total" ng-repeat="total in totals">
+                                <div class="visits-total-label">{{total.label}}</div>
+                                <div class="visits-total-views">{{total.Views | number}}</div>
+                                <div class="visits-total-visitors">{{lbl.pageViews | lowercase}} &middot; {{total.Visitors | number}} {{lbl.visitors | lowercase}}</div>
+                            </div>
+                        </div>
+                        <div class="visits-day">{{chart.selectedText}}</div>
+                        <svg class="visits-chart" viewBox="0 0 600 150" preserveAspectRatio="none" role="img" aria-label="{{lbl.visits}}">
+                            <g ng-repeat="bar in chart.bars">
+                                <rect class="bar-views" ng-attr-x="{{bar.x}}" ng-attr-y="{{bar.viewsY}}" ng-attr-width="{{bar.width}}" ng-attr-height="{{bar.viewsHeight}}"></rect>
+                                <rect class="bar-visitors" ng-attr-x="{{bar.x}}" ng-attr-y="{{bar.visitorsY}}" ng-attr-width="{{bar.width}}" ng-attr-height="{{bar.visitorsHeight}}"></rect>
+                                <rect class="bar-hover" ng-attr-x="{{bar.x}}" y="0" ng-attr-width="{{bar.width}}" ng-attr-height="{{chart.height}}" ng-mouseenter="selectDay(bar)" ng-click="selectDay(bar)"><title>{{bar.text}}</title></rect>
+                            </g>
+                        </svg>
+                        <div class="visits-ticks"><span ng-repeat="tick in chart.ticks">{{tick}}</span></div>
+                        <div class="visits-legend"><i style="background:#a8e0cc;margin-left:0"></i>{{lbl.pageViews}} <i style="background:#1cac7b"></i>{{lbl.visitors}}</div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <h5>{{lbl.topPages}}</h5>
+                                <ul class="visits-list">
+                                    <li ng-repeat="page in visits.Pages"><a href="{{page.Url}}" target="_blank" title="{{page.Title}}">{{page.Title}}</a> <span class="count">{{page.Views | number}}</span></li>
+                                    <li ng-if="visits.Pages.length == 0" class="text-muted"><span>{{lbl.empty}}</span></li>
+                                </ul>
+                            </div>
+                            <div class="col-sm-6">
+                                <h5>{{lbl.visitSources}}</h5>
+                                <ul class="visits-list">
+                                    <li ng-repeat="source in sources"><div>{{source.label}}<div class="visits-share"><span ng-style="{width: source.percent + '%'}"></span></div></div> <span class="count">{{source.percent}}%</span></li>
+                                    <li ng-if="sources.length == 0" class="text-muted"><span>{{lbl.empty}}</span></li>
+                                    <li ng-if="visits.Period.Visitors > 0"><span>{{visits.MobilePercent}}% {{lbl.visitors | lowercase}} {{lbl.mobileVisitors}}</span></li>
+                                </ul>
+                                <div ng-if="visits.Sites.length > 0">
+                                    <h5>{{lbl.topSites}}</h5>
+                                    <ul class="visits-list">
+                                        <li ng-repeat="site in visits.Sites"><span>{{site.Name}}</span> <span class="count">{{site.Count | number}}</span></li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="visits-note">{{lbl.visitsNote}}</p>
+                    </div>
+                </div>
+            </div>
+        </div>
         <div class="row">
             <div class="col-sm-12 col-md-4">
                 <div class="panel panel-default dashboard-stats dashboard-list">

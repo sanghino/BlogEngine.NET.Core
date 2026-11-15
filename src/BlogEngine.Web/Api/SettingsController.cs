@@ -154,6 +154,7 @@ public sealed class SettingsController(
         HtmlHeader = s.HtmlHeader,
         TrackingScript = s.TrackingScript,
         EnableCookieConsent = s.EnableCookieConsent,
+        EnableVisitStatistics = s.EnableVisitStatistics,
         CookiePolicyUrl = s.CookiePolicyUrl,
         DaysCommentsAreEnabled = s.DaysCommentsAreEnabled,
         IsCommentsEnabled = s.IsCommentsEnabled,
@@ -241,6 +242,7 @@ public sealed class SettingsController(
         s.HtmlHeader = n.HtmlHeader ?? string.Empty;
         s.TrackingScript = n.TrackingScript ?? string.Empty;
         s.EnableCookieConsent = n.EnableCookieConsent;
+        s.EnableVisitStatistics = n.EnableVisitStatistics;
         s.CookiePolicyUrl = n.CookiePolicyUrl?.Trim() ?? string.Empty;
         s.DaysCommentsAreEnabled = n.DaysCommentsAreEnabled;
         s.IsCommentsEnabled = n.IsCommentsEnabled;
