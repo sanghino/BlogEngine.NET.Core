@@ -234,6 +234,26 @@ var uploadFromPicker = function (callback, filetype) {
 };
 
 // Impostazioni comuni a tutti gli editor dell'amministrazione (anche quelli dei widget).
+// Allineamento a sinistra/destra: TinyMCE 8 sposta le tabelle solo con i margini e toglie il float,
+// quindi il testo non scorre accanto. Qui (come in TinyMCE 4 e nella vecchia versione del blog) la tabella
+// diventa flottante, con un po' di spazio dal testo. Gli altri elementi restano come in TinyMCE 8.
+var blogAlignFormats = function () {
+    var side = function (align) {
+        var tableStyles = { float: align, marginBottom: '10px' };
+        tableStyles['margin' + (align === 'left' ? 'Right' : 'Left')] = '15px';
+        tableStyles['margin' + (align === 'left' ? 'Left' : 'Right')] = '0px';
+        return [
+            { selector: 'figure.image', collapsed: false, classes: 'align-' + align, ceFalseOverride: true },
+            { selector: 'figure,p,h1,h2,h3,h4,h5,h6,td,th,tr,div,ul,ol,li,pre', styles: { textAlign: align }, inherit: false },
+            { selector: 'img,audio,video', collapsed: false, styles: { float: align } },
+            { selector: '.mce-placeholder', styles: { float: align }, ceFalseOverride: true },
+            { selector: 'table', collapsed: false, styles: tableStyles },
+            { selector: '.mce-preview-object,[data-ephox-embed-iri],.tiny-pageembed', ceFalseOverride: true, styles: { float: align } }
+        ];
+    };
+    return { alignleft: side('left'), alignright: side('right') };
+};
+
 var blogEditorSettings = function (settings) {
     var language = (window.SiteVars && SiteVars.Language) || '';
     var common = {
@@ -247,7 +267,8 @@ var blogEditorSettings = function (settings) {
         // Il contenuto dei post esistenti resta com'è: niente sandbox sugli iframe (video incorporati)
         // e niente conversione di object/embed.
         sandbox_iframes: false,
-        convert_unsafe_embeds: false
+        convert_unsafe_embeds: false,
+        formats: blogAlignFormats()
     };
     return $.extend(common, settings);
 };

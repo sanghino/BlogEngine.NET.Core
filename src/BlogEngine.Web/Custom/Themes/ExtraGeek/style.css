@@ -1493,3 +1493,14 @@ input[type="file"] {
 		overflow-x: auto;
 	}
 }
+
+/* Tabelle allineate a sinistra o a destra nel testo (il testo scorre accanto):
+   sugli schermi stretti tornano a tutta larghezza, una sotto l'altra con il testo. */
+@media screen and (max-width: 600px) {
+	.post .text table[style*="float"],
+	#page table[style*="float"] {
+		float: none !important;
+		width: auto !important;
+		margin: 1em 0 !important;
+	}
+}
