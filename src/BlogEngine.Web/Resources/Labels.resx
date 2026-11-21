@@ -3323,4 +3323,25 @@
   <data name="pollNoPolls" xml:space="preserve">
     <value>No polls yet: create the first one with "New".</value>
   </data>
+  <data name="pollFeatured" xml:space="preserve">
+    <value>Featured (bar at the top of the pages)</value>
+  </data>
+  <data name="pollFeaturedHelp" xml:space="preserve">
+    <value>While the poll is open, a bar under the menu invites visitors to vote; it disappears for those who have already voted. If several polls are featured, the most recent one is shown.</value>
+  </data>
+  <data name="pollBannerAction" xml:space="preserve">
+    <value>Vote now</value>
+  </data>
+  <data name="pollsAll" xml:space="preserve">
+    <value>All polls</value>
+  </data>
+  <data name="pollOpenPage" xml:space="preserve">
+    <value>Poll page</value>
+  </data>
+  <data name="pollAlreadyVotedShort" xml:space="preserve">
+    <value>You have already voted</value>
+  </data>
+  <data name="pollSeeResults" xml:space="preserve">
+    <value>See the results</value>
+  </data>
 </root>

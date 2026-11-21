@@ -118,3 +118,15 @@ div.post .text a[rel~="muse"][rel~="met"], div.post .text a[rel~="crush"][rel~="
 .poll-winner .poll-bar span { opacity: .9; }
 .poll-message { margin: .5em 0; }
 .polls-page .poll { padding-bottom: 1em; border-bottom: 1px solid rgba(128, 128, 128, .3); }
+
+.poll-question a { color: inherit; }
+.poll-page .poll { border-bottom: 0; }
+
+/*[ Barra del sondaggio in evidenza, subito sotto il menu: una riga con il titolo (link alla pagina del
+    sondaggio) e, per chi ha già votato, l'avviso con il link ai risultati. I temi la adattano al loro menu. ]*/
+.poll-banner { clear: both; display: flex; flex-wrap: wrap; align-items: center; justify-content: center; gap: 4px 10px;
+    margin: 0 0 1em 0; padding: 8px 14px; border: 1px solid rgba(128, 128, 128, .35); border-radius: 6px; background: rgba(128, 128, 128, .1); }
+.poll-banner-icon { flex: none; fill: currentColor; opacity: .7; }
+.poll-banner-question { font-weight: bold; }
+.poll-banner-status { font-size: .9em; opacity: .85; }
+.poll-banner-status[hidden] { display: none; }

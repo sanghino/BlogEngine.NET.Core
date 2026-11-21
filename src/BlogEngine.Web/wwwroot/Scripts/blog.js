@@ -325,8 +325,9 @@ var BlogEngine = {
 
     // ------------------------------------------------------------------ sondaggi (widget Poll)
 
-    votePoll: function (pollId) {
-        var box = BlogEngine.$('poll-' + pollId);
+    // form: il modulo su cui si è cliccato (lo stesso sondaggio può essere nel widget e nella pagina).
+    votePoll: function (pollId, form) {
+        var box = (form && form.closest && form.closest('.poll')) || BlogEngine.$('poll-' + pollId);
         if (!box) return false;
         var message = box.querySelector('.poll-message');
         var button = box.querySelector('.poll-button');
@@ -350,7 +351,24 @@ var BlogEngine = {
         }
         if (button) button.disabled = true;
         BlogEngine.post('poll/vote', { id: pollId, options: chosen.join(',') }).then(function (result) {
-            BlogEngine.showPollResult(box, result);
+            document.querySelectorAll('.poll[data-poll="' + pollId + '"]').forEach(function (each) {
+                BlogEngine.showPollResult(each, result);
+            });
+            // La barra in evidenza resta: ora dice che si è già votato (e porta ai risultati, se visibili).
+            document.querySelectorAll('.poll-banner[data-poll="' + pollId + '"]').forEach(function (banner) {
+                var status = banner.querySelector('.poll-banner-status');
+                if (!status) return;
+                status.textContent = BlogEngine.i18n('pollAlreadyVotedShort');
+                if (result.poll && result.poll.ShowResults) {
+                    var link = document.createElement('a');
+                    link.href = banner.getAttribute('data-url');
+                    link.textContent = BlogEngine.i18n('pollSeeResults');
+                    status.appendChild(document.createTextNode(' · '));
+                    status.appendChild(link);
+                }
+                status.hidden = false;
+                banner.classList.add('poll-banner-voted');
+            });
         }).catch(function (error) {
             if (button) button.disabled = false;
             show(error.message);

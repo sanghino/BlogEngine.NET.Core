@@ -8,7 +8,7 @@ namespace BlogEngine.Web.Api;
 
 /// <summary>Sondaggi del widget Poll (Contenuto → Sondaggi). Serve il permesso di gestire i widget.</summary>
 [Route("api/polls")]
-public sealed class PollsAdminController(PollService polls, IRightsService rights, IBlogClock clock) : AdminApiController
+public sealed class PollsAdminController(PollService polls, IRightsService rights, IBlogClock clock, Themes.PollPresenter presenter) : AdminApiController
 {
     private const string DateFormat = "yyyy-MM-dd'T'HH:mm";
 
@@ -87,6 +87,7 @@ public sealed class PollsAdminController(PollService polls, IRightsService right
             StartsUtc = starts,
             EndsUtc = ends,
             RegisteredOnly = item.RegisteredOnly,
+            Featured = item.Featured,
             ResultsVisibility = Enum.TryParse<PollResultsVisibility>(item.ResultsVisibility, true, out var visibility) ? visibility : PollResultsVisibility.AfterVote,
         });
 
@@ -109,6 +110,8 @@ public sealed class PollsAdminController(PollService polls, IRightsService right
     {
         var now = polls.UtcNow;
         var voters = poll.Votes.Count;
+        var results = poll.Results();
+        var percents = Poll.Percentages(results.Select(r => r.Votes).ToList());
         async Task<string> Local(DateTime? utc) =>
             utc is { } value ? (await clock.ToBlogTimeAsync(value)).ToString(DateFormat, CultureInfo.InvariantCulture) : string.Empty;
 
@@ -119,18 +122,20 @@ public sealed class PollsAdminController(PollService polls, IRightsService right
             Description = poll.Description,
             MultipleChoice = poll.MultipleChoice,
             MaxChoices = poll.MultipleChoice ? poll.MaxChoices : 0,
-            Options = poll.Results().Select(r => new PollOptionItem
+            Options = results.Select((r, i) => new PollOptionItem
             {
                 Id = r.Option.Id.ToString(),
                 Text = r.Option.Text,
                 Votes = r.Votes,
-                Percent = voters == 0 ? 0 : (int)Math.Round(100.0 * r.Votes / voters),
+                Percent = percents[i],
             }).ToList(),
             Starts = await Local(poll.StartsUtc),
             Ends = await Local(poll.EndsUtc),
             Created = await Local(poll.CreatedUtc),
             Ended = await Local(poll.EndedUtc(now)),
             RegisteredOnly = poll.RegisteredOnly,
+            Featured = poll.Featured,
+            Url = presenter.Url(poll),
             ResultsVisibility = poll.ResultsVisibility.ToString(),
             Status = poll.StatusAt(now).ToString().ToLowerInvariant(),
             Voters = voters,
@@ -180,6 +185,9 @@ public sealed record PollItem
 
     public bool RegisteredOnly { get; init; }
 
+    /// <summary>In evidenza: barra in cima alle pagine finché il sondaggio è aperto.</summary>
+    public bool Featured { get; init; }
+
     /// <summary>AfterVote, Always o AfterClose.</summary>
     public string? ResultsVisibility { get; init; }
 
@@ -193,6 +201,9 @@ public sealed record PollItem
     public string Ended { get; init; } = string.Empty;
 
     public string LastVote { get; init; } = string.Empty;
+
+    /// <summary>Indirizzo della pagina pubblica del sondaggio.</summary>
+    public string Url { get; init; } = string.Empty;
 }
 
 public sealed record PollOptionItem

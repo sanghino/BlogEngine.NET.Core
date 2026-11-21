@@ -12,6 +12,9 @@ public sealed class PollModel
 
     public string Description { get; init; } = string.Empty;
 
+    /// <summary>Indirizzo della pagina del sondaggio.</summary>
+    public string Url { get; init; } = string.Empty;
+
     /// <summary>"scheduled", "open" o "closed".</summary>
     public string Status { get; init; } = string.Empty;
 
@@ -57,7 +60,7 @@ public sealed class PollOptionModel
 }
 
 /// <summary>Come vede un sondaggio il visitatore corrente: se ha già votato, se può votare, se vede i risultati.</summary>
-public sealed class PollPresenter(PollService polls, IBlogContext context, IBlogClock clock, IHttpContextAccessor http)
+public sealed class PollPresenter(PollService polls, IBlogContext context, IBlogClock clock, IHttpContextAccessor http, ILinkGenerator links)
 {
     /// <summary>Cookie con un numero casuale che identifica il browser (non contiene dati personali).</summary>
     public const string VoterCookie = "poll_voter";
@@ -69,6 +72,10 @@ public sealed class PollPresenter(PollService polls, IBlogContext context, IBlog
         var network = request is null ? null : $"{http.HttpContext!.Connection.RemoteIpAddress}|{request.Headers.UserAgent}";
         return await polls.VoterKeysAsync(pollId, context.UserName, browser, network, cancellationToken);
     }
+
+    /// <summary>Indirizzo della pagina del sondaggio (/poll/slug; per i sondaggi senza slug l'identificativo).</summary>
+    public string Url(Poll poll) =>
+        links.BlogRoot + "poll/" + Uri.EscapeDataString(string.IsNullOrEmpty(poll.Slug) ? poll.Id.ToString("N") : poll.Slug);
 
     /// <summary>Il valore del cookie del browser, creato al primo voto.</summary>
     public string EnsureVoterCookie()
@@ -104,6 +111,7 @@ public sealed class PollPresenter(PollService polls, IBlogContext context, IBlog
         var results = poll.Results();
         var max = results.Count == 0 ? 0 : results.Max(r => r.Votes);
         var voters = poll.Votes.Count;
+        var percents = Poll.Percentages(results.Select(r => r.Votes).ToList());
 
         async Task<DateTime?> Local(DateTime? utc) => utc is { } value ? await clock.ToBlogTimeAsync(value) : null;
 
@@ -112,6 +120,7 @@ public sealed class PollPresenter(PollService polls, IBlogContext context, IBlog
             Id = poll.Id.ToString("N"),
             Question = poll.Question,
             Description = poll.Description,
+            Url = Url(poll),
             Status = status.ToString().ToLowerInvariant(),
             MultipleChoice = poll.MultipleChoice,
             MaxChoices = poll.MultipleChoice ? poll.MaxChoices : 1,
@@ -123,12 +132,12 @@ public sealed class PollPresenter(PollService polls, IBlogContext context, IBlog
             Starts = await Local(poll.StartsUtc),
             Ends = await Local(poll.EndsUtc),
             Ended = await Local(poll.EndedUtc(now)),
-            Options = results.Select(r => new PollOptionModel
+            Options = results.Select((r, i) => new PollOptionModel
             {
                 Id = r.Option.Id.ToString("N"),
                 Text = r.Option.Text,
                 Votes = showResults ? r.Votes : 0,
-                Percent = showResults && voters > 0 ? (int)Math.Round(100.0 * r.Votes / voters) : 0,
+                Percent = showResults ? percents[i] : 0,
                 Winner = showResults && max > 0 && r.Votes == max,
             }).ToList(),
         };
@@ -139,7 +148,7 @@ public sealed class PollPresenter(PollService polls, IBlogContext context, IBlog
 /// Widget Poll: mostra il sondaggio scelto nelle impostazioni, oppure il più recente ancora aperto.
 /// Se il sondaggio scelto è concluso mostra i suoi risultati.
 /// </summary>
-public sealed class PollWidget(PollService polls, PollPresenter presenter, ILinkGenerator links) : IWidgetDataProvider
+public sealed class PollWidget(PollService polls, PollPresenter presenter, ILinkGenerator links, IHttpContextAccessor http) : IWidgetDataProvider
 {
     public string Name => "Poll";
 
@@ -149,6 +158,12 @@ public sealed class PollWidget(PollService polls, PollPresenter presenter, ILink
         var poll = Guid.TryParse(chosen, out var id)
             ? await polls.GetAsync(id, cancellationToken)
             : await polls.GetCurrentAsync(cancellationToken);
+        // Sulla pagina dello stesso sondaggio il widget non lo ripete.
+        if (poll is not null && http.HttpContext?.Request is { } request && string.Equals((request.PathBase + request.Path).Value, presenter.Url(poll), StringComparison.OrdinalIgnoreCase))
+        {
+            poll = null;
+        }
+
         var hasArchive = (await polls.GetAllAsync(cancellationToken)).Any(p => p.StatusAt(polls.UtcNow) == PollStatus.Closed);
         return new
         {

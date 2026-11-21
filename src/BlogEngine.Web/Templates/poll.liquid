@@ -1,0 +1,10 @@
+{%- comment -%} Pagina di un solo sondaggio (/poll/indirizzo). Variabili: poll, polls_url. {%- endcomment -%}
+<div id="page" class="poll-page page-global">
+    <p class="poll-kicker">{{ 'poll' | t }}</p>
+    <h2 class="page-global-title">{{ poll.question }}</h2>
+    {%- assign poll_page = true %}
+    {% include 'poll-view' %}
+    {%- comment %} Il widget del sondaggio, mostrato dopo nella stessa pagina, deve avere la sua domanda. {% endcomment %}
+    {%- assign poll_page = false %}
+    <p class="poll-archive"><a href="{{ polls_url }}">{{ 'pollsAll' | t }}</a></p>
+</div>

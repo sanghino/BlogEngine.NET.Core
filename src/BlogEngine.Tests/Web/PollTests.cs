@@ -153,6 +153,21 @@ public sealed partial class PollTests
         CollectionAssert.AreEquivalent(new[] { poll.Options[0].Id, poll.Options[2].Id }, stored.Votes.Single().Options);
         Assert.IsTrue(stored.Votes.Single().Keys.Any(k => k.StartsWith("user:", StringComparison.Ordinal)));
         Assert.IsFalse(stored.Votes.Single().Keys.Any(k => k.Contains(BlogWebFactory.AdminUser, StringComparison.OrdinalIgnoreCase)), "Il nome utente non è salvato in chiaro.");
+
+        // Un solo votante con due risposte: 50% ciascuna, non 100% (le percentuali sono sulle scelte espresse).
+        var item = JsonNode.Parse(await admin.GetStringAsync($"/api/polls/{poll.Id}"))!;
+        Assert.AreEqual(1, item["Voters"]!.GetValue<int>());
+        CollectionAssert.AreEqual(new[] { 50, 0, 50 }, item["Options"]!.AsArray().Select(o => o!["Percent"]!.GetValue<int>()).ToArray());
+    }
+
+    [TestMethod]
+    public void Percentages_AddUpTo100()
+    {
+        CollectionAssert.AreEqual(new[] { 50, 50 }, Poll.Percentages([1, 1]));
+        CollectionAssert.AreEqual(new[] { 34, 33, 33 }, Poll.Percentages([1, 1, 1]));
+        CollectionAssert.AreEqual(new[] { 67, 33, 0 }, Poll.Percentages([2, 1, 0]));
+        CollectionAssert.AreEqual(new[] { 0, 0 }, Poll.Percentages([0, 0]));
+        CollectionAssert.AreEqual(new[] { 100 }, Poll.Percentages([7]));
     }
 
     [TestMethod]
@@ -211,6 +226,53 @@ public sealed partial class PollTests
         var stored = await GetAsync(factory, poll.Id);
         Assert.AreEqual("A (rinominata)", stored.Options[0].Text);
         Assert.AreEqual(1, stored.Results()[0].Votes, "I voti restano legati alla risposta.");
+    }
+
+    [TestMethod]
+    public async Task FeaturedPoll_ShowsABar_UntilTheVisitorVotes_AndHasItsOwnPage()
+    {
+        using var factory = new BlogWebFactory();
+        using var admin = await Admin(factory);
+        var poll = await CreateAsync(factory, new Poll { Question = "Qual è la console migliore?", Featured = true, Options = [new() { Text = "Commodore 64" }, new() { Text = "Amiga" }] });
+        var twin = await CreateAsync(factory, new Poll { Question = "Qual è la console migliore?", Options = [new() { Text = "A" }, new() { Text = "B" }] });
+        Assert.AreEqual("qual-e-la-console-migliore", poll.Slug, "L'indirizzo nasce dalla domanda.");
+        Assert.AreEqual("qual-e-la-console-migliore-2", twin.Slug, "Domande uguali hanno indirizzi diversi.");
+
+        await PlaceWidgetAsync(factory);
+        using var visitor = Browser(factory, Chrome, "203.0.113.50");
+        var home = await visitor.GetStringAsync("/");
+        StringAssert.Contains(home, "poll-widget");
+        StringAssert.Contains(home, "class=\"poll-banner\"", "La barra compare per chi non ha ancora votato.");
+        Assert.IsTrue(home.IndexOf("</nav>", StringComparison.Ordinal) < home.IndexOf("poll-banner\"", StringComparison.Ordinal), "La barra viene subito dopo il menu.");
+        StringAssert.Contains(home, "<span class=\"poll-banner-status\" hidden>", "Chi non ha votato non vede l'avviso.");
+        StringAssert.Contains(home, "href=\"/poll/qual-e-la-console-migliore\"");
+        Assert.IsTrue(home.IndexOf("poll-banner", StringComparison.Ordinal) < home.IndexOf("class=\"post", StringComparison.Ordinal), "La barra viene prima del primo post.");
+
+        // La pagina del sondaggio: niente barra (c'è già il sondaggio), link a tutti i sondaggi.
+        var page = await visitor.GetStringAsync("/poll/qual-e-la-console-migliore");
+        StringAssert.Contains(page, "<title>");
+        StringAssert.Contains(page, $"name=\"poll-{poll.Id:N}\"");
+        StringAssert.Contains(page, "href=\"/polls\"");
+        StringAssert.Contains(page, "class=\"poll-banner\"", "La barra c'è anche sulla pagina del sondaggio.");
+        Assert.AreEqual(1, Regex.Matches(page, $"id=\"poll-{poll.Id:N}\"").Count, "Il widget non ripete il sondaggio della pagina (mostra l'altro aperto).");
+        StringAssert.Contains(page, $"data-poll=\"{twin.Id:N}\"");
+        Assert.AreEqual(HttpStatusCode.OK, (await visitor.GetAsync($"/poll/{poll.Id:N}")).StatusCode, "Funziona anche con l'identificativo.");
+        Assert.AreEqual(HttpStatusCode.NotFound, (await visitor.GetAsync("/poll/non-esiste")).StatusCode);
+
+        // Dopo il voto la barra resta, con l'avviso e il link ai risultati.
+        Assert.AreEqual(HttpStatusCode.OK, (await VoteAsync(visitor, page, poll, poll.Options[0].Id)).StatusCode);
+        var after = await visitor.GetStringAsync("/");
+        StringAssert.Contains(after, "class=\"poll-banner poll-banner-voted\"");
+        var status = Regex.Match(after, "<span class=\"poll-banner-status\">(?<text>.*?)</span>", RegexOptions.Singleline).Groups["text"].Value;
+        StringAssert.Contains(status, "You have already voted");
+        StringAssert.Contains(status, "href=\"/poll/qual-e-la-console-migliore\"");
+        StringAssert.Contains(status, "See the results");
+
+        // Chiuso il sondaggio, la barra sparisce per tutti; la pagina resta con i risultati.
+        await factory.RunAsSystemAsync(services => services.GetRequiredService<PollService>().SetClosedAsync(poll.Id, true));
+        using var other = Browser(factory, "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:132.0) Gecko/20100101 Firefox/132.0", "198.51.100.60");
+        Assert.IsFalse((await other.GetStringAsync("/")).Contains("class=\"poll-banner\""));
+        StringAssert.Contains(await other.GetStringAsync("/poll/qual-e-la-console-migliore"), "poll-results");
     }
 
     [TestMethod]

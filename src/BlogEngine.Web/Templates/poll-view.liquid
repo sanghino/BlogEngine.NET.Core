@@ -4,11 +4,13 @@
   blog.js (BlogEngine.votePoll) sostituisce il contenuto con i risultati ricevuti dal sito.
 {%- endcomment -%}
 <div class="poll poll-{{ poll.status }}" id="poll-{{ poll.id }}" data-poll="{{ poll.id }}" data-max="{{ poll.max_choices }}">
-    <p class="poll-question">{{ poll.question }}</p>
+    {%- unless poll_page %}
+    <p class="poll-question">{% if poll.url == '' %}{{ poll.question }}{% else %}<a href="{{ poll.url }}">{{ poll.question }}</a>{% endif %}</p>
+    {%- endunless %}
     {%- if poll.description != '' %}<p class="poll-description">{{ poll.description }}</p>{% endif %}
     <div class="poll-body">
     {%- if poll.can_vote %}
-        <form class="poll-form" onsubmit="return BlogEngine.votePoll('{{ poll.id }}');">
+        <form class="poll-form" onsubmit="return BlogEngine.votePoll('{{ poll.id }}', this);">
             {%- if poll.multiple_choice %}
             <p class="poll-hint">{% if poll.max_choices > 0 %}{{ 'pollChooseUpTo' | t | replace: '{0}', poll.max_choices }}{% else %}{{ 'pollChooseMany' | t }}{% endif %}</p>
             {%- endif %}

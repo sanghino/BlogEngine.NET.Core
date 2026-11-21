@@ -42,7 +42,7 @@ angular.module('blogAdmin').controller('PollsController', ["$rootScope", "$scope
     $scope.addNew = function () {
         $scope.poll = {
             Id: null, Question: '', Description: '', MultipleChoice: false, MaxChoices: 0,
-            Options: [{ Text: '' }, { Text: '' }], Starts: null, Ends: null, RegisteredOnly: false,
+            Options: [{ Text: '' }, { Text: '' }], Starts: null, Ends: null, RegisteredOnly: false, Featured: false,
             ResultsVisibility: 'AfterVote', Voters: 0
         };
         $("#modal-poll").modal();

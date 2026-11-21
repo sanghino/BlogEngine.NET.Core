@@ -3321,4 +3321,25 @@
   <data name="pollNoPolls" xml:space="preserve">
     <value>Nessun sondaggio: crea il primo con "Nuovo".</value>
   </data>
+  <data name="pollFeatured" xml:space="preserve">
+    <value>In evidenza (barra in cima alle pagine)</value>
+  </data>
+  <data name="pollFeaturedHelp" xml:space="preserve">
+    <value>Finché il sondaggio è aperto, una barra sotto il menu invita a votare; scompare per chi ha già votato. Se più sondaggi sono in evidenza si vede il più recente.</value>
+  </data>
+  <data name="pollBannerAction" xml:space="preserve">
+    <value>Vota ora</value>
+  </data>
+  <data name="pollsAll" xml:space="preserve">
+    <value>Tutti i sondaggi</value>
+  </data>
+  <data name="pollOpenPage" xml:space="preserve">
+    <value>Pagina del sondaggio</value>
+  </data>
+  <data name="pollAlreadyVotedShort" xml:space="preserve">
+    <value>Hai già votato</value>
+  </data>
+  <data name="pollSeeResults" xml:space="preserve">
+    <value>Vedi i risultati</value>
+  </data>
 </root>

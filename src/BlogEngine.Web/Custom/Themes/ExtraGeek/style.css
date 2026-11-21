@@ -206,6 +206,35 @@ img {
 	margin-bottom: 28px;
 }
 
+/* Barra del sondaggio in evidenza: stesse misure e colori del menu, subito sotto. */
+#menu + .poll-banner {
+	margin-top: -18px;
+	margin-bottom: 28px;
+}
+
+.poll-banner {
+	background: rgba(15, 29, 61, 0.88);
+	border: 1px solid var(--eg-line-soft);
+	border-radius: var(--eg-radius);
+	padding: 10px 16px;
+	font-size: 15px;
+	font-weight: 600;
+	color: var(--eg-muted);
+}
+
+.poll-banner-icon {
+	fill: var(--eg-orange);
+	opacity: 1;
+}
+
+.poll-banner-question {
+	color: var(--eg-sky-light);
+}
+
+.poll-banner-status a {
+	color: var(--eg-orange);
+}
+
 #menu ul {
 	list-style: none;
 	margin: 0;
@@ -1504,4 +1533,94 @@ input[type="file"] {
 		width: auto !important;
 		margin: 1em 0 !important;
 	}
+}
+
+/*----------------------------
+	Sondaggi (widget, pagina del sondaggio, /polls)
+----------------------------*/
+
+.poll-kicker {
+	margin: 0 0 4px 0;
+	font-size: 13px;
+	font-weight: 700;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: var(--eg-orange);
+}
+
+.poll-question {
+	color: var(--eg-white);
+}
+
+.poll-question a {
+	color: var(--eg-white);
+	text-decoration: none;
+}
+
+.poll-question a:hover {
+	color: var(--eg-sky-light);
+}
+
+.poll-description,
+.poll-hint,
+.poll-dates,
+.poll-voters {
+	color: var(--eg-muted);
+	opacity: 1;
+}
+
+.poll-options input {
+	accent-color: var(--eg-sky);
+}
+
+.poll-count {
+	color: var(--eg-sky-light);
+	opacity: 1;
+}
+
+.poll-bar {
+	height: 8px;
+	background: var(--eg-deep);
+	border: 1px solid var(--eg-line-soft);
+	border-radius: 4px;
+}
+
+.poll-bar span {
+	background: linear-gradient(90deg, var(--eg-line), var(--eg-sky));
+	border-radius: 4px;
+	opacity: 1;
+}
+
+.poll-winner .poll-option {
+	color: var(--eg-white);
+}
+
+.poll-winner .poll-count {
+	color: var(--eg-orange);
+}
+
+.poll-winner .poll-bar span {
+	background: linear-gradient(90deg, var(--eg-orange-dark), var(--eg-orange));
+}
+
+.poll-message {
+	color: var(--eg-orange);
+}
+
+#page.poll-page .poll,
+#page.polls-page .poll {
+	font-size: 17px;
+}
+
+#page.polls-page .poll {
+	padding: 14px 0;
+	border-bottom: 1px solid var(--eg-line-soft);
+}
+
+#page.polls-page .poll:last-of-type {
+	border-bottom: 0;
+}
+
+#page .poll-archive a {
+	font-weight: 600;
 }

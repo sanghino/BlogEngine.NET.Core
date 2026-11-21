@@ -24,6 +24,7 @@
             | <a href="{{ blog.contact_url }}">{{ 'contact' | t }}</a>
             {%- if user.is_authenticated %} | <a href="{{ blog.admin_url }}">{{ 'admin' | t }}</a>{% else %} | <a href="{{ blog.login_url }}">{{ 'login' | t }}</a>{% endif %}
         </nav>
+        {{ poll_banner }}
     </header>
     <main>{{ content_for_layout }}</main>
     <aside>{% widget_zone 'be_WIDGET_ZONE' %}</aside>

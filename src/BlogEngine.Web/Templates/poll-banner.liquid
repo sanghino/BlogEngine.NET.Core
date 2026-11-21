@@ -1,0 +1,11 @@
+{%- comment -%}
+  Barra del sondaggio in evidenza, subito sotto il menu ({{ poll_banner }} nel layout del tema; se il layout non
+  la prevede va in cima al contenuto). Riporta solo il titolo, che porta alla pagina del sondaggio dove si vota;
+  chi ha già votato vede l'avviso e il link ai risultati. Compare finché il sondaggio è aperto.
+  Variabile: featured_poll. Un tema può ridefinirla con un proprio poll-banner.liquid.
+{%- endcomment -%}
+<div class="poll-banner{% if featured_poll.has_voted %} poll-banner-voted{% endif %}" data-poll="{{ featured_poll.id }}" data-url="{{ featured_poll.url }}">
+    <svg class="poll-banner-icon" viewBox="0 0 16 16" width="16" height="16" role="img" aria-label="{{ 'poll' | t }}"><rect x="1" y="8" width="3" height="7" rx="1"/><rect x="6.5" y="3" width="3" height="12" rx="1"/><rect x="12" y="6" width="3" height="9" rx="1"/></svg>
+    <a class="poll-banner-question" href="{{ featured_poll.url }}">{{ featured_poll.question }}</a>
+    <span class="poll-banner-status"{% unless featured_poll.has_voted %} hidden{% endunless %}>{{ 'pollAlreadyVotedShort' | t }}{% if featured_poll.show_results %} &middot; <a href="{{ featured_poll.url }}">{{ 'pollSeeResults' | t }}</a>{% endif %}</span>
+</div>

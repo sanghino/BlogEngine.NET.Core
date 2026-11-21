@@ -57,8 +57,13 @@ public sealed class SiteRenderer(
     IStringLocalizer<Labels> labels,
     IAntiforgery antiforgery,
     IHttpContextAccessor httpAccessor,
-    Extensions.PageResources resources)
+    Extensions.PageResources resources,
+    Core.Services.PollService polls,
+    PollPresenter pollPresenter)
 {
+    /// <summary>Pagine senza la barra del sondaggio in evidenza.</summary>
+    private static readonly HashSet<string> NoPollBanner = new(StringComparer.OrdinalIgnoreCase) { "error" };
+
     /// <summary>Parametro con cui si prova un tema senza attivarlo (?theme=Nome), come in origine.</summary>
     public const string ThemeQueryKey = "theme";
 
@@ -80,12 +85,28 @@ public sealed class SiteRenderer(
         return value.ResourceNotFound ? key : value.Value;
     }
 
+    /// <summary>Il sondaggio in evidenza, se è aperto (con has_voted per chi ha già votato).</summary>
+    private async Task<PollModel?> FeaturedPollAsync()
+    {
+        if (await polls.GetFeaturedAsync() is not { } poll)
+        {
+            return null;
+        }
+
+        return await pollPresenter.ToModelAsync(poll);
+    }
+
     /// <summary>Mostra una pagina completa (template + layout).</summary>
     public async Task<IActionResult> PageAsync(string template, PageMeta meta, IReadOnlyDictionary<string, object?> values, int statusCode = StatusCodes.Status200OK)
     {
         var scope = await GetScopeAsync();
         await AddPageValuesAsync(scope, template, meta);
         var layout = template == "post" ? "layout-post" : template == "index" ? string.Empty : "layout-page";
+        if (statusCode == StatusCodes.Status200OK && !NoPollBanner.Contains(template) && await FeaturedPollAsync() is { } featured)
+        {
+            values = new Dictionary<string, object?>(values) { [ThemeEngine.FeaturedPollKey] = featured };
+        }
+
         var html = await engine.RenderPageAsync(scope, template, layout, values);
         return new ContentResult { Content = html, ContentType = "text/html; charset=utf-8", StatusCode = statusCode };
     }
@@ -402,7 +423,7 @@ public sealed class SiteRenderer(
             "currentlyRated", "ratingHasBeenRegistered", "rateThisXStars", "areYouSure", "areYouSureDeleteComment",
             "required", "enterValidEmail", "name", "email", "comment", "thankYou", "enterEmailAddress", "filter",
             "filterByApml", "filterByApmlDescription", "delete", "replyToThis", "cancelReply",
-            "pollChooseAnswer", "pollChooseUpTo", "pollVoters", "pollThankYou",
+            "pollChooseAnswer", "pollChooseUpTo", "pollVoters", "pollThankYou", "pollAlreadyVotedShort", "pollSeeResults",
         ];
 
         var tokens = Tokens;

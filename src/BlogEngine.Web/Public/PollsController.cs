@@ -58,6 +58,35 @@ public sealed class PollsController(
         };
     }
 
+    /// <summary>Pagina di un solo sondaggio (da linkare nei post o condividere), anche quando è concluso.</summary>
+    [HttpGet("/poll/{key}")]
+    public async Task<IActionResult> Details(string key)
+    {
+        if (!await content.CanAsync(Rights.ViewPublicPosts))
+        {
+            return Redirect("~/account/login");
+        }
+
+        if (await polls.FindAsync(key) is not { } poll || poll.StatusAt(polls.UtcNow) == PollStatus.Scheduled)
+        {
+            return await site.PageAsync("error", new PageMeta { Title = site.T("pollNotFound"), NoIndex = true }, new Dictionary<string, object?>
+            {
+                ["error"] = new { code = StatusCodes.Status404NotFound, title = site.T("pollNotFound"), text = string.Empty, suggestions = Array.Empty<object>() },
+            }, StatusCodes.Status404NotFound);
+        }
+
+        var model = await presenter.ToModelAsync(poll);
+        return await site.PageAsync("poll", new PageMeta
+        {
+            Title = poll.Question,
+            Description = string.IsNullOrWhiteSpace(poll.Description) ? poll.Question : poll.Description,
+        }, new Dictionary<string, object?>
+        {
+            ["poll"] = model,
+            ["polls_url"] = Url.Content("~/polls"),
+        });
+    }
+
     /// <summary>Sondaggi in corso e conclusi, con i risultati che il visitatore può vedere.</summary>
     [HttpGet("/polls")]
     public async Task<IActionResult> Archive()

@@ -73,6 +73,10 @@
                             </div>
                         </div>
                         <div class="checkbox">
+                            <label><input type="checkbox" data-ng-model="poll.Featured" /> {{lbl.pollFeatured}}</label>
+                            <p class="help-block">{{lbl.pollFeaturedHelp}}</p>
+                        </div>
+                        <div class="checkbox">
                             <label><input type="checkbox" data-ng-model="poll.RegisteredOnly" /> {{lbl.pollRegisteredOnly}}</label>
                             <p class="help-block">{{lbl.pollRegisteredOnlyHelp}}</p>
                         </div>
@@ -104,7 +108,11 @@
             </thead>
             <tbody ng-repeat="item in items">
                 <tr>
-                    <td><a href="" ng-click="edit(item)">{{item.Question}}</a></td>
+                    <td>
+                        <i class="fa fa-star" ng-if="item.Featured" style="color:#f0ad4e" title="{{lbl.pollFeatured}}"></i>
+                        <a href="" ng-click="edit(item)">{{item.Question}}</a>
+                        <a class="external-link" target="_blank" href="{{item.Url}}" title="{{lbl.pollOpenPage}}" ng-if="item.Status !== 'scheduled'"><i class="fa fa-external-link"></i></a>
+                    </td>
                     <td><span class="poll-status poll-status-{{item.Status}}">{{statusLabel(item.Status)}}</span></td>
                     <td>{{item.Voters}}</td>
                     <td>{{(item.Ended || item.Ends) | date:'dd/MM/yyyy HH:mm'}}<span ng-if="!item.Ended && !item.Ends">&ndash;</span></td>

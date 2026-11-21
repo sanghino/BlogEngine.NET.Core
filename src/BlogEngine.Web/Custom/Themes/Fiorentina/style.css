@@ -145,6 +145,32 @@ img {
 	box-shadow: 0 2px 4px rgba(0,0,0,0.04);
 }
 
+/* Barra del sondaggio in evidenza: stesse misure e colori del menu, subito sotto. */
+#menu + .poll-banner {
+	margin-top: -15px;
+	margin-bottom: 25px;
+}
+
+.poll-banner {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	border-radius: 8px;
+	padding: 10px 16px;
+	box-shadow: 0 2px 4px rgba(0,0,0,0.04);
+	font-size: 15px;
+	font-weight: 600;
+	color: #4a5568;
+}
+
+.poll-banner-icon {
+	fill: #6330C9;
+	opacity: 1;
+}
+
+.poll-banner-question {
+	color: #6330C9;
+}
+
 #menu ul {
 	list-style: none;
 	margin: 0;
@@ -1187,4 +1213,93 @@ input[type="submit"]:hover, input[type="button"]:hover, button:hover {
 		width: auto !important;
 		margin: 1em 0 !important;
 	}
+}
+
+/*----------------------------
+	Sondaggi (widget, pagina del sondaggio, /polls)
+----------------------------*/
+
+.poll-kicker {
+	margin: 0 0 4px 0;
+	font-size: 13px;
+	font-weight: bold;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+	color: #a0aec0;
+}
+
+.poll-question,
+.poll-question a {
+	color: #6330C9;
+	text-decoration: none;
+}
+
+.poll-question a:hover {
+	text-decoration: underline;
+}
+
+.poll-description,
+.poll-hint,
+.poll-dates,
+.poll-voters {
+	color: #718096;
+	opacity: 1;
+}
+
+.poll-options input {
+	accent-color: #6330C9;
+}
+
+.poll-count {
+	color: #4a5568;
+	opacity: 1;
+}
+
+.poll-bar {
+	height: 8px;
+	background: #edf2f7;
+	border-radius: 4px;
+}
+
+.poll-bar span {
+	background: #b7a2ea;
+	border-radius: 4px;
+	opacity: 1;
+}
+
+.poll-winner .poll-option,
+.poll-winner .poll-count {
+	color: #6330C9;
+}
+
+.poll-winner .poll-bar span {
+	background: #6330C9;
+}
+
+.poll-message {
+	color: #6330C9;
+	font-weight: bold;
+}
+
+.poll-button {
+	background: #6330C9;
+	color: #ffffff;
+	border: 0;
+	border-radius: 6px;
+	padding: 6px 18px;
+	font-weight: bold;
+	cursor: pointer;
+}
+
+.poll-button:hover {
+	background: #4c249c;
+}
+
+#page.polls-page .poll {
+	padding: 12px 0;
+	border-bottom: 1px solid #e2e8f0;
+}
+
+#page.polls-page .poll:last-of-type {
+	border-bottom: 0;
 }

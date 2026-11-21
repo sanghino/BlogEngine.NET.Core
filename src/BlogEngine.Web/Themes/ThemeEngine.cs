@@ -57,6 +57,17 @@ public sealed class ThemeEngine
 
     public string DefaultsFolder => _defaultsFolder;
 
+    /// <summary>Valore con il sondaggio in evidenza (la barra poll-banner).</summary>
+    public const string FeaturedPollKey = "featured_poll";
+
+    /// <summary>
+    /// Variabile del layout con la barra del sondaggio in evidenza, da mettere subito dopo il menu
+    /// ({{ poll_banner }}). Se il layout del tema non la usa, la barra va in cima al contenuto.
+    /// </summary>
+    public const string PollBannerVariable = "poll_banner";
+
+    private readonly ConcurrentDictionary<string, (DateTime Modified, bool Uses)> _bannerPlacement = new(StringComparer.Ordinal);
+
     /// <summary>
     /// Mostra una pagina completa: prima il template della pagina (es. "post"), poi il layout del
     /// tema che lo contiene. Per i post si usa "layout-post" e per le altre pagine "layout-page",
@@ -65,11 +76,43 @@ public sealed class ThemeEngine
     public async Task<string> RenderPageAsync(ThemeScope scope, string template, string layout, IReadOnlyDictionary<string, object?> values)
     {
         var context = CreateContext(scope, values);
-        var body = await RenderTemplateAsync(scope, template, context);
-        context.SetValue("content_for_layout", new StringValue(body, false));
-
         var layoutName = !string.IsNullOrEmpty(layout) && Exists(scope, layout) ? layout : "layout";
+
+        var banner = string.Empty;
+        if (values.TryGetValue(FeaturedPollKey, out var featured) && featured is not null && Exists(scope, "poll-banner"))
+        {
+            banner = await RenderTemplateAsync(scope, "poll-banner", context);
+        }
+
+        context.SetValue(PollBannerVariable, new StringValue(banner, false));
+        var body = await RenderTemplateAsync(scope, template, context);
+        if (banner.Length > 0 && !LayoutPlacesBanner(scope, layoutName))
+        {
+            body = banner + body;
+        }
+
+        context.SetValue("content_for_layout", new StringValue(body, false));
         return await RenderTemplateAsync(scope, layoutName, context);
+    }
+
+    /// <summary>Il layout contiene {{ poll_banner }}? (Letto una volta e riletto solo se il file cambia.)</summary>
+    private bool LayoutPlacesBanner(ThemeScope scope, string layoutName)
+    {
+        var file = GetOptions(scope.Theme.Folder).FileProvider.GetFileInfo(layoutName + TemplateExtension);
+        if (!file.Exists || file.PhysicalPath is null)
+        {
+            return false;
+        }
+
+        var modified = File.GetLastWriteTimeUtc(file.PhysicalPath);
+        if (_bannerPlacement.TryGetValue(file.PhysicalPath, out var cached) && cached.Modified == modified)
+        {
+            return cached.Uses;
+        }
+
+        var uses = File.ReadAllText(file.PhysicalPath).Contains(PollBannerVariable, StringComparison.Ordinal);
+        _bannerPlacement[file.PhysicalPath] = (modified, uses);
+        return uses;
     }
 
     /// <summary>Mostra un solo template senza layout (es. un commento appena inviato).</summary>

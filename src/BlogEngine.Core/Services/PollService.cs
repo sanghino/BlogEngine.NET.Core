@@ -85,6 +85,12 @@ public sealed class Poll
     /// <summary>Votano solo gli utenti collegati.</summary>
     public bool RegisteredOnly { get; set; }
 
+    /// <summary>In evidenza: finché è aperto compare in una barra in cima alle pagine del sito.</summary>
+    public bool Featured { get; set; }
+
+    /// <summary>Indirizzo della pagina del sondaggio (/poll/slug), creato dalla domanda al primo salvataggio.</summary>
+    public string Slug { get; set; } = string.Empty;
+
     public PollResultsVisibility ResultsVisibility { get; set; } = PollResultsVisibility.AfterVote;
 
     public List<PollVote> Votes { get; set; } = [];
@@ -101,6 +107,25 @@ public sealed class Poll
     /// <summary>Voti per risposta, nell'ordine delle risposte.</summary>
     public IReadOnlyList<(PollOption Option, int Votes)> Results() =>
         Options.Select(o => (o, Votes.Count(v => v.Options.Contains(o.Id)))).ToList();
+
+    /// <summary>
+    /// Percentuale di ogni risposta sul totale delle scelte espresse (non sui votanti: con la scelta multipla
+    /// un votante sceglie più risposte). Arrotondate in modo che la somma sia sempre 100 (0 senza voti).
+    /// </summary>
+    public static int[] Percentages(IReadOnlyList<int> votes)
+    {
+        var total = votes.Sum();
+        var result = new int[votes.Count];
+        if (total == 0) return result;
+        var exact = votes.Select(v => 100.0 * v / total).ToArray();
+        for (var i = 0; i < result.Length; i++) result[i] = (int)Math.Floor(exact[i]);
+        // I punti mancanti vanno alle risposte con il resto più alto (a parità, la prima).
+        foreach (var i in Enumerable.Range(0, result.Length)
+                     .OrderByDescending(i => exact[i] - result[i]).ThenBy(i => i)
+                     .Take(100 - result.Sum()))
+            result[i]++;
+        return result;
+    }
 }
 
 public enum PollVoteResult
@@ -134,6 +159,21 @@ public sealed class PollService(IExtensionDataStore store, IBlogContext context,
 
     public async Task<Poll?> GetAsync(Guid id, CancellationToken cancellationToken = default) =>
         (await LoadAsync(cancellationToken)).FirstOrDefault(p => p.Id == id);
+
+    /// <summary>Sondaggio dall'indirizzo della sua pagina: lo slug oppure l'identificativo (32 cifre).</summary>
+    public async Task<Poll?> FindAsync(string key, CancellationToken cancellationToken = default)
+    {
+        var polls = await LoadAsync(cancellationToken);
+        return polls.FirstOrDefault(p => string.Equals(p.Slug, key, StringComparison.OrdinalIgnoreCase))
+            ?? (Guid.TryParse(key, out var id) ? polls.FirstOrDefault(p => p.Id == id) : null);
+    }
+
+    /// <summary>Il sondaggio in evidenza: il più recente tra quelli aperti con l'opzione "in evidenza".</summary>
+    public async Task<Poll?> GetFeaturedAsync(CancellationToken cancellationToken = default)
+    {
+        var now = clock.UtcNow;
+        return (await GetAllAsync(cancellationToken)).FirstOrDefault(p => p.Featured && p.StatusAt(now) == PollStatus.Open);
+    }
 
     /// <summary>Il sondaggio aperto più recente (quello che il widget mostra se non ne è stato scelto uno).</summary>
     public async Task<Poll?> GetCurrentAsync(CancellationToken cancellationToken = default)
@@ -197,6 +237,14 @@ public sealed class PollService(IExtensionDataStore store, IBlogContext context,
             poll.EndsUtc = changes.EndsUtc;
             poll.RegisteredOnly = changes.RegisteredOnly;
             poll.ResultsVisibility = changes.ResultsVisibility;
+            poll.Featured = changes.Featured;
+
+            // L'indirizzo della pagina del sondaggio nasce dalla domanda e poi non cambia più (i link restano validi).
+            if (string.IsNullOrEmpty(poll.Slug))
+            {
+                poll.Slug = UniqueSlug(question, polls.Where(p => p != poll).Select(p => p.Slug));
+            }
+
             saved = poll;
             return true;
         }, cancellationToken);
@@ -296,6 +344,30 @@ public sealed class PollService(IExtensionDataStore store, IBlogContext context,
         }, cancellationToken);
 
         return result;
+    }
+
+    private static string UniqueSlug(string question, IEnumerable<string> taken)
+    {
+        var used = taken.Where(s => !string.IsNullOrEmpty(s)).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var slug = BlogEngine.Text.Slug.Create(question).ToLowerInvariant().Trim('-');
+        if (slug.Length > 80)
+        {
+            slug = slug[..80].TrimEnd('-');
+        }
+
+        // "vote" è l'indirizzo per votare; un testo senza lettere (solo simboli) diventa "sondaggio".
+        if (slug.Length == 0 || slug == "vote")
+        {
+            slug = "sondaggio";
+        }
+
+        var candidate = slug;
+        for (var n = 2; used.Contains(candidate); n++)
+        {
+            candidate = $"{slug}-{n}";
+        }
+
+        return candidate;
     }
 
     private static string Clean(string? text)
