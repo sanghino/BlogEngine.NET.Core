@@ -1,0 +1,55 @@
+<div class="content-games-view" data-ng-controller="GamesController">
+    <style>
+        .content-games-view .game-block { margin-bottom: 30px; }
+        .content-games-view .game-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-bottom: 6px; }
+        .content-games-view .game-head h3 { margin: 0; font-size: 18px; }
+        .content-games-view .game-head code { font-size: 13px; }
+        .content-games-view .item-actions { white-space: nowrap; text-align: right; }
+        .content-games-view td.num { text-align: right; }
+    </style>
+    <div class="main-header clearfix">
+        <h2 class="page-title pull-left">{{lbl.games}}</h2>
+    </div>
+    <div class="content-inner">
+        <div class="game-block" ng-repeat="game in games">
+            <div class="game-head">
+                <h3>{{lbl.gameName}}</h3>
+                <code>{{game.Code}}</code>
+                <button type="button" class="btn btn-danger btn-sm" ng-click="reset(game)" ng-disabled="game.Scores.length === 0"><i class="fa fa-eraser"></i> {{lbl.gamesReset}}</button>
+            </div>
+            <p class="text-muted">{{help(game)}}</p>
+            <table class="table" ng-if="game.Scores.length > 0">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>{{lbl.gamePlayer}}</th>
+                        <th class="num">{{lbl.gameScore}}</th>
+                        <th class="num">{{lbl.gameLines}}</th>
+                        <th class="num">{{lbl.gameLevel}}</th>
+                        <th class="num">{{lbl.gamesDuration}}</th>
+                        <th class="num">{{lbl.gamesPlayed}}</th>
+                        <th>{{lbl.gamesLastPlayed}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr ng-repeat="entry in game.Scores">
+                        <td>{{entry.Rank}}</td>
+                        <td>{{entry.DisplayName}} <span class="text-muted" ng-if="entry.DisplayName !== entry.UserName">({{entry.UserName}})</span></td>
+                        <td class="num">{{entry.Score | number}}</td>
+                        <td class="num">{{entry.Lines}}</td>
+                        <td class="num">{{entry.Level}}</td>
+                        <td class="num">{{duration(entry.Seconds)}}</td>
+                        <td class="num">{{entry.Games}}</td>
+                        <td>{{entry.LastPlayed}}</td>
+                        <td class="item-actions">
+                            <button type="button" class="btn btn-danger btn-sm" ng-click="remove(game, entry)" title="{{lbl.delete}}"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-muted" ng-if="game.Scores.length === 0">{{lbl.gamesEmpty}}</p>
+        </div>
+        <div class="table-item-empty" id="tr-spinner" ng-if="!loaded"><div id="div-spinner"><i class="fa fa-spinner fa-spin"></i></div></div>
+    </div>
+</div>

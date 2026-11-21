@@ -396,3 +396,13 @@ ul#monthList ul li { margin-left: 12px; border-bottom: 0; padding: 3px 0; }
 		margin: 1em 0 !important;
 	}
 }
+
+/*==== Gioco "Blocchi" ([gioco:blocchi]) ===================================*/
+.block-game {
+	--game-accent: var(--ss-accent); --game-board: #1f1f1f; --game-grid: rgba(255, 255, 255, 0.05); --game-ghost: rgba(255, 255, 255, 0.16);
+	--game-c1: #e0a93f; --game-c2: #8fb3c9; --game-c3: #9cc47a; --game-c4: #d46a5a; --game-c5: #b59ac9; --game-c6: #e8e0c8; --game-bomb: #f59e0b;
+	color: var(--ss-text);
+}
+.block-game-stats dd { color: #1f1f1f; }
+.block-game .btn.block-game-pause { background: var(--ss-soft); border: 1px solid var(--ss-line); color: var(--ss-text); }
+.block-game .btn.block-game-pause:hover { background: #fff4df; color: var(--ss-accent); }

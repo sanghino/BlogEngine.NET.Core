@@ -1303,3 +1303,33 @@ input[type="submit"]:hover, input[type="button"]:hover, button:hover {
 #page.polls-page .poll:last-of-type {
 	border-bottom: 0;
 }
+
+/*----------------------------
+	Gioco "Blocchi" ([gioco:blocchi])
+----------------------------*/
+
+.block-game {
+	--game-accent: #6330C9;
+	--game-board: #241446;
+	--game-grid: rgba(255, 255, 255, 0.06);
+	--game-ghost: rgba(183, 162, 234, 0.25);
+	--game-c1: #b7a2ea;
+	--game-c2: #f6c453;
+	--game-c3: #6fcf97;
+	--game-c4: #eb6f6f;
+	--game-c5: #8b5cf6;
+	--game-c6: #ffffff;
+	--game-bomb: #f97316;
+	color: #4a5568;
+}
+
+.block-game-stats dd,
+.block-game-leaderboard-title {
+	color: #6330C9;
+}
+
+.block-game .btn.block-game-pause {
+	background: #ffffff;
+	border: 1px solid #e2e8f0;
+	color: #6330C9;
+}

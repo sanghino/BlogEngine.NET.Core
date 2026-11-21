@@ -63,6 +63,7 @@ public static class ServiceCollectionExtensions
         services.TryAddScoped<BlogEngine.Extensions.IExtensionSettingsService, Extensions.ExtensionSettingsService>();
         services.TryAddScoped<NewsletterSubscribers>();
         services.TryAddScoped<PollService>();
+        services.TryAddScoped<GameScoreService>();
         services.TryAddScoped<IEmailQueue, ImmediateEmailQueue>();
         services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<CommentChangedEvent>, CommentNotificationHandler>());
         services.TryAddSingleton<BlogEngine.Core.Files.FileStore>();

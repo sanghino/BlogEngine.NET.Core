@@ -476,3 +476,9 @@ div.post .text img, #page img { max-width: 100%; height: auto; }
 .poll-banner-icon { fill : #996600; opacity : 1;}
 .poll-banner-question { color : #996600;}
 .poll-banner-question:hover { color : #ff9900;}
+
+/*==== Gioco "Blocchi" ([gioco:blocchi]) ===================================*/
+.block-game { --game-accent: #996600; --game-board: #1f1f1f; --game-grid: rgba(255,255,255,0.05); --game-ghost: rgba(255,255,255,0.15);
+	--game-c1: #d9a441; --game-c2: #8fb3c9; --game-c3: #9cc47a; --game-c4: #d46a5a; --game-c5: #b59ac9; --game-c6: #e8e0c8; --game-bomb: #ff9900; color: #444444;}
+.block-game-stats dd, .block-game-leaderboard-title { color: #996600;}
+.block-game .btn.block-game-pause { background: #f0f0f0; border: 1px solid #c8c8c8; color: #444444;}

@@ -130,3 +130,49 @@ div.post .text a[rel~="muse"][rel~="met"], div.post .text a[rel~="crush"][rel~="
 .poll-banner-question { font-weight: bold; }
 .poll-banner-status { font-size: .9em; opacity: .85; }
 .poll-banner-status[hidden] { display: none; }
+
+/*[ Gioco "Blocchi" (codice [gioco:blocchi]): campo, punteggi, pulsanti per il telefono e classifica.
+    I temi cambiano i colori con le variabili --game-* (campo, griglia, pezzi, bomba, accento). ]*/
+.block-game { --game-accent: #996600; max-width: 560px; margin: 1em auto; outline: none; }
+.block-game-play { display: flex; gap: 16px; align-items: flex-start; justify-content: center; }
+.block-game-stage { position: relative; flex: 0 0 auto; line-height: 0; }
+.block-game-board { display: block; max-width: 100%; border-radius: 8px; touch-action: manipulation; }
+.block-game-overlay { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 10px;
+    padding: 16px; border-radius: 8px; background: rgba(0, 0, 0, .62); color: #fff; text-align: center; line-height: 1.4; }
+.block-game-overlay[hidden] { display: none; }
+.block-game-overlay-title { margin: 0; font-size: 24px; font-weight: bold; }
+.block-game-overlay-text { margin: 0; font-size: 16px; }
+.block-game-overlay-text[hidden] { display: none; }
+.block-game .btn.block-game-start { padding: 10px 26px; font-size: 17px; border: 0; border-radius: 6px; background: var(--game-accent); color: #fff; cursor: pointer; }
+.block-game-side { flex: 0 0 130px; display: flex; flex-direction: column; gap: 12px; }
+.block-game-stats { margin: 0; display: grid; grid-template-columns: 1fr; gap: 2px; }
+.block-game-stats dt { margin: 6px 0 0 0; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; opacity: .7; }
+.block-game-stats dd { margin: 0; font-size: 22px; font-weight: bold; line-height: 1.2; font-variant-numeric: tabular-nums; }
+.block-game-label { display: block; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; opacity: .7; margin-bottom: 4px; }
+.block-game-next-canvas { display: block; }
+.block-game .btn.block-game-pause { padding: 6px 10px; border-radius: 6px; cursor: pointer; }
+.block-game .btn.block-game-pause:disabled { opacity: .45; cursor: default; }
+.block-game-pad { display: none; justify-content: center; gap: 8px; margin: 12px 0 0 0; }
+.block-game-key { flex: 1 1 0; max-width: 72px; height: 52px; font-size: 22px; border: 1px solid rgba(128, 128, 128, .4); border-radius: 10px;
+    background: rgba(128, 128, 128, .12); color: inherit; cursor: pointer; touch-action: none; user-select: none; -webkit-user-select: none; }
+.block-game-key:active { background: rgba(128, 128, 128, .3); }
+@media (pointer: coarse), (max-width: 600px) { .block-game-pad { display: flex; } }
+.block-game-help { margin: 10px 0 0 0; font-size: 13px; opacity: .75; text-align: center; }
+.block-game-leaderboard { margin-top: 18px; }
+.block-game-leaderboard-title { margin: 0 0 8px 0; }
+.block-game-message { margin: 0 0 8px 0; font-weight: bold; }
+.block-game-message[hidden] { display: none; }
+.block-game-message-best { color: var(--game-accent); }
+/* :is(#page, ...) dà a queste regole il peso di un id: vincono sulle regole delle tabelle dei temi (es. "#page td"). */
+:is(#page, body) .block-game-table table { display: table; width: 100%; max-width: none; margin: 0; border: 0; border-collapse: collapse; font-size: 15px; }
+:is(#page, body) .block-game-table th, :is(#page, body) .block-game-table td { padding: 5px 6px; text-align: left; border: 0; border-bottom: 1px solid rgba(128, 128, 128, .25); background: none; }
+.block-game-table th { font-size: 12px; text-transform: uppercase; letter-spacing: .04em; opacity: .75; }
+:is(#page, body) .block-game-table .block-game-points, :is(#page, body) .block-game-table .block-game-lines, :is(#page, body) .block-game-table th:nth-child(n+3) { text-align: right; font-variant-numeric: tabular-nums; }
+.block-game-table .block-game-rank { width: 2em; opacity: .7; }
+.block-game-table .block-game-me td { font-weight: bold; color: var(--game-accent); }
+.block-game-account { margin: 8px 0 0 0; font-size: 14px; }
+@media (max-width: 480px) {
+    .block-game-play { gap: 10px; }
+    .block-game-side { flex-basis: 92px; }
+    .block-game-stats dd { font-size: 18px; }
+}

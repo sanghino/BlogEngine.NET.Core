@@ -1624,3 +1624,41 @@ input[type="file"] {
 #page .poll-archive a {
 	font-weight: 600;
 }
+
+/*----------------------------
+	Gioco "Blocchi" ([gioco:blocchi])
+----------------------------*/
+
+.block-game {
+	--game-accent: var(--eg-orange);
+	--game-board: #08142b;
+	--game-grid: rgba(120, 170, 255, 0.08);
+	--game-ghost: rgba(140, 200, 255, 0.18);
+	--game-c1: #38bdf8;
+	--game-c2: #f59e0b;
+	--game-c3: #34d399;
+	--game-c4: #f87171;
+	--game-c5: #a78bfa;
+	--game-c6: #22d3ee;
+	--game-bomb: #fb923c;
+	color: var(--eg-muted);
+}
+
+.block-game-board {
+	border: 1px solid var(--eg-line-soft);
+	box-shadow: 0 0 24px rgba(56, 189, 248, 0.12);
+}
+
+.block-game-stats dd {
+	color: var(--eg-white);
+}
+
+.block-game-leaderboard-title {
+	color: var(--eg-white);
+}
+
+.block-game .btn.block-game-pause {
+	background: transparent;
+	border: 1px solid var(--eg-line-soft);
+	color: var(--eg-sky-light);
+}

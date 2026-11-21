@@ -3344,4 +3344,121 @@
   <data name="pollSeeResults" xml:space="preserve">
     <value>See the results</value>
   </data>
+  <data name="games" xml:space="preserve">
+    <value>Games</value>
+  </data>
+  <data name="gameName" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="gameStart" xml:space="preserve">
+    <value>Play</value>
+  </data>
+  <data name="gamePlayAgain" xml:space="preserve">
+    <value>Play again</value>
+  </data>
+  <data name="gamePause" xml:space="preserve">
+    <value>Pause</value>
+  </data>
+  <data name="gameResume" xml:space="preserve">
+    <value>Resume</value>
+  </data>
+  <data name="gameOver" xml:space="preserve">
+    <value>Game over</value>
+  </data>
+  <data name="gameScore" xml:space="preserve">
+    <value>Score</value>
+  </data>
+  <data name="gameLines" xml:space="preserve">
+    <value>Lines</value>
+  </data>
+  <data name="gameLevel" xml:space="preserve">
+    <value>Level</value>
+  </data>
+  <data name="gameNext" xml:space="preserve">
+    <value>Next</value>
+  </data>
+  <data name="gamePlayer" xml:space="preserve">
+    <value>Player</value>
+  </data>
+  <data name="gameHelp" xml:space="preserve">
+    <value>Arrows: move and rotate · Space: drop · P: pause. Complete a row to clear it; the ✸ bomb blows up the blocks around it.</value>
+  </data>
+  <data name="gameHelpTouch" xml:space="preserve">
+    <value>Use the buttons; tap the board to rotate.</value>
+  </data>
+  <data name="gameLeaderboard" xml:space="preserve">
+    <value>Leaderboard</value>
+  </data>
+  <data name="gameLeaderboardEmpty" xml:space="preserve">
+    <value>No scores yet: be the first!</value>
+  </data>
+  <data name="gameLoginToRank" xml:space="preserve">
+    <value>Log in to enter the leaderboard.</value>
+  </data>
+  <data name="gameLogin" xml:space="preserve">
+    <value>Log in</value>
+  </data>
+  <data name="gameRegister" xml:space="preserve">
+    <value>Sign up</value>
+  </data>
+  <data name="gameNewBest" xml:space="preserve">
+    <value>New personal best!</value>
+  </data>
+  <data name="gameSaved" xml:space="preserve">
+    <value>Score saved: your best is still ahead.</value>
+  </data>
+  <data name="gameYourBest" xml:space="preserve">
+    <value>Your best</value>
+  </data>
+  <data name="gameYourRank" xml:space="preserve">
+    <value>Position</value>
+  </data>
+  <data name="gameInvalid" xml:space="preserve">
+    <value>This score could not be accepted.</value>
+  </data>
+  <data name="gameError" xml:space="preserve">
+    <value>Unable to reach the site, try again later.</value>
+  </data>
+  <data name="gameLeft" xml:space="preserve">
+    <value>Left</value>
+  </data>
+  <data name="gameRight" xml:space="preserve">
+    <value>Right</value>
+  </data>
+  <data name="gameRotate" xml:space="preserve">
+    <value>Rotate</value>
+  </data>
+  <data name="gameDown" xml:space="preserve">
+    <value>Down</value>
+  </data>
+  <data name="gameDrop" xml:space="preserve">
+    <value>Drop</value>
+  </data>
+  <data name="gameNoScript" xml:space="preserve">
+    <value>To play you need to enable JavaScript.</value>
+  </data>
+  <data name="gamesHelp" xml:space="preserve">
+    <value>Put the code {0} in a page (or post) to show the game. Anyone can play; only registered users enter the leaderboard, with their best score.</value>
+  </data>
+  <data name="gamesReset" xml:space="preserve">
+    <value>Reset leaderboard</value>
+  </data>
+  <data name="gamesResetConfirm" xml:space="preserve">
+    <value>Delete all the scores of this game?</value>
+  </data>
+  <data name="gamesRemoveConfirm" xml:space="preserve">
+    <value>Remove this player from the leaderboard?</value>
+  </data>
+  <data name="gamesPlayed" xml:space="preserve">
+    <value>Games played</value>
+  </data>
+  <data name="gamesLastPlayed" xml:space="preserve">
+    <value>Last game</value>
+  </data>
+  <data name="gamesDuration" xml:space="preserve">
+    <value>Duration</value>
+  </data>
+  <data name="gamesEmpty" xml:space="preserve">
+    <value>No scores yet.</value>
+  </data>
 </root>

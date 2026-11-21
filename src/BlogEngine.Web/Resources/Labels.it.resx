@@ -3342,4 +3342,121 @@
   <data name="pollSeeResults" xml:space="preserve">
     <value>Vedi i risultati</value>
   </data>
+  <data name="games" xml:space="preserve">
+    <value>Giochi</value>
+  </data>
+  <data name="gameName" xml:space="preserve">
+    <value>Blocchi</value>
+  </data>
+  <data name="gameStart" xml:space="preserve">
+    <value>Gioca</value>
+  </data>
+  <data name="gamePlayAgain" xml:space="preserve">
+    <value>Gioca ancora</value>
+  </data>
+  <data name="gamePause" xml:space="preserve">
+    <value>Pausa</value>
+  </data>
+  <data name="gameResume" xml:space="preserve">
+    <value>Riprendi</value>
+  </data>
+  <data name="gameOver" xml:space="preserve">
+    <value>Partita finita</value>
+  </data>
+  <data name="gameScore" xml:space="preserve">
+    <value>Punti</value>
+  </data>
+  <data name="gameLines" xml:space="preserve">
+    <value>Righe</value>
+  </data>
+  <data name="gameLevel" xml:space="preserve">
+    <value>Livello</value>
+  </data>
+  <data name="gameNext" xml:space="preserve">
+    <value>Prossimo</value>
+  </data>
+  <data name="gamePlayer" xml:space="preserve">
+    <value>Giocatore</value>
+  </data>
+  <data name="gameHelp" xml:space="preserve">
+    <value>Frecce: sposta e ruota · Spazio: fai cadere · P: pausa. Completa una riga per farla sparire; la bomba ✸ fa saltare i blocchi intorno.</value>
+  </data>
+  <data name="gameHelpTouch" xml:space="preserve">
+    <value>Usa i pulsanti; tocca il campo per ruotare.</value>
+  </data>
+  <data name="gameLeaderboard" xml:space="preserve">
+    <value>Classifica</value>
+  </data>
+  <data name="gameLeaderboardEmpty" xml:space="preserve">
+    <value>Ancora nessun punteggio: sii il primo!</value>
+  </data>
+  <data name="gameLoginToRank" xml:space="preserve">
+    <value>Accedi per entrare in classifica.</value>
+  </data>
+  <data name="gameLogin" xml:space="preserve">
+    <value>Accedi</value>
+  </data>
+  <data name="gameRegister" xml:space="preserve">
+    <value>Registrati</value>
+  </data>
+  <data name="gameNewBest" xml:space="preserve">
+    <value>Nuovo record personale!</value>
+  </data>
+  <data name="gameSaved" xml:space="preserve">
+    <value>Punteggio registrato: il tuo record resta più alto.</value>
+  </data>
+  <data name="gameYourBest" xml:space="preserve">
+    <value>Il tuo record</value>
+  </data>
+  <data name="gameYourRank" xml:space="preserve">
+    <value>Posizione</value>
+  </data>
+  <data name="gameInvalid" xml:space="preserve">
+    <value>Questo punteggio non può essere accettato.</value>
+  </data>
+  <data name="gameError" xml:space="preserve">
+    <value>Impossibile contattare il sito, riprova più tardi.</value>
+  </data>
+  <data name="gameLeft" xml:space="preserve">
+    <value>Sinistra</value>
+  </data>
+  <data name="gameRight" xml:space="preserve">
+    <value>Destra</value>
+  </data>
+  <data name="gameRotate" xml:space="preserve">
+    <value>Ruota</value>
+  </data>
+  <data name="gameDown" xml:space="preserve">
+    <value>Giù</value>
+  </data>
+  <data name="gameDrop" xml:space="preserve">
+    <value>Fai cadere</value>
+  </data>
+  <data name="gameNoScript" xml:space="preserve">
+    <value>Per giocare serve JavaScript attivo.</value>
+  </data>
+  <data name="gamesHelp" xml:space="preserve">
+    <value>Metti il codice {0} in una pagina (o in un post) per mostrare il gioco. Tutti possono giocare; in classifica entrano solo gli utenti registrati, con il loro miglior punteggio.</value>
+  </data>
+  <data name="gamesReset" xml:space="preserve">
+    <value>Azzera classifica</value>
+  </data>
+  <data name="gamesResetConfirm" xml:space="preserve">
+    <value>Cancellare tutti i punteggi di questo gioco?</value>
+  </data>
+  <data name="gamesRemoveConfirm" xml:space="preserve">
+    <value>Togliere questo giocatore dalla classifica?</value>
+  </data>
+  <data name="gamesPlayed" xml:space="preserve">
+    <value>Partite</value>
+  </data>
+  <data name="gamesLastPlayed" xml:space="preserve">
+    <value>Ultima partita</value>
+  </data>
+  <data name="gamesDuration" xml:space="preserve">
+    <value>Durata</value>
+  </data>
+  <data name="gamesEmpty" xml:space="preserve">
+    <value>Ancora nessun punteggio.</value>
+  </data>
 </root>

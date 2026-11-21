@@ -4,10 +4,12 @@ using System.ServiceModel.Syndication;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 using System.Xml;
+using BlogEngine.Events;
 using BlogEngine.Models;
 using BlogEngine.Services;
 using BlogEngine.Settings;
 using BlogEngine.Text;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace BlogEngine.Web.Themes;
 
@@ -421,6 +423,8 @@ public static class BuiltInWidgetRegistration
         services.AddScoped<IWidgetDataProvider, PostListWidget>();
         services.AddScoped<IWidgetDataProvider, PollWidget>();
         services.AddScoped<PollPresenter>();
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<ServingEvent<Post>>, GameShortcodeHandler>());
+        services.TryAddEnumerable(ServiceDescriptor.Scoped<IEventHandler<ServingEvent<Page>>, GameShortcodeHandler>());
         services.AddScoped<IWidgetDataProvider, TagCloudWidget>();
         return services;
     }

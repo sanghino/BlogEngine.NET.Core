@@ -39,6 +39,7 @@
                 @if (Admin.Can(Rights.ManageWidgets))
                 {
                     <li data-ng-class="{ active: isActive('/content/polls')}"><a href="@(root)admin/#/content/polls">@L["polls"]</a></li>
+                    <li data-ng-class="{ active: isActive('/content/games')}"><a href="@(root)admin/#/content/games">@L["games"]</a></li>
                 }
                 @if (Admin.IsPrimaryBlog && Admin.Can(Rights.CreateNewBlogs))
                 {
