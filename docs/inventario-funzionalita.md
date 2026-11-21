@@ -68,7 +68,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | Stato | Sezione | Oggi | Destinazione / note |
 |---|---|---|---|
 | ☑ | Dashboard e statistiche | `dashboard/`, `DashboardController`, `StatsController` | Contratti JSON invariati |
-| ☑ | Editor di post e pagine (TinyMCE, Summernote, bootstrap-wysiwyg) | `admin/app/editor`, `admin/editors` | Le pagine `.cshtml` dell'editor diventano Razor ASP.NET Core |
+| ☑ | Editor di post e pagine (TinyMCE, Summernote, bootstrap-wysiwyg) | `admin/app/editor`, `admin/editors` | Le pagine `.cshtml` dell'editor diventano Razor ASP.NET Core. TinyMCE 8: le tabelle allineate a sinistra o a destra vengono affiancate al testo (`float` con margine, `blogAlignFormats()` in `editor.js`); le scelte di stile fatte nell'editor (colori, bordi, allineamenti) prevalgono sempre sul tema |
 | ☑ | File manager, upload | `FileManagerController`, `UploadController` | File in `App_Data/files`: elenco, caricamento, nuove cartelle, eliminazione; immagini, file, video e foto del profilo dagli editor |
 | ☑ | Contenuti: post, pagine, categorie, tag, commenti, blog | `admin/app/content/*` | API |
 | ☑ | Utenti, ruoli, profilo | `admin/app/security/*` | API |
@@ -90,6 +90,10 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Tema `Standard` | `Custom/Themes/Standard` | Convertito in Liquid |
 | ☑ | Tema `Standard-2017` | `Custom/Themes/Standard-2017` | Convertito in Liquid |
 | ☑ | Tema `Terminal` (nuovo) | `Custom/Themes/Terminal` | Stile terminale (nero e verde fosforo), barra laterale, menu delle pagine con sottomenu, variante chiara con pulsante e campo "Default mode" (dark, light, auto); `?mode=light` per le anteprime |
+| ☑ | Tema `ExtraGeek` (nuovo) | — | Tema di ExtraGeek.com: blu notte con motivo a circuito, azzurro e arancio, barra laterale a destra |
+| ☑ | Tema `Fiorentina` | tema di Fiorentina.Info | Convertito in Liquid: logo viola, data a calendario, barra laterale a destra con il prossimo impegno della Fiorentina |
+| ☑ | Tema `StableStart` | tema di SestoFiorentinoInfo | Convertito in Liquid: intestazione con le immagini di Sesto Fiorentino, barra laterale a sinistra, disclaimer |
+| ☑ | Tema `StableStart-Moderno` (nuovo) | — | StableStart rinnovato, accanto all'originale: stesse immagini e struttura, testo a 17px, riquadri per post e widget, menu che resta in alto, menu ☰ sul telefono, icone SVG; nessuna regola `!important` sul testo dei post |
 | ☑ | Spazi pubblicitari (nuovo) | (nuovo) | Widget `Advertisement` (codice incollato così com'è, scritta "Pubblicità", nascondibile agli utenti collegati) utilizzabile in qualsiasi zona; nel tema Terminal zona `between-posts` dopo il post n. 3 (campo del tema). Script come Google Analytics: *Impostazioni → Controlli* (codice nell'head o script di tracciamento) |
 | ☑ | Consenso ai cookie (nuovo, GDPR) | (nuovo) | *Impostazioni → Controlli*: banner con Accetta tutti / Rifiuta / Personalizza (statistiche, marketing), informativa collegata, scelta valida 6 mesi e revocabile dal pulsante "Cookie". Gli script di head e tracciamento partono solo col consenso alle statistiche, quelli degli annunci (filtro `consent`) col consenso al marketing (`CookieConsent`, `Scripts/consent.js`) |
 | ☑ | Modalità manutenzione (nuovo) | (nuovo) | *Impostazioni → Base*: i visitatori ricevono la pagina di manutenzione (503 + Retry-After, template `maintenance` e `layout-maintenance` ridefinibili dal tema), chi può accedere all'amministrazione vede il blog con un avviso; login, admin e file statici restano raggiungibili; un'impostazione per blog |
@@ -124,6 +128,8 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | SimpleCaptcha | `SimpleCaptcha/` | Convertita (attiva per default, come in origine) |
 | ☑ | Smilies | `Smilies.cs` | Convertita |
 | ☑ | StopForumSpam | `StopForumSpam.cs` | Convertita (API JSON attuale) |
+| ☑ | Gallery (nuova) | controllo `gallery.ascx` delle vecchie pagine | Il codice `[usercontrol: … gallery.ascx ImageUrl=/public/gallery/nome;…]` diventa una griglia con le immagini della cartella tra i file del blog (miniature dalla sottocartella `thumbs`); se la cartella manca il codice sparisce |
+| ☑ | YouTube (nuova) | estensione YouTube e lettori Flash | `[youtube:ID]` (anche con l'indirizzo completo) e i vecchi `<object>`/`<embed>` Flash diventano il riquadro del video; nei feed e nelle email resta un collegamento |
 | ☑ | Datastore delle impostazioni delle estensioni | `Web/Extensions/DataStore`, `XmlProvider/DataStore.cs` | Archivio delle estensioni dei provider XML e SQLite; un blog senza impostazioni proprie usa quelle del principale |
 
 ## 8. Endpoint pubblici e protocolli (URL `*.axd` invariati)
@@ -156,7 +162,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | `/error/{codice}` con il tema e suggerimenti di contenuti simili |
 | ☑ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | `ReferrerMiddleware` (se attivato nelle impostazioni) |
 | ☑ | Statistiche delle visite (nuovo) | — | `VisitTrackingMiddleware` e `VisitStatistics`: pagine viste, visitatori, post più letti e provenienza nella dashboard (`api/visits`). Contate dal server senza cookie né IP salvati, esclusi robot e utenti collegati; salvate ogni 5 minuti in `App_Data/stats`. Impostazione EnableVisitStatistics (Controlli) |
-| ☑ | Sondaggi (nuovo) | — | Widget `Poll` e sezione Contenuto → Sondaggi (`api/polls`, permesso ManageWidgets): scelta singola o multipla (con massimo), inizio e scadenza, chiusura e riapertura, solo utenti registrati, visibilità dei risultati (dopo il voto / sempre / a sondaggio concluso). Storico con tutti i voti, pagina pubblica `/polls` e pagina di ogni sondaggio `/poll/<indirizzo>` (dalla domanda). Opzione "in evidenza": barra subito sotto il menu, larga quanto il menu (`{{ poll_banner }}` nei layout dei temi, altrimenti in cima al contenuto; template `poll-banner`), con il titolo che porta alla pagina del sondaggio e, per chi ha già votato, l'avviso e il link ai risultati; resta finché il sondaggio è aperto. Doppio voto: nome utente e cookie del browser per sempre, impronta di rete e browser per 24 ore; solo impronte HMAC, niente IP. `PollService` nell'archivio delle estensioni (XML o SQLite) |
+| ☑ | Sondaggi (nuovo) | — | Widget `Poll` e sezione Contenuto → Sondaggi (`api/polls`, permesso ManageWidgets): scelta singola o multipla (con massimo), inizio e scadenza, chiusura e riapertura, solo utenti registrati, visibilità dei risultati (dopo il voto / sempre / a sondaggio concluso); percentuali sul totale delle scelte espresse, arrotondate a somma 100 (con la scelta multipla un votante sceglie più risposte). Storico con tutti i voti, pagina pubblica `/polls` e pagina di ogni sondaggio `/poll/<indirizzo>` (dalla domanda). Opzione "in evidenza": barra subito sotto il menu, larga quanto il menu (`{{ poll_banner }}` nei layout dei temi, altrimenti in cima al contenuto; template `poll-banner`), con il titolo che porta alla pagina del sondaggio e, per chi ha già votato, l'avviso e il link ai risultati; resta finché il sondaggio è aperto. Doppio voto: nome utente e cookie del browser per sempre, impronta di rete e browser per 24 ore; solo impronte HMAC, niente IP. `PollService` nell'archivio delle estensioni (XML o SQLite) |
 
 ## 10. Email, contatti, newsletter
 
