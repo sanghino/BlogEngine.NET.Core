@@ -1,0 +1,133 @@
+<div class="content-polls-view" data-ng-controller="PollsController">
+    <style>
+        .content-polls-view .poll-status { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 12px; background: #eee; color: #555; }
+        .content-polls-view .poll-status-open { background: #dff0d8; color: #2b6a2b; }
+        .content-polls-view .poll-status-scheduled { background: #fcf8e3; color: #8a6d3b; }
+        .content-polls-view .poll-results-row td { background: #fafafa; }
+        .content-polls-view .poll-result { margin: 6px 0; max-width: 600px; }
+        .content-polls-view .poll-result-head { display: flex; justify-content: space-between; gap: 10px; font-size: 13px; }
+        .content-polls-view .poll-result-bar { height: 8px; background: #eee; border-radius: 4px; overflow: hidden; }
+        .content-polls-view .poll-result-bar span { display: block; height: 100%; background: #1cac7b; }
+        .content-polls-view .poll-option-row { display: flex; gap: 6px; margin-bottom: 6px; align-items: center; }
+        .content-polls-view .poll-option-row input { flex: 1; }
+        .content-polls-view .poll-option-row .votes { font-size: 12px; color: #888; white-space: nowrap; }
+        .content-polls-view .item-actions { white-space: nowrap; text-align: right; }
+    </style>
+    <form id="form" style="margin:0;" onsubmit="return false;">
+        <div id="modal-poll" class="modal fade">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-hidden="true" ng-click="focusInput=false"><i class="fa fa-times"></i></button>
+                        <h4 class="modal-title">{{poll.Id ? lbl.edit : lbl.theNew}} &ndash; {{lbl.poll}}</h4>
+                    </div>
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="txtPollQuestion">{{lbl.pollQuestion}}</label>
+                            <input type="text" class="form-control" id="txtPollQuestion" maxlength="300" data-ng-model="poll.Question" focus-me="focusInput" />
+                        </div>
+                        <div class="form-group">
+                            <label for="txtPollDescription">{{lbl.description}}</label>
+                            <textarea class="form-control" id="txtPollDescription" rows="2" data-ng-model="poll.Description"></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>{{lbl.pollAnswers}}</label>
+                            <div class="poll-option-row" ng-repeat="option in poll.Options">
+                                <input type="text" class="form-control" maxlength="300" data-ng-model="option.Text" />
+                                <span class="votes" ng-if="option.Votes > 0">{{option.Votes}} {{lbl.pollVoters | lowercase}}</span>
+                                <button type="button" class="btn btn-default btn-sm" ng-click="moveOption($index, -1)" ng-disabled="$first"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-default btn-sm" ng-click="moveOption($index, 1)" ng-disabled="$last"><i class="fa fa-arrow-down"></i></button>
+                                <button type="button" class="btn btn-danger btn-sm" ng-click="removeOption($index)" ng-disabled="option.Votes > 0 || poll.Options.length <= 2" title="{{lbl.delete}}"><i class="fa fa-trash"></i></button>
+                            </div>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="addOption()" ng-disabled="poll.Options.length >= 20"><i class="fa fa-plus"></i> {{lbl.pollAddAnswer}}</button>
+                        </div>
+                        <div class="row">
+                            <div class="col-sm-6">
+                                <div class="checkbox">
+                                    <label><input type="checkbox" data-ng-model="poll.MultipleChoice" /> {{lbl.pollMultipleChoice}}</label>
+                                </div>
+                                <div class="form-group" ng-if="poll.MultipleChoice">
+                                    <label for="txtPollMax">{{lbl.pollMaxChoices}}</label>
+                                    <input type="number" min="0" max="20" class="form-control" id="txtPollMax" data-ng-model="poll.MaxChoices" />
+                                </div>
+                                <div class="form-group">
+                                    <label for="selPollResults">{{lbl.pollResultsVisibility}}</label>
+                                    <select id="selPollResults" class="form-control" data-ng-model="poll.ResultsVisibility">
+                                        <option value="AfterVote">{{lbl.pollResultsAfterVote}}</option>
+                                        <option value="Always">{{lbl.pollResultsAlways}}</option>
+                                        <option value="AfterClose">{{lbl.pollResultsOnlyAfterClose}}</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-sm-6">
+                                <div class="form-group">
+                                    <label for="txtPollStarts">{{lbl.pollStarts}}</label>
+                                    <input type="datetime-local" class="form-control" id="txtPollStarts" data-ng-model="poll.Starts" />
+                                    <p class="help-block">{{lbl.pollStartsHelp}}</p>
+                                </div>
+                                <div class="form-group">
+                                    <label for="txtPollEnds">{{lbl.pollEndsAdmin}}</label>
+                                    <input type="datetime-local" class="form-control" id="txtPollEnds" data-ng-model="poll.Ends" />
+                                    <p class="help-block">{{lbl.pollEndsHelp}}</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="checkbox">
+                            <label><input type="checkbox" data-ng-model="poll.RegisteredOnly" /> {{lbl.pollRegisteredOnly}}</label>
+                            <p class="help-block">{{lbl.pollRegisteredOnlyHelp}}</p>
+                        </div>
+                        <div class="modal-buttons">
+                            <button type="button" class="btn btn-success" ng-click="save()">{{lbl.save}}</button>
+                            <button type="button" class="btn btn-default" data-dismiss="modal" ng-click="focusInput=false">{{lbl.cancel}}</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div class="main-header clearfix">
+        <h2 class="page-title pull-left">{{lbl.polls}}</h2>
+        <a data-ng-click="addNew()" class="btn btn-success btn-hasicon btn-sm pull-left"><i class="fa fa-plus"></i>{{lbl.theNew}}</a>
+        <a href="{{publicUrl}}" target="_blank" class="btn btn-default btn-sm pull-left" style="margin-left:8px"><i class="fa fa-external-link"></i> {{lbl.pollViewPublic}}</a>
+    </div>
+    <div class="content-inner">
+        <table class="table table-item-polls">
+            <thead>
+                <tr>
+                    <th>{{lbl.pollQuestion}}</th>
+                    <th>{{lbl.status}}</th>
+                    <th>{{lbl.pollVoters}}</th>
+                    <th>{{lbl.pollEndsAdmin}}</th>
+                    <th>{{lbl.pollLastVote}}</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody ng-repeat="item in items">
+                <tr>
+                    <td><a href="" ng-click="edit(item)">{{item.Question}}</a></td>
+                    <td><span class="poll-status poll-status-{{item.Status}}">{{statusLabel(item.Status)}}</span></td>
+                    <td>{{item.Voters}}</td>
+                    <td>{{(item.Ended || item.Ends) | date:'dd/MM/yyyy HH:mm'}}<span ng-if="!item.Ended && !item.Ends">&ndash;</span></td>
+                    <td>{{item.LastVote | date:'dd/MM/yyyy HH:mm'}}<span ng-if="!item.LastVote">&ndash;</span></td>
+                    <td class="item-actions">
+                        <button type="button" class="btn btn-default btn-sm" ng-click="item.open = !item.open"><i class="fa fa-bar-chart"></i> {{lbl.pollResults}}</button>
+                        <button type="button" class="btn btn-default btn-sm" ng-if="item.Status !== 'closed'" ng-click="setClosed(item, true)"><i class="fa fa-lock"></i> {{lbl.pollClose}}</button>
+                        <button type="button" class="btn btn-default btn-sm" ng-if="item.Status === 'closed'" ng-click="setClosed(item, false)"><i class="fa fa-unlock"></i> {{lbl.pollReopen}}</button>
+                        <button type="button" class="btn btn-danger btn-sm" ng-click="remove(item)" title="{{lbl.delete}}"><i class="fa fa-trash"></i></button>
+                    </td>
+                </tr>
+                <tr class="poll-results-row" ng-if="item.open">
+                    <td colspan="6">
+                        <div class="poll-result" ng-repeat="option in item.Options">
+                            <div class="poll-result-head"><span>{{option.Text}}</span><span>{{option.Percent}}% ({{option.Votes}})</span></div>
+                            <div class="poll-result-bar"><span ng-style="{ width: option.Percent + '%' }"></span></div>
+                        </div>
+                        <p class="text-muted" style="margin:8px 0 0">{{lbl.pollVoters}}: {{item.Voters}} &middot; {{lbl.pollCreated}}: {{item.Created | date:'dd/MM/yyyy HH:mm'}}</p>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <p class="text-muted" ng-if="loaded && items.length === 0">{{lbl.pollNoPolls}}</p>
+        <div class="table-item-empty" id="tr-spinner" ng-if="!loaded"><div id="div-spinner"><i class="fa fa-spinner fa-spin"></i></div></div>
+    </div>
+</div>

@@ -402,6 +402,7 @@ public sealed class SiteRenderer(
             "currentlyRated", "ratingHasBeenRegistered", "rateThisXStars", "areYouSure", "areYouSureDeleteComment",
             "required", "enterValidEmail", "name", "email", "comment", "thankYou", "enterEmailAddress", "filter",
             "filterByApml", "filterByApmlDescription", "delete", "replyToThis", "cancelReply",
+            "pollChooseAnswer", "pollChooseUpTo", "pollVoters", "pollThankYou",
         ];
 
         var tokens = Tokens;

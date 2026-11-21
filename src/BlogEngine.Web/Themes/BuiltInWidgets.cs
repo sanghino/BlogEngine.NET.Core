@@ -419,6 +419,8 @@ public static class BuiltInWidgetRegistration
         services.AddScoped<IWidgetDataProvider, MonthListWidget>();
         services.AddScoped<IWidgetDataProvider, PageListWidget>();
         services.AddScoped<IWidgetDataProvider, PostListWidget>();
+        services.AddScoped<IWidgetDataProvider, PollWidget>();
+        services.AddScoped<PollPresenter>();
         services.AddScoped<IWidgetDataProvider, TagCloudWidget>();
         return services;
     }

@@ -1,0 +1,16 @@
+{%- comment -%} Sondaggi in corso e conclusi con i loro risultati. Variabili: open_polls, closed_polls. {%- endcomment -%}
+<div id="polls" class="polls-page page-global">
+    <h2 class="page-global-title">{{ 'polls' | t }}</h2>
+    {%- if open_polls.size > 0 %}
+    <h3>{{ 'pollsOpen' | t }}</h3>
+    {%- for poll in open_polls %}
+    {% include 'poll-view' %}
+    {%- endfor %}
+    {%- endif %}
+    <h3>{{ 'pollsClosed' | t }}</h3>
+    {%- for poll in closed_polls %}
+    {% include 'poll-view' %}
+    {%- else %}
+    <p>{{ 'pollsNone' | t }}</p>
+    {%- endfor %}
+</div>

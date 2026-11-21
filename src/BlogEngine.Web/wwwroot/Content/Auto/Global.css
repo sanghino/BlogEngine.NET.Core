@@ -100,3 +100,21 @@ div.post .text a[rel~="muse"][rel~="met"], div.post .text a[rel~="crush"][rel~="
 .widgetImg		{ width: 16px; height: 16px; display:inline-block; }
 .widget a:hover	{ text-decoration: none; }
 #comment-form p	{ margin: 1px; display: inline-table; width: 100%; }
+
+/*[ Sondaggi (widget Poll e pagina /polls): colori presi dal testo, vanno bene su temi chiari e scuri.
+    Un tema può cambiarli nel proprio style.css. ]*/
+.poll { margin: 0 0 1.2em 0; }
+.poll-question { font-weight: bold; margin: 0 0 .4em 0; }
+.poll-description, .poll-hint, .poll-dates, .poll-voters { font-size: .9em; opacity: .8; margin: .3em 0; }
+.poll-options, .poll-results { list-style: none; margin: .5em 0; padding: 0; }
+.poll-options li { margin: .25em 0; }
+.poll-options label { font-weight: normal; cursor: pointer; }
+.poll-results li { margin: .5em 0; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 2px 8px; }
+.poll-results .poll-option { flex: 1 1 auto; }
+.poll-results .poll-count { white-space: nowrap; opacity: .8; }
+.poll-bar { flex: 1 1 100%; height: 6px; border-radius: 3px; background: rgba(128, 128, 128, .25); overflow: hidden; }
+.poll-bar span { display: block; height: 100%; border-radius: 3px; background: currentColor; opacity: .55; }
+.poll-winner .poll-option { font-weight: bold; }
+.poll-winner .poll-bar span { opacity: .9; }
+.poll-message { margin: .5em 0; }
+.polls-page .poll { padding-bottom: 1em; border-bottom: 1px solid rgba(128, 128, 128, .3); }

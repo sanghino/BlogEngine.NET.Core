@@ -45,6 +45,19 @@
                         </select>
                     </div>
                     break;
+                case "poll":
+                    <div class="form-group">
+                        <label for="@setting.Key">@L[setting.Label]</label>
+                        <select class="form-control" id="@setting.Key" name="@setting.Key">
+                            <option value="" selected="@(value == "")">@L["pollLatestOpen"]</option>
+                            @foreach (var poll in Model.Polls)
+                            {
+                                <option value="@poll.Id" selected="@(poll.Id == value)">@poll.Text</option>
+                            }
+                        </select>
+                        <p class="help-block">@L["pollWidgetHelp"]</p>
+                    </div>
+                    break;
                 case "category":
                 case "author":
                     var items = setting.Type == "category" ? Model.CategoryTitles : Model.Authors;

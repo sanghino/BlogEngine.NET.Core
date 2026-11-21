@@ -323,6 +323,65 @@ var BlogEngine = {
         return false;
     },
 
+    // ------------------------------------------------------------------ sondaggi (widget Poll)
+
+    votePoll: function (pollId) {
+        var box = BlogEngine.$('poll-' + pollId);
+        if (!box) return false;
+        var message = box.querySelector('.poll-message');
+        var button = box.querySelector('.poll-button');
+        var chosen = [];
+        box.querySelectorAll('input[name="poll-' + pollId + '"]').forEach(function (input) {
+            if (input.checked) chosen.push(input.value);
+        });
+        var max = parseInt(box.getAttribute('data-max'), 10) || 0;
+        var show = function (text) {
+            if (!message) return;
+            message.textContent = text;
+            message.hidden = false;
+        };
+        if (chosen.length === 0) {
+            show(BlogEngine.i18n('pollChooseAnswer'));
+            return false;
+        }
+        if (max > 0 && chosen.length > max) {
+            show(BlogEngine.i18n('pollChooseUpTo').replace('{0}', max));
+            return false;
+        }
+        if (button) button.disabled = true;
+        BlogEngine.post('poll/vote', { id: pollId, options: chosen.join(',') }).then(function (result) {
+            BlogEngine.showPollResult(box, result);
+        }).catch(function (error) {
+            if (button) button.disabled = false;
+            show(error.message);
+        });
+        return false;
+    },
+
+    // Dopo il voto: i risultati (se il sondaggio li mostra) o il ringraziamento.
+    showPollResult: function (box, result) {
+        var body = box.querySelector('.poll-body');
+        var poll = result.poll || {};
+        var html = '';
+        var escape = function (text) {
+            var div = document.createElement('div');
+            div.textContent = text == null ? '' : String(text);
+            return div.innerHTML;
+        };
+        if (poll.ShowResults) {
+            html += '<ul class="poll-results">';
+            (poll.Options || []).forEach(function (option) {
+                html += '<li class="' + (option.Winner ? 'poll-winner' : '') + '">' +
+                    '<span class="poll-option">' + escape(option.Text) + '</span>' +
+                    '<span class="poll-count">' + option.Percent + '% (' + option.Votes + ')</span>' +
+                    '<span class="poll-bar"><span style="width: ' + option.Percent + '%"></span></span></li>';
+            });
+            html += '</ul><p class="poll-voters">' + escape(BlogEngine.i18n('pollVoters')) + ': ' + poll.Voters + '</p>';
+        }
+        html = '<p class="poll-message">' + escape(result.message || BlogEngine.i18n('pollThankYou')) + '</p>' + html;
+        if (body) body.innerHTML = html;
+    },
+
     // ------------------------------------------------------------------ voto con le stelle
 
     rate: function (blogId, id, rating) {

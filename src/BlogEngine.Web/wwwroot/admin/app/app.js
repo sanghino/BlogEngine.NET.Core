@@ -12,6 +12,7 @@
         .when("/content/pages", { templateUrl: "app/content/pages/pageView.html" })
         .when("/content/categories", { templateUrl: "app/content/categories/categoryView.html" })
         .when("/content/tags", { templateUrl: "app/content/tags/tagView.html" })
+        .when("/content/polls", { templateUrl: "app/content/polls/pollView.html" })
 
         .when("/custom/plugins", { templateUrl: "app/custom/plugins/pluginView.html" })
         .when("/custom/plugins/gallery", { templateUrl: "app/custom/plugins/pluginGallery.html" })

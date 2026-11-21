@@ -3167,4 +3167,160 @@
   <data name="enableVisitStatisticsHelp" xml:space="preserve">
     <value>Page views and visitors are counted by the site without cookies and without storing IP addresses, so no consent is needed. Robots and signed-in users are not counted.</value>
   </data>
+  <data name="poll" xml:space="preserve">
+    <value>Poll</value>
+  </data>
+  <data name="polls" xml:space="preserve">
+    <value>Polls</value>
+  </data>
+  <data name="pollVote" xml:space="preserve">
+    <value>Vote</value>
+  </data>
+  <data name="pollVoters" xml:space="preserve">
+    <value>Voters</value>
+  </data>
+  <data name="pollThankYou" xml:space="preserve">
+    <value>Thank you for voting!</value>
+  </data>
+  <data name="pollAlreadyVoted" xml:space="preserve">
+    <value>You have already voted in this poll.</value>
+  </data>
+  <data name="pollClosed" xml:space="preserve">
+    <value>This poll is closed.</value>
+  </data>
+  <data name="pollLoginRequired" xml:space="preserve">
+    <value>Only registered users can vote: sign in to vote.</value>
+  </data>
+  <data name="pollChooseAnswer" xml:space="preserve">
+    <value>Choose an answer.</value>
+  </data>
+  <data name="pollChooseMany" xml:space="preserve">
+    <value>You can choose more than one answer.</value>
+  </data>
+  <data name="pollChooseUpTo" xml:space="preserve">
+    <value>You can choose up to {0} answers.</value>
+  </data>
+  <data name="pollNotFound" xml:space="preserve">
+    <value>Poll not found.</value>
+  </data>
+  <data name="pollResultsAfterClose" xml:space="preserve">
+    <value>Results will be published when the poll closes.</value>
+  </data>
+  <data name="pollEnds" xml:space="preserve">
+    <value>Closes on</value>
+  </data>
+  <data name="pollEnded" xml:space="preserve">
+    <value>Closed on</value>
+  </data>
+  <data name="pollsOpen" xml:space="preserve">
+    <value>Open polls</value>
+  </data>
+  <data name="pollsClosed" xml:space="preserve">
+    <value>Closed polls</value>
+  </data>
+  <data name="pollsNone" xml:space="preserve">
+    <value>No closed polls yet.</value>
+  </data>
+  <data name="pollsPrevious" xml:space="preserve">
+    <value>Previous polls</value>
+  </data>
+  <data name="pollLatestOpen" xml:space="preserve">
+    <value>The most recent open poll</value>
+  </data>
+  <data name="pollWidgetHelp" xml:space="preserve">
+    <value>Polls are created in Content → Polls. A closed poll keeps showing its results.</value>
+  </data>
+  <data name="pollStatusScheduled" xml:space="preserve">
+    <value>scheduled</value>
+  </data>
+  <data name="pollStatusOpen" xml:space="preserve">
+    <value>open</value>
+  </data>
+  <data name="pollStatusClosed" xml:space="preserve">
+    <value>closed</value>
+  </data>
+  <data name="pollQuestion" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="pollAnswers" xml:space="preserve">
+    <value>Answers</value>
+  </data>
+  <data name="pollAddAnswer" xml:space="preserve">
+    <value>Add answer</value>
+  </data>
+  <data name="pollMultipleChoice" xml:space="preserve">
+    <value>Multiple choice (more than one answer per vote)</value>
+  </data>
+  <data name="pollMaxChoices" xml:space="preserve">
+    <value>Maximum answers per vote (0 = no limit)</value>
+  </data>
+  <data name="pollStarts" xml:space="preserve">
+    <value>Voting starts</value>
+  </data>
+  <data name="pollStartsHelp" xml:space="preserve">
+    <value>Empty: voting starts immediately.</value>
+  </data>
+  <data name="pollEndsAdmin" xml:space="preserve">
+    <value>Expiry</value>
+  </data>
+  <data name="pollEndsHelp" xml:space="preserve">
+    <value>Empty: no expiry, the poll is closed by hand.</value>
+  </data>
+  <data name="pollRegisteredOnly" xml:space="preserve">
+    <value>Only registered users can vote</value>
+  </data>
+  <data name="pollRegisteredOnlyHelp" xml:space="preserve">
+    <value>Registered users are recognised by their user name. Anonymous visitors are recognised by a browser cookie and an anonymous fingerprint of network and browser (IP addresses are not saved).</value>
+  </data>
+  <data name="pollResultsVisibility" xml:space="preserve">
+    <value>Visitors see the results</value>
+  </data>
+  <data name="pollResultsAfterVote" xml:space="preserve">
+    <value>after voting</value>
+  </data>
+  <data name="pollResultsAlways" xml:space="preserve">
+    <value>always, even before voting</value>
+  </data>
+  <data name="pollResultsOnlyAfterClose" xml:space="preserve">
+    <value>only when the poll is closed</value>
+  </data>
+  <data name="pollClose" xml:space="preserve">
+    <value>Close now</value>
+  </data>
+  <data name="pollReopen" xml:space="preserve">
+    <value>Reopen</value>
+  </data>
+  <data name="pollResults" xml:space="preserve">
+    <value>Results</value>
+  </data>
+  <data name="pollCreated" xml:space="preserve">
+    <value>Created</value>
+  </data>
+  <data name="pollLastVote" xml:space="preserve">
+    <value>Last vote</value>
+  </data>
+  <data name="pollSaved" xml:space="preserve">
+    <value>Poll saved</value>
+  </data>
+  <data name="pollDeleteConfirm" xml:space="preserve">
+    <value>Delete this poll and all its votes? This cannot be undone.</value>
+  </data>
+  <data name="pollViewPublic" xml:space="preserve">
+    <value>Public page of the polls</value>
+  </data>
+  <data name="pollErrorQuestion" xml:space="preserve">
+    <value>Write the question.</value>
+  </data>
+  <data name="pollErrorOptions" xml:space="preserve">
+    <value>Write at least two answers (at most 20).</value>
+  </data>
+  <data name="pollErrorDates" xml:space="preserve">
+    <value>The expiry must come after the start.</value>
+  </data>
+  <data name="pollErrorOptionHasVotes" xml:space="preserve">
+    <value>An answer that has already received votes cannot be removed (you can change its text).</value>
+  </data>
+  <data name="pollNoPolls" xml:space="preserve">
+    <value>No polls yet: create the first one with "New".</value>
+  </data>
 </root>

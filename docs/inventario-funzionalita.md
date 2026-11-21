@@ -156,6 +156,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 | ☑ | Pagine di errore e 404 personalizzate | `error.aspx`, `error404.aspx`, `ErrorTitle`, `ErrorText` | `/error/{codice}` con il tema e suggerimenti di contenuti simili |
 | ☑ | Tracciamento referrer | `ReferrerModule`, `Referrer.cs` | `ReferrerMiddleware` (se attivato nelle impostazioni) |
 | ☑ | Statistiche delle visite (nuovo) | — | `VisitTrackingMiddleware` e `VisitStatistics`: pagine viste, visitatori, post più letti e provenienza nella dashboard (`api/visits`). Contate dal server senza cookie né IP salvati, esclusi robot e utenti collegati; salvate ogni 5 minuti in `App_Data/stats`. Impostazione EnableVisitStatistics (Controlli) |
+| ☑ | Sondaggi (nuovo) | — | Widget `Poll` e sezione Contenuto → Sondaggi (`api/polls`, permesso ManageWidgets): scelta singola o multipla (con massimo), inizio e scadenza, chiusura e riapertura, solo utenti registrati, visibilità dei risultati (dopo il voto / sempre / a sondaggio concluso). Storico con tutti i voti e pagina pubblica `/polls`. Doppio voto: nome utente e cookie del browser per sempre, impronta di rete e browser per 24 ore; solo impronte HMAC, niente IP. `PollService` nell'archivio delle estensioni (XML o SQLite) |
 
 ## 10. Email, contatti, newsletter
 

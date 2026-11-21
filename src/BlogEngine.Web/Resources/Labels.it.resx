@@ -3165,4 +3165,160 @@
   <data name="enableVisitStatisticsHelp" xml:space="preserve">
     <value>Pagine viste e visitatori vengono contati dal sito senza cookie e senza salvare gli indirizzi IP, quindi non serve il consenso. Robot e utenti collegati non vengono contati.</value>
   </data>
+  <data name="poll" xml:space="preserve">
+    <value>Sondaggio</value>
+  </data>
+  <data name="polls" xml:space="preserve">
+    <value>Sondaggi</value>
+  </data>
+  <data name="pollVote" xml:space="preserve">
+    <value>Vota</value>
+  </data>
+  <data name="pollVoters" xml:space="preserve">
+    <value>Votanti</value>
+  </data>
+  <data name="pollThankYou" xml:space="preserve">
+    <value>Grazie per aver votato!</value>
+  </data>
+  <data name="pollAlreadyVoted" xml:space="preserve">
+    <value>Hai già votato in questo sondaggio.</value>
+  </data>
+  <data name="pollClosed" xml:space="preserve">
+    <value>Il sondaggio è concluso.</value>
+  </data>
+  <data name="pollLoginRequired" xml:space="preserve">
+    <value>Possono votare solo gli utenti registrati: accedi per votare.</value>
+  </data>
+  <data name="pollChooseAnswer" xml:space="preserve">
+    <value>Scegli una risposta.</value>
+  </data>
+  <data name="pollChooseMany" xml:space="preserve">
+    <value>Puoi scegliere più risposte.</value>
+  </data>
+  <data name="pollChooseUpTo" xml:space="preserve">
+    <value>Puoi scegliere fino a {0} risposte.</value>
+  </data>
+  <data name="pollNotFound" xml:space="preserve">
+    <value>Sondaggio non trovato.</value>
+  </data>
+  <data name="pollResultsAfterClose" xml:space="preserve">
+    <value>I risultati saranno pubblicati alla chiusura del sondaggio.</value>
+  </data>
+  <data name="pollEnds" xml:space="preserve">
+    <value>Si chiude il</value>
+  </data>
+  <data name="pollEnded" xml:space="preserve">
+    <value>Concluso il</value>
+  </data>
+  <data name="pollsOpen" xml:space="preserve">
+    <value>Sondaggi in corso</value>
+  </data>
+  <data name="pollsClosed" xml:space="preserve">
+    <value>Sondaggi conclusi</value>
+  </data>
+  <data name="pollsNone" xml:space="preserve">
+    <value>Non ci sono ancora sondaggi conclusi.</value>
+  </data>
+  <data name="pollsPrevious" xml:space="preserve">
+    <value>Sondaggi precedenti</value>
+  </data>
+  <data name="pollLatestOpen" xml:space="preserve">
+    <value>Il sondaggio aperto più recente</value>
+  </data>
+  <data name="pollWidgetHelp" xml:space="preserve">
+    <value>I sondaggi si creano in Contenuto → Sondaggi. Un sondaggio concluso continua a mostrare i risultati.</value>
+  </data>
+  <data name="pollStatusScheduled" xml:space="preserve">
+    <value>programmato</value>
+  </data>
+  <data name="pollStatusOpen" xml:space="preserve">
+    <value>aperto</value>
+  </data>
+  <data name="pollStatusClosed" xml:space="preserve">
+    <value>concluso</value>
+  </data>
+  <data name="pollQuestion" xml:space="preserve">
+    <value>Domanda</value>
+  </data>
+  <data name="pollAnswers" xml:space="preserve">
+    <value>Risposte</value>
+  </data>
+  <data name="pollAddAnswer" xml:space="preserve">
+    <value>Aggiungi risposta</value>
+  </data>
+  <data name="pollMultipleChoice" xml:space="preserve">
+    <value>Scelta multipla (più risposte per voto)</value>
+  </data>
+  <data name="pollMaxChoices" xml:space="preserve">
+    <value>Risposte massime per voto (0 = nessun limite)</value>
+  </data>
+  <data name="pollStarts" xml:space="preserve">
+    <value>Inizio votazioni</value>
+  </data>
+  <data name="pollStartsHelp" xml:space="preserve">
+    <value>Vuoto: si vota subito.</value>
+  </data>
+  <data name="pollEndsAdmin" xml:space="preserve">
+    <value>Scadenza</value>
+  </data>
+  <data name="pollEndsHelp" xml:space="preserve">
+    <value>Vuoto: nessuna scadenza, il sondaggio si chiude a mano.</value>
+  </data>
+  <data name="pollRegisteredOnly" xml:space="preserve">
+    <value>Votano solo gli utenti registrati</value>
+  </data>
+  <data name="pollRegisteredOnlyHelp" xml:space="preserve">
+    <value>Gli utenti registrati sono riconosciuti dal nome utente. I visitatori anonimi da un cookie del browser e da un'impronta anonima di rete e browser (gli indirizzi IP non vengono salvati).</value>
+  </data>
+  <data name="pollResultsVisibility" xml:space="preserve">
+    <value>I visitatori vedono i risultati</value>
+  </data>
+  <data name="pollResultsAfterVote" xml:space="preserve">
+    <value>dopo aver votato</value>
+  </data>
+  <data name="pollResultsAlways" xml:space="preserve">
+    <value>sempre, anche prima di votare</value>
+  </data>
+  <data name="pollResultsOnlyAfterClose" xml:space="preserve">
+    <value>solo a sondaggio concluso</value>
+  </data>
+  <data name="pollClose" xml:space="preserve">
+    <value>Chiudi ora</value>
+  </data>
+  <data name="pollReopen" xml:space="preserve">
+    <value>Riapri</value>
+  </data>
+  <data name="pollResults" xml:space="preserve">
+    <value>Risultati</value>
+  </data>
+  <data name="pollCreated" xml:space="preserve">
+    <value>Creato</value>
+  </data>
+  <data name="pollLastVote" xml:space="preserve">
+    <value>Ultimo voto</value>
+  </data>
+  <data name="pollSaved" xml:space="preserve">
+    <value>Sondaggio salvato</value>
+  </data>
+  <data name="pollDeleteConfirm" xml:space="preserve">
+    <value>Eliminare il sondaggio e tutti i suoi voti? L'operazione non si può annullare.</value>
+  </data>
+  <data name="pollViewPublic" xml:space="preserve">
+    <value>Pagina pubblica dei sondaggi</value>
+  </data>
+  <data name="pollErrorQuestion" xml:space="preserve">
+    <value>Scrivi la domanda.</value>
+  </data>
+  <data name="pollErrorOptions" xml:space="preserve">
+    <value>Scrivi almeno due risposte (al massimo 20).</value>
+  </data>
+  <data name="pollErrorDates" xml:space="preserve">
+    <value>La scadenza deve essere successiva all'inizio.</value>
+  </data>
+  <data name="pollErrorOptionHasVotes" xml:space="preserve">
+    <value>Una risposta che ha già ricevuto voti non si può togliere (puoi cambiarne il testo).</value>
+  </data>
+  <data name="pollNoPolls" xml:space="preserve">
+    <value>Nessun sondaggio: crea il primo con "Nuovo".</value>
+  </data>
 </root>

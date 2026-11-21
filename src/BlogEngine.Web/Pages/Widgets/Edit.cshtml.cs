@@ -18,6 +18,8 @@ public sealed class EditModel(
     WidgetCatalog catalog,
     WidgetService widgets,
     NewsletterSubscribers newsletter,
+    PollService polls,
+    ILabels labels,
     ICategoryService categories,
     IPostService posts) : AdminPageModel(Rights.ManageWidgets)
 {
@@ -34,6 +36,9 @@ public sealed class EditModel(
     public IReadOnlyList<LinkListWidget.LinkItem> Links { get; private set; } = [];
 
     public IReadOnlyList<string> Subscribers { get; private set; } = [];
+
+    /// <summary>Sondaggi da scegliere nel widget Poll: (id, testo con lo stato).</summary>
+    public IReadOnlyList<(string Id, string Text)> Polls { get; private set; } = [];
 
     public bool Saved { get; private set; }
 
@@ -111,6 +116,9 @@ public sealed class EditModel(
         Authors = (await posts.GetPostsAsync()).Select(p => p.Author).Where(a => a.Length > 0).Distinct(StringComparer.OrdinalIgnoreCase).Order(StringComparer.CurrentCultureIgnoreCase).ToList();
         Links = ReadLinks();
         Subscribers = widget.Settings.Any(s => s.Type == "newsletter") ? await newsletter.GetAsync() : [];
+        Polls = widget.Settings.Any(s => s.Type == "poll")
+            ? (await polls.GetAllAsync()).Select(p => (p.Id.ToString(), $"{p.Question} ({labels["pollStatus" + p.StatusAt(polls.UtcNow)]})")).ToList()
+            : [];
         return true;
     }
 

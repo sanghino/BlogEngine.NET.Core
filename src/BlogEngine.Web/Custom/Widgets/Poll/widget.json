@@ -1,0 +1,9 @@
+{
+  "title": "Poll",
+  "description": "Sondaggio con risposta singola o multipla, scadenza e risultati. I sondaggi si creano in Contenuto → Sondaggi; il widget mostra quello scelto qui oppure il più recente ancora aperto.",
+  "version": "1.0.0",
+  "authors": "ExtraGeek-BlogEngine",
+  "settings": [
+    { "key": "poll", "type": "poll", "label": "poll" }
+  ]
+}

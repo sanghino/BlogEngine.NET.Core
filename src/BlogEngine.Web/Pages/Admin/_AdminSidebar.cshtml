@@ -36,6 +36,10 @@
                 <li id="mu-pages" data-ng-class="{ active: isActive('/content/pages')}"><a href="@(root)admin/#/content/pages">@L["pages"]</a></li>
                 <li data-ng-class="{ active: isActive('/content/categories')}"><a href="@(root)admin/#/content/categories">@L["categories"]</a></li>
                 <li data-ng-class="{ active: isActive('/content/tags')}"><a href="@(root)admin/#/content/tags">@L["tags"]</a></li>
+                @if (Admin.Can(Rights.ManageWidgets))
+                {
+                    <li data-ng-class="{ active: isActive('/content/polls')}"><a href="@(root)admin/#/content/polls">@L["polls"]</a></li>
+                }
                 @if (Admin.IsPrimaryBlog && Admin.Can(Rights.CreateNewBlogs))
                 {
                     <li data-ng-class="{ active: isActive('/content/blogs')}"><a href="@(root)admin/#/content/blogs">@L["blogs"]</a></li>
