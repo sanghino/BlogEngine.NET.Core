@@ -23,15 +23,19 @@ public sealed class GameTests
         {
             Title = "Giochi",
             IsPublished = true,
-            Content = "<p>Prova a battere il record!</p><p>[gioco:blocchi]</p><p>[gioco:inesistente]</p>",
+            Content = "<p>Prova a battere il record!</p><p>[gioco:blocchi]</p><p>[gioco:difesa]</p><p>[gioco:inesistente]</p>",
         }));
 
         // Il codice diventa il gioco, con lo script; un gioco che non esiste resta com'è.
         using var visitor = factory.CreateBrowser();
         var page = await visitor.GetStringAsync("/page/Giochi");
-        StringAssert.Contains(page, "class=\"block-game\"");
+        StringAssert.Contains(page, "class=\"block-game game-blocchi\"");
         StringAssert.Contains(page, "data-api=\"/game/blocchi/\"");
         StringAssert.Contains(page, "Scripts/blockgame.js");
+        StringAssert.Contains(page, "class=\"block-game game-difesa\"");
+        StringAssert.Contains(page, "Scripts/spacegame.js");
+        Assert.AreEqual(1, Regex.Matches(page, @"Scripts/games\.js").Count, "Lo script comune una volta sola, anche con due giochi.");
+        StringAssert.Contains(page, "Space Defense", "Ogni gioco ha il suo nome (etichetta gameName_difesa).");
         StringAssert.Contains(page, "account/login?ReturnUrl=");
         Assert.IsFalse(page.Contains("[gioco:blocchi]", StringComparison.Ordinal));
         StringAssert.Contains(page, "[gioco:inesistente]");
@@ -76,6 +80,17 @@ public sealed class GameTests
         Assert.AreEqual(HttpStatusCode.OK, (await admin.DeleteAsync("/api/games/blocchi")).StatusCode);
         Assert.AreEqual(0, JsonNode.Parse(await visitor.GetStringAsync("/game/blocchi/scores"))!["top"]!.AsArray().Count);
 
+        // Difesa spaziale: classifica separata, con le ondate superate al posto delle righe.
+        var waves = await ScoreAsync(admin, adminPage, await StartAsync(admin, adminPage, "difesa"), 450, 0, "difesa");
+        Assert.AreEqual("BEST", waves["status"]!.GetValue<string>(), waves.ToJsonString());
+        Assert.AreEqual("INVALID", (await ScoreAsync(admin, adminPage, await StartAsync(admin, adminPage, "difesa"), 50000, 3, "difesa"))["status"]!.GetValue<string>());
+        Assert.AreEqual(0, JsonNode.Parse(await visitor.GetStringAsync("/game/blocchi/scores"))!["top"]!.AsArray().Count, "Classifiche separate.");
+        games = JsonNode.Parse(await admin.GetStringAsync("/api/games"))!.AsArray();
+        var space = games.Single(g => g!["Game"]!.GetValue<string>() == "difesa")!;
+        Assert.AreEqual("Space Defense", space["Title"]!.GetValue<string>());
+        Assert.AreEqual("Waves", space["LinesLabel"]!.GetValue<string>());
+        Assert.AreEqual(450, space["Scores"]![0]!["Score"]!.GetValue<int>());
+
         // L'amministrazione delle classifiche richiede il login; giochi sconosciuti non esistono.
         Assert.AreNotEqual(HttpStatusCode.OK, (await visitor.GetAsync("/api/games")).StatusCode);
         Assert.AreEqual(HttpStatusCode.NotFound, (await visitor.GetAsync("/game/altro/scores")).StatusCode);
@@ -89,6 +104,10 @@ public sealed class GameTests
         // Nessuna riga e pochi secondi: al massimo qualche caduta e una bomba.
         Assert.IsTrue(GameScoreService.MaxScore(0, 5) < 2000);
         Assert.AreEqual(240 * 10 + 480 * 2 + 160 * 30 + 500 * 11, GameScoreService.MaxScore(12, 30));
+
+        // Difesa spaziale: una partita di 3 minuti con 4 ondate (45 droni ciascuna) e due comete sta nel limite.
+        Assert.IsTrue(GameScoreService.MaxScore("difesa", 4, 180) > 4 * (45 * 20 + 500) + 2 * 300);
+        Assert.IsTrue(GameScoreService.MaxScore("difesa", 0, 2) < 2000);
     }
 
     private static string Token(string page)
@@ -98,18 +117,18 @@ public sealed class GameTests
         return token;
     }
 
-    private static async Task<string> StartAsync(HttpClient client, string page)
+    private static async Task<string> StartAsync(HttpClient client, string page, string game = "blocchi")
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, "/game/blocchi/start") { Content = new FormUrlEncodedContent([]) };
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"/game/{game}/start") { Content = new FormUrlEncodedContent([]) };
         request.Headers.Add("RequestVerificationToken", Token(page));
         var response = await client.SendAsync(request);
         Assert.AreEqual(HttpStatusCode.OK, response.StatusCode);
         return JsonNode.Parse(await response.Content.ReadAsStringAsync())!["token"]!.GetValue<string>();
     }
 
-    private static async Task<JsonNode> ScoreAsync(HttpClient client, string page, string token, int score, int lines)
+    private static async Task<JsonNode> ScoreAsync(HttpClient client, string page, string token, int score, int lines, string game = "blocchi")
     {
-        using var request = new HttpRequestMessage(HttpMethod.Post, "/game/blocchi/score")
+        using var request = new HttpRequestMessage(HttpMethod.Post, $"/game/{game}/score")
         {
             Content = new FormUrlEncodedContent(new Dictionary<string, string>
             {

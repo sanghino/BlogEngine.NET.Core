@@ -3348,7 +3348,7 @@
     <value>Games</value>
   </data>
   <data name="gameName" xml:space="preserve">
-    <value>Blocks</value>
+    <value>Game</value>
   </data>
   <data name="gameStart" xml:space="preserve">
     <value>Play</value>
@@ -3381,10 +3381,10 @@
     <value>Player</value>
   </data>
   <data name="gameHelp" xml:space="preserve">
-    <value>Arrows: move and rotate · Space: drop · P: pause. Complete a row to clear it; the ✸ bomb blows up the blocks around it.</value>
+    <value>Arrows to move · Space · P: pause.</value>
   </data>
   <data name="gameHelpTouch" xml:space="preserve">
-    <value>Use the buttons; tap the board to rotate.</value>
+    <value>Use the buttons.</value>
   </data>
   <data name="gameLeaderboard" xml:space="preserve">
     <value>Leaderboard</value>
@@ -3460,5 +3460,35 @@
   </data>
   <data name="gamesEmpty" xml:space="preserve">
     <value>No scores yet.</value>
+  </data>
+  <data name="gameName_blocchi" xml:space="preserve">
+    <value>Blocks</value>
+  </data>
+  <data name="gameHelp_blocchi" xml:space="preserve">
+    <value>Arrows: move and rotate · Space: drop · P: pause. Complete a row to clear it; the ✸ bomb blows up the blocks around it.</value>
+  </data>
+  <data name="gameHelpTouch_blocchi" xml:space="preserve">
+    <value>Use the buttons; tap the board to rotate.</value>
+  </data>
+  <data name="gameName_difesa" xml:space="preserve">
+    <value>Space Defense</value>
+  </data>
+  <data name="gameHelp_difesa" xml:space="preserve">
+    <value>Arrows: move · Space: fire · P: pause. Stop the drones before they reach the ground; hit the comet to get the double shot.</value>
+  </data>
+  <data name="gameHelpTouch_difesa" xml:space="preserve">
+    <value>Use the buttons to move and fire.</value>
+  </data>
+  <data name="gameLines_difesa" xml:space="preserve">
+    <value>Waves</value>
+  </data>
+  <data name="gameWave" xml:space="preserve">
+    <value>Wave</value>
+  </data>
+  <data name="gameLives" xml:space="preserve">
+    <value>Lives</value>
+  </data>
+  <data name="gameFire" xml:space="preserve">
+    <value>Fire</value>
   </data>
 </root>

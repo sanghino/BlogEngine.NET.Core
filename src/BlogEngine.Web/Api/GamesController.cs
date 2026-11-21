@@ -8,7 +8,7 @@ namespace BlogEngine.Web.Api;
 
 /// <summary>Classifiche dei giochi (Contenuto → Giochi): elenco completo, rimozione di un utente, azzeramento.</summary>
 [Route("api/games")]
-public sealed class GamesAdminController(GameScoreService scores, IProfileService profiles, IRightsService rights, IBlogClock clock) : AdminApiController
+public sealed class GamesAdminController(GameScoreService scores, IProfileService profiles, IRightsService rights, IBlogClock clock, ILabels labels) : AdminApiController
 {
     [HttpGet("")]
     public async Task<IEnumerable<GameItem>> Get()
@@ -37,7 +37,14 @@ public sealed class GamesAdminController(GameScoreService scores, IProfileServic
                 });
             }
 
-            games.Add(new GameItem { Game = game, Code = $"[gioco:{game}]", Scores = entries });
+            games.Add(new GameItem
+            {
+                Game = game,
+                Title = Themes.GameShortcodeHandler.Label(labels, "gameName", game),
+                LinesLabel = Themes.GameShortcodeHandler.Label(labels, "gameLines", game),
+                Code = $"[gioco:{game}]",
+                Scores = entries,
+            });
         }
 
         return games;
@@ -80,6 +87,12 @@ public sealed class GamesAdminController(GameScoreService scores, IProfileServic
 public sealed record GameItem
 {
     public string Game { get; init; } = string.Empty;
+
+    /// <summary>Nome del gioco nella lingua del blog.</summary>
+    public string Title { get; init; } = string.Empty;
+
+    /// <summary>Che cosa conta la colonna Lines: righe (Blocchi) o ondate (Difesa spaziale).</summary>
+    public string LinesLabel { get; init; } = string.Empty;
 
     public string Code { get; init; } = string.Empty;
 

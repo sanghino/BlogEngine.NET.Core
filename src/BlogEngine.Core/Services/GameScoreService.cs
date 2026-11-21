@@ -11,6 +11,7 @@ public sealed class GameScore
 
     public int Score { get; set; }
 
+    /// <summary>Righe completate (Blocchi) oppure ondate superate (Difesa spaziale).</summary>
     public int Lines { get; set; }
 
     public int Level { get; set; }
@@ -47,8 +48,8 @@ public enum GameScoreResult
 /// </summary>
 public sealed class GameScoreService(IExtensionDataStore store, IBlogContext context, IBlogClock clock)
 {
-    /// <summary>Giochi disponibili (nome usato nel codice e negli indirizzi).</summary>
-    public static readonly IReadOnlyList<string> Games = ["blocchi"];
+    /// <summary>Giochi disponibili (nome usato nel codice e negli indirizzi): blocchi che cadono e difesa spaziale.</summary>
+    public static readonly IReadOnlyList<string> Games = ["blocchi", "difesa"];
 
     public const int TopCount = 10;
 
@@ -85,6 +86,17 @@ public sealed class GameScoreService(IExtensionDataStore store, IBlogContext con
         return 0;
     }
 
+    /// <summary>Punteggio massimo ottenibile nel gioco con queste righe (o ondate) in questo tempo.</summary>
+    public static long MaxScore(string game, int lines, int seconds) =>
+        game == "difesa" ? MaxSpaceScore(seconds) : MaxScore(lines, seconds);
+
+    /// <summary>
+    /// Punteggio massimo nel gioco "difesa": al massimo 8 droni al secondo da 30 punti (colpo doppio), una cometa
+    /// da 300 ogni 15 secondi e 500 di bonus per ogni ondata completata (al massimo una ogni 5 secondi).
+    /// </summary>
+    public static long MaxSpaceScore(int seconds) =>
+        8L * 30 * seconds + 300L * (seconds / 15 + 1) + 500L * (seconds / 5 + 1);
+
     /// <summary>
     /// Punteggio massimo ottenibile nel gioco "blocchi" con queste righe in questo tempo: per ogni riga al massimo
     /// 240 punti per il livello (5 righe insieme = 1200), più 40 punti di caduta per pezzo con al massimo 4 pezzi
@@ -108,7 +120,7 @@ public sealed class GameScoreService(IExtensionDataStore store, IBlogContext con
     public async Task<GameScoreResult> SubmitAsync(string game, string userName, int score, int lines, int seconds, CancellationToken cancellationToken = default)
     {
         if (!IsGame(game) || string.IsNullOrWhiteSpace(userName) || score < 0 || lines < 0 || seconds < 0
-            || seconds > MaxDuration.TotalSeconds || lines > seconds * 3 + 5 || score > MaxScore(lines, seconds))
+            || seconds > MaxDuration.TotalSeconds || lines > seconds * 3 + 5 || score > MaxScore(game, lines, seconds))
         {
             return GameScoreResult.Invalid;
         }
@@ -130,7 +142,7 @@ public sealed class GameScoreService(IExtensionDataStore store, IBlogContext con
             {
                 entry.Score = score;
                 entry.Lines = lines;
-                entry.Level = 1 + lines / 10;
+                entry.Level = game == "difesa" ? lines + 1 : 1 + lines / 10;
                 entry.Seconds = seconds;
                 entry.DateUtc = now;
                 result = GameScoreResult.Best;

@@ -2,8 +2,12 @@
 // spariscono quando sono complete e, ogni tanto, una bomba che fa saltare i blocchi intorno. Si gioca senza
 // login; a fine partita il punteggio va in classifica solo per gli utenti collegati (/game/blocchi/score).
 // I colori si cambiano dal tema con le variabili CSS --game-* sull'elemento .block-game.
+// Classifica e chiamate al sito sono in games.js (window.BlogGames), caricato prima.
 (function () {
     'use strict';
+    var G = window.BlogGames;
+    if (!G) return;
+    var el = G.el;
 
     var COLS = 10, ROWS = 20;
 
@@ -26,42 +30,15 @@
     var BOMB = { cells: [[0, 0]], color: 7, bomb: true };
     var LINE_POINTS = [0, 100, 300, 500, 800, 1200];
 
-    function text(labels, key) { return (labels && labels[key]) || key; }
-
-    function el(tag, cls, content) {
-        var node = document.createElement(tag);
-        if (cls) node.className = cls;
-        if (content !== undefined) node.textContent = content;
-        return node;
-    }
-
-    function request(url, method, data) {
-        var options = { method: method, credentials: 'same-origin', headers: {} };
-        if (method === 'POST') {
-            var body = new FormData();
-            Object.keys(data || {}).forEach(function (k) { if (data[k] !== null && data[k] !== undefined) body.append(k, data[k]); });
-            options.body = body;
-            var res = window.BlogEngineRes || {};
-            if (res.antiforgery) options.headers[res.antiforgeryHeader || 'RequestVerificationToken'] = res.antiforgery;
-        }
-        return fetch(url, options).then(function (r) {
-            if (!r.ok) throw new Error(r.status);
-            return r.json();
-        });
-    }
-
     function Game(root) {
         this.root = root;
-        this.api = root.getAttribute('data-api');
-        this.loginUrl = root.getAttribute('data-login');
-        this.registerUrl = root.getAttribute('data-register');
-        try { this.labels = JSON.parse(root.getAttribute('data-labels') || '{}'); } catch (e) { this.labels = {}; }
+        this.labels = G.labels(root);
         this.state = 'idle';
         this.build();
-        this.loadScores();
+        this.board.load();
     }
 
-    Game.prototype.t = function (key) { return text(this.labels, key); };
+    Game.prototype.t = function (key) { return (this.labels && this.labels[key]) || key; };
 
     Game.prototype.build = function () {
         var self = this, root = this.root;
@@ -114,7 +91,7 @@
                 button.type = 'button';
                 button.title = self.t(b[2]);
                 button.setAttribute('aria-label', self.t(b[2]));
-                self.holdable(button, b[0]);
+                G.holdable(button, function () { self.act(b[0]); }, b[0] === 'left' || b[0] === 'right' || b[0] === 'down', function () { return self.state === 'playing'; });
                 pad.appendChild(button);
             });
         root.appendChild(pad);
@@ -123,16 +100,7 @@
         if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) help.textContent = this.t('gameHelpTouch');
         root.appendChild(help);
 
-        var board = el('div', 'block-game-leaderboard');
-        board.appendChild(el('h3', 'block-game-leaderboard-title', this.t('gameLeaderboard')));
-        this.message = el('p', 'block-game-message');
-        this.message.hidden = true;
-        board.appendChild(this.message);
-        this.table = el('div', 'block-game-table');
-        board.appendChild(this.table);
-        this.account = el('p', 'block-game-account');
-        board.appendChild(this.account);
-        root.appendChild(board);
+        this.board = new G.Leaderboard(root, function (k) { return self.t(k); });
 
         root.addEventListener('keydown', function (e) { self.key(e); });
         this.canvas.addEventListener('click', function () { if (self.state === 'playing') self.rotate(); });
@@ -150,21 +118,6 @@
         var dd = el('dd', null, '0');
         list.appendChild(dd);
         return dd;
-    };
-
-    // Tenendo premuto sinistra, destra o giù il movimento si ripete.
-    Game.prototype.holdable = function (button, action) {
-        var self = this, timer = null, repeat = action === 'left' || action === 'right' || action === 'down';
-        var stop = function () { if (timer) { clearTimeout(timer); timer = null; } };
-        button.addEventListener('pointerdown', function (e) {
-            e.preventDefault();
-            if (self.state !== 'playing') return;
-            self.act(action);
-            if (!repeat) return;
-            var again = function (delay) { timer = setTimeout(function () { if (self.state === 'playing') self.act(action); again(60); }, delay); };
-            again(220);
-        });
-        ['pointerup', 'pointerleave', 'pointercancel'].forEach(function (ev) { button.addEventListener(ev, stop); });
     };
 
     Game.prototype.colors = function () {
@@ -363,8 +316,8 @@
         var self = this;
         this.reset();
         this.token = null;
-        this.hideMessage();
-        request(this.api + 'start', 'POST', {}).then(function (d) { self.token = d.token; }).catch(function () { self.token = null; });
+        this.board.hideMessage();
+        this.board.start().then(function (token) { self.token = token; });
         this.state = 'playing';
         this.hideOverlay();
         this.pauseButton.disabled = false;
@@ -400,14 +353,7 @@
         this.pauseButton.disabled = true;
         this.draw();
         this.showOverlay(this.t('gameOver'), this.t('gameScore') + ': ' + this.score.toLocaleString(), this.t('gamePlayAgain'));
-        request(this.api + 'score', 'POST', { token: this.token || '', score: this.score, lines: this.lines })
-            .then(function (d) {
-                self.showMessage(d.message, d.status);
-                if (d.status === 'LOGIN') self.renderAccount(false, null);
-                else self.renderAccount(true, d.me);
-                self.renderTable(d.top || []);
-            })
-            .catch(function () { self.showMessage(self.t('gameError'), 'ERROR'); });
+        this.board.submit(this.token, this.score, this.lines);
     };
 
     Game.prototype.showOverlay = function (title, body, button) {
@@ -420,73 +366,10 @@
 
     Game.prototype.hideOverlay = function () { this.overlay.hidden = true; };
 
-    Game.prototype.showMessage = function (msg, status) {
-        this.message.textContent = msg;
-        this.message.className = 'block-game-message block-game-message-' + String(status || '').toLowerCase();
-        this.message.hidden = false;
-    };
-
-    Game.prototype.hideMessage = function () { this.message.hidden = true; };
-
     Game.prototype.updateStats = function () {
         this.scoreValue.textContent = this.score.toLocaleString();
         this.linesValue.textContent = this.lines;
         this.levelValue.textContent = this.level();
-    };
-
-    Game.prototype.loadScores = function () {
-        var self = this;
-        request(this.api + 'scores', 'GET').then(function (d) {
-            self.renderTable(d.top || []);
-            self.renderAccount(d.loggedIn, d.me);
-        }).catch(function () { self.table.textContent = self.t('gameError'); });
-    };
-
-    Game.prototype.renderTable = function (top) {
-        this.table.innerHTML = '';
-        if (!top.length) {
-            this.table.appendChild(el('p', 'block-game-empty', this.t('gameLeaderboardEmpty')));
-            return;
-        }
-        var table = el('table');
-        var head = el('tr');
-        ['#', this.t('gamePlayer'), this.t('gameScore'), this.t('gameLines')].forEach(function (h) { head.appendChild(el('th', null, h)); });
-        var thead = el('thead');
-        thead.appendChild(head);
-        table.appendChild(thead);
-        var body = el('tbody');
-        var lang = document.documentElement.lang || undefined;
-        top.forEach(function (row) {
-            var tr = el('tr', row.me ? 'block-game-me' : null);
-            tr.appendChild(el('td', 'block-game-rank', String(row.rank)));
-            var name = el('td', 'block-game-name', row.name);
-            var parts = /^(\d{4})-(\d{2})-(\d{2})$/.exec(row.date || '');
-            if (parts) name.title = new Date(+parts[1], parts[2] - 1, +parts[3]).toLocaleDateString(lang);
-            tr.appendChild(name);
-            tr.appendChild(el('td', 'block-game-points', Number(row.score).toLocaleString(lang)));
-            tr.appendChild(el('td', 'block-game-lines', String(row.lines)));
-            body.appendChild(tr);
-        });
-        table.appendChild(body);
-        this.table.appendChild(table);
-    };
-
-    Game.prototype.renderAccount = function (loggedIn, me) {
-        this.account.innerHTML = '';
-        if (loggedIn) {
-            if (me) this.account.textContent = this.t('gameYourBest') + ': ' + Number(me.score).toLocaleString() + ' · ' + this.t('gameYourRank') + ': ' + me.rank;
-            return;
-        }
-        this.account.appendChild(document.createTextNode(this.t('gameLoginToRank') + ' '));
-        var login = el('a', null, this.t('gameLogin'));
-        login.href = this.loginUrl;
-        this.account.appendChild(login);
-        if (this.registerUrl) {
-            this.account.appendChild(document.createTextNode(' · '));
-            var reg = el('a', null, this.t('gameRegister'));
-            reg.href = this.registerUrl;
-            this.account.appendChild(reg);
-        }
     };
 
     Game.prototype.drawCell = function (ctx, x, y, size, color, bomb) {
@@ -557,14 +440,5 @@
         }
     };
 
-    function init() {
-        var nodes = document.querySelectorAll('.block-game:not([data-ready])');
-        for (var i = 0; i < nodes.length; i++) {
-            nodes[i].setAttribute('data-ready', '1');
-            new Game(nodes[i]);
-        }
-    }
-
-    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
-    else init();
+    G.register('blocchi', Game);
 })();

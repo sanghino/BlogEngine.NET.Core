@@ -176,3 +176,12 @@ div.post .text a[rel~="muse"][rel~="met"], div.post .text a[rel~="crush"][rel~="
     .block-game-side { flex-basis: 92px; }
     .block-game-stats dd { font-size: 18px; }
 }
+
+/*[ Gioco "Difesa Spaziale" ([gioco:difesa]): punteggi in una riga sopra il campo, campo largo. ]*/
+.game-difesa { max-width: 560px; }
+.space-game-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 8px; }
+.space-game-stats { display: flex; gap: 22px; }
+.space-game-stat dt { margin: 0; }
+.space-game-stage { display: flex; justify-content: center; }
+.space-game-stage .block-game-board { touch-action: none; }
+.game-difesa .block-game-overlay { left: 50%; right: auto; width: var(--space-width, 100%); transform: translateX(-50%); }

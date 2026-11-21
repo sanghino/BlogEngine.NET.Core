@@ -3346,7 +3346,7 @@
     <value>Giochi</value>
   </data>
   <data name="gameName" xml:space="preserve">
-    <value>Blocchi</value>
+    <value>Gioco</value>
   </data>
   <data name="gameStart" xml:space="preserve">
     <value>Gioca</value>
@@ -3379,10 +3379,10 @@
     <value>Giocatore</value>
   </data>
   <data name="gameHelp" xml:space="preserve">
-    <value>Frecce: sposta e ruota · Spazio: fai cadere · P: pausa. Completa una riga per farla sparire; la bomba ✸ fa saltare i blocchi intorno.</value>
+    <value>Frecce per muovere · Spazio · P: pausa.</value>
   </data>
   <data name="gameHelpTouch" xml:space="preserve">
-    <value>Usa i pulsanti; tocca il campo per ruotare.</value>
+    <value>Usa i pulsanti.</value>
   </data>
   <data name="gameLeaderboard" xml:space="preserve">
     <value>Classifica</value>
@@ -3458,5 +3458,35 @@
   </data>
   <data name="gamesEmpty" xml:space="preserve">
     <value>Ancora nessun punteggio.</value>
+  </data>
+  <data name="gameName_blocchi" xml:space="preserve">
+    <value>Blocchi</value>
+  </data>
+  <data name="gameHelp_blocchi" xml:space="preserve">
+    <value>Frecce: sposta e ruota · Spazio: fai cadere · P: pausa. Completa una riga per farla sparire; la bomba ✸ fa saltare i blocchi intorno.</value>
+  </data>
+  <data name="gameHelpTouch_blocchi" xml:space="preserve">
+    <value>Usa i pulsanti; tocca il campo per ruotare.</value>
+  </data>
+  <data name="gameName_difesa" xml:space="preserve">
+    <value>Difesa Spaziale</value>
+  </data>
+  <data name="gameHelp_difesa" xml:space="preserve">
+    <value>Frecce: muovi · Spazio: spara · P: pausa. Ferma i droni prima che arrivino a terra; colpisci la cometa per avere il colpo doppio.</value>
+  </data>
+  <data name="gameHelpTouch_difesa" xml:space="preserve">
+    <value>Usa i pulsanti per muoverti e sparare.</value>
+  </data>
+  <data name="gameLines_difesa" xml:space="preserve">
+    <value>Ondate</value>
+  </data>
+  <data name="gameWave" xml:space="preserve">
+    <value>Ondata</value>
+  </data>
+  <data name="gameLives" xml:space="preserve">
+    <value>Vite</value>
+  </data>
+  <data name="gameFire" xml:space="preserve">
+    <value>Spara</value>
   </data>
 </root>

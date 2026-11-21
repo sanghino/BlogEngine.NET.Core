@@ -13,7 +13,7 @@
     <div class="content-inner">
         <div class="game-block" ng-repeat="game in games">
             <div class="game-head">
-                <h3>{{lbl.gameName}}</h3>
+                <h3>{{game.Title}}</h3>
                 <code>{{game.Code}}</code>
                 <button type="button" class="btn btn-danger btn-sm" ng-click="reset(game)" ng-disabled="game.Scores.length === 0"><i class="fa fa-eraser"></i> {{lbl.gamesReset}}</button>
             </div>
@@ -24,8 +24,7 @@
                         <th>#</th>
                         <th>{{lbl.gamePlayer}}</th>
                         <th class="num">{{lbl.gameScore}}</th>
-                        <th class="num">{{lbl.gameLines}}</th>
-                        <th class="num">{{lbl.gameLevel}}</th>
+                        <th class="num">{{game.LinesLabel}}</th>
                         <th class="num">{{lbl.gamesDuration}}</th>
                         <th class="num">{{lbl.gamesPlayed}}</th>
                         <th>{{lbl.gamesLastPlayed}}</th>
@@ -38,7 +37,6 @@
                         <td>{{entry.DisplayName}} <span class="text-muted" ng-if="entry.DisplayName !== entry.UserName">({{entry.UserName}})</span></td>
                         <td class="num">{{entry.Score | number}}</td>
                         <td class="num">{{entry.Lines}}</td>
-                        <td class="num">{{entry.Level}}</td>
                         <td class="num">{{duration(entry.Seconds)}}</td>
                         <td class="num">{{entry.Games}}</td>
                         <td>{{entry.LastPlayed}}</td>
