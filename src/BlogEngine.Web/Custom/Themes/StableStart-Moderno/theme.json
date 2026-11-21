@@ -1,0 +1,9 @@
+{
+  "title": "StableStart Moderno",
+  "description": "Il tema storico di SestoFiorentinoInfo rinnovato: stesse immagini di Sesto Fiorentino e stessa struttura (barra laterale a sinistra, disclaimer), con testo più grande e leggibile, riquadri, menu che resta in alto e menu a scomparsa sul telefono.",
+  "authors": "Thomas A. Bosscher, Francesco Mori",
+  "version": "4.1.0",
+  "defaultWidgets": {
+    "sidebar": [ "Search", "Administration", "PageList", "CategoryList", "PostList", "CommentList", "MonthList", "TagCloud" ]
+  }
+}
