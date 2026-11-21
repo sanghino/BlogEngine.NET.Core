@@ -470,3 +470,9 @@ div.post .text img, #page img { max-width: 100%; height: auto; }
 	#sidepanel { border-right: none; padding: 5px; }
 	#disclaimer { width: auto; margin: 0 5px 15px 5px; }
 }
+
+/*==== Barra del sondaggio in evidenza (sotto il menu) =====================*/
+.poll-banner { background : #F7F7F7; border : none; border-bottom : 1px dotted #c8c8c8; border-radius : 0; margin : 0 0 10px 0; padding : 6px 10px; font-family : Verdana, Tahoma, arial, sans-serif; color : #555555;}
+.poll-banner-icon { fill : #996600; opacity : 1;}
+.poll-banner-question { color : #996600;}
+.poll-banner-question:hover { color : #ff9900;}
