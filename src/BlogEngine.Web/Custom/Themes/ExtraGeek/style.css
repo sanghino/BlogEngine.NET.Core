@@ -884,9 +884,42 @@ div.widget.advertisement .ad-label {
 	flex: none;
 }
 
-/* Le stelline del voto sono immagini scure: invertite per il fondo blu notte (l'oro resta oro). */
-.post .rating .star-rating {
-	filter: invert(0.9) hue-rotate(180deg);
+/* Stelle del voto grandi (28px, facili da toccare) disegnate in SVG al posto della gif da 10px:
+   grigio-blu le vuote, oro la media, giallo chiaro quelle sotto il puntatore. */
+.post .rating .star-rating.small-star {
+	width: 140px;
+	height: 28px;
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23324a6e' d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'/%3E%3C/svg%3E");
+	background-size: 28px 28px;
+	background-repeat: repeat-x;
+	background-position: 0 0;
+}
+
+.post .rating .star-rating.small-star a,
+.post .rating .star-rating.small-star .current-rating {
+	height: 28px;
+	line-height: 28px;
+	background-size: 28px 28px;
+	background-repeat: repeat-x;
+	background-position: 0 0;
+}
+
+.post .rating .star-rating.small-star .current-rating {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23f5b301' d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'/%3E%3C/svg%3E");
+}
+
+.post .rating .star-rating.small-star a {
+	background-image: none;
+	cursor: pointer;
+}
+
+.post .rating .star-rating.small-star a:hover,
+.post .rating .star-rating.small-star a:focus-visible {
+	background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23ffe07a' d='M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z'/%3E%3C/svg%3E");
+}
+
+.post .rating .star-rating.small-star.rated a {
+	cursor: default;
 }
 
 /*----------------------------

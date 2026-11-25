@@ -110,7 +110,10 @@ public sealed partial class PublicSiteTests
 
         // Voto: una sola volta per visitatore.
         var first = await PostActionAsync(visitor, page, "/rating", new() { ["id"] = postId, ["rating"] = "4" });
-        StringAssert.Contains(await first.Content.ReadAsStringAsync(), "\"OK\"");
+        var firstJson = await first.Content.ReadAsStringAsync();
+        StringAssert.Contains(firstJson, "\"OK\"");
+        StringAssert.Contains(firstJson, "\"raters\":1", "La risposta porta i votanti aggiornati, da mostrare subito.");
+        StringAssert.Contains(firstJson, "\"average\":4", firstJson);
         var second = await PostActionAsync(visitor, page, "/rating", new() { ["id"] = postId, ["rating"] = "5" });
         StringAssert.Contains(await second.Content.ReadAsStringAsync(), "HASRATED");
     }

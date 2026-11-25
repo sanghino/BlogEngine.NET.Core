@@ -161,7 +161,8 @@ public sealed class BlogActionsController(
             return NotFound(new { status = "ERROR" });
         }
 
-        await posts.RateAsync(EntityCopies.Copy(post), rating);
+        var ratedPost = EntityCopies.Copy(post);
+        await posts.RateAsync(ratedPost, rating);
         rated.Add(id.ToString("N"));
         Response.Cookies.Append(RatingCookie, string.Join(',', rated.TakeLast(200)), new CookieOptions
         {
@@ -172,7 +173,8 @@ public sealed class BlogActionsController(
             Secure = Request.IsHttps,
         });
 
-        return Json(new { status = "OK", rating });
+        // Media e votanti aggiornati, così la pagina li mostra subito senza ricaricare.
+        return Json(new { status = "OK", rating, raters = ratedPost.Raters, average = Math.Round(ratedPost.Rating, 1) });
     }
 
     [HttpPost("/newsletter")]

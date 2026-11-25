@@ -223,7 +223,7 @@
     <value>Crea Nuovo Utente</value>
   </data>
   <data name="currentlyRated" xml:space="preserve">
-    <value>Voto {0} espresso da {1} persone.</value>
+    <value>Voto medio {0} · votanti: {1}</value>
   </data>
   <data name="date" xml:space="preserve">
     <value>Data</value>
@@ -901,7 +901,7 @@
     <value>Priorità</value>
   </data>
   <data name="rateThisXStars" xml:space="preserve">
-    <value>Vota da {0} stelle {1} su 5</value>
+    <value>Vota {0} su 5</value>
   </data>
   <data name="ratingHasBeenRegistered" xml:space="preserve">
     <value>Il tuo voto è stato registrato. Grazie!</value>

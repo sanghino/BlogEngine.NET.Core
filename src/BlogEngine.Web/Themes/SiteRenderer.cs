@@ -420,7 +420,7 @@ public sealed class SiteRenderer(
         string[] keys =
         [
             "savingTheComment", "comments", "commentWasSaved", "commentWaitingModeration", "cancel", "beTheFirstToRate",
-            "currentlyRated", "ratingHasBeenRegistered", "rateThisXStars", "areYouSure", "areYouSureDeleteComment",
+            "currentlyRated", "ratingHasBeenRegistered", "hasRated", "rateThisXStars", "areYouSure", "areYouSureDeleteComment",
             "required", "enterValidEmail", "name", "email", "comment", "thankYou", "enterEmailAddress", "filter",
             "filterByApml", "filterByApmlDescription", "delete", "replyToThis", "cancelReply",
             "pollChooseAnswer", "pollChooseUpTo", "pollVoters", "pollThankYou", "pollAlreadyVotedShort", "pollSeeResults",

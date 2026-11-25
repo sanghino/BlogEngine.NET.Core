@@ -402,20 +402,39 @@ var BlogEngine = {
 
     // ------------------------------------------------------------------ voto con le stelle
 
-    rate: function (blogId, id, rating) {
+    // Dopo il voto la pagina mostra subito la nuova media e un messaggio al posto di "Vota questo post";
+    // le stelle non sono più cliccabili (si vota una volta sola).
+    rate: function (blogId, id, rating, container) {
         BlogEngine.post('rating', { id: id, rating: rating }).then(function (result) {
             if (result.status === 'OK') {
                 if (typeof OnRating !== 'undefined') OnRating(rating);
-                window.alert(BlogEngine.i18n('ratingHasBeenRegistered'));
+                if (container && result.raters !== undefined) {
+                    BlogEngine.showRating(container, id, result.raters, result.average, blogId, BlogEngine.i18n('ratingHasBeenRegistered'));
+                } else {
+                    window.alert(BlogEngine.i18n('ratingHasBeenRegistered'));
+                }
             } else if (result.status === 'HASRATED') {
-                window.alert(BlogEngine.i18n('ratingHasBeenRegistered'));
+                if (container) BlogEngine.ratingMessage(container, BlogEngine.i18n('hasRated'));
+                else window.alert(BlogEngine.i18n('hasRated'));
             }
         }).catch(function () {
             window.alert('An error occured while registering your rating. Please try again');
         });
     },
 
-    showRating: function (container, id, raters, rating, blogId) {
+    ratingMessage: function (container, message) {
+        var p = container.querySelector('.rating p');
+        if (p) p.textContent = message;
+        var ul = container.querySelector('.star-rating');
+        if (ul) ul.className += ' rated';
+        var links = container.querySelectorAll('.star-rating a');
+        for (var i = 0; i < links.length; i++) {
+            links[i].onclick = function () { return false; };
+            links[i].removeAttribute('href');
+        }
+    },
+
+    showRating: function (container, id, raters, rating, blogId, message) {
         var div = document.createElement('div');
         div.className = 'rating';
 
@@ -445,7 +464,7 @@ var BlogEngine = {
             a.title = BlogEngine.i18n('rateThisXStars').replace('{0}', i.toString()).replace('{1}', i === 1 ? '' : 's');
             a.rel = 'nofollow';
             a.onclick = function () {
-                BlogEngine.rate(blogId, id, this.textContent);
+                BlogEngine.rate(blogId, id, this.textContent, container);
                 return false;
             };
             li.appendChild(a);
@@ -455,6 +474,7 @@ var BlogEngine = {
         container.innerHTML = '';
         container.appendChild(div);
         container.style.visibility = 'visible';
+        if (message) BlogEngine.ratingMessage(container, message);
     },
 
     applyRatings: function () {
