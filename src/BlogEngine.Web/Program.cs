@@ -45,6 +45,8 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseMiddleware<SecurityHeadersMiddleware>();
+// Ogni cookie scritto dal sito (anche da estensioni) in HTTPS ha il flag Secure.
+app.UseCookiePolicy(new CookiePolicyOptions { Secure = CookieSecurePolicy.SameAsRequest });
 // Script, stili e template dell'amministrazione vengono ricontrollati a ogni uso (vedi StaticFileCaching).
 app.UseStaticFiles(new StaticFileOptions { OnPrepareResponse = StaticFileCaching.Apply });
 

@@ -193,5 +193,33 @@ public sealed class StartupTests
         Assert.AreEqual("SAMEORIGIN", response.Headers.GetValues("X-Frame-Options").Single());
         Assert.AreEqual("nosniff", response.Headers.GetValues("X-Content-Type-Options").Single());
         Assert.AreEqual("strict-origin-when-cross-origin", response.Headers.GetValues("Referrer-Policy").Single());
+        Assert.AreEqual("frame-ancestors 'self'", response.Headers.GetValues("Content-Security-Policy").Single());
+        Assert.IsFalse(response.Headers.Contains("Strict-Transport-Security"), "Niente HSTS in HTTP.");
+    }
+
+    [TestMethod]
+    public async Task Https_SendsHsts_AndSecureCookies()
+    {
+        using var factory = new BlogWebFactory();
+        using var browser = factory.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions
+        {
+            AllowAutoRedirect = false,
+            BaseAddress = new Uri("https://www.esempio.test/"),
+        });
+
+        var response = await browser.GetAsync("/setup");
+
+        Assert.AreEqual(SecurityHeadersMiddleware.HstsValue, response.Headers.GetValues("Strict-Transport-Security").Single());
+        var cookies = response.Headers.GetValues("Set-Cookie").ToList();
+        Assert.IsTrue(cookies.Count > 0, "La pagina di configurazione scrive il cookie antifalsificazione.");
+        foreach (var cookie in cookies)
+        {
+            StringAssert.Contains(cookie.ToLowerInvariant(), "; secure", cookie);
+            StringAssert.Contains(cookie.ToLowerInvariant(), "httponly", cookie);
+        }
+
+        // In locale niente HSTS, anche in HTTPS: resterebbe nel browser per ogni prova.
+        using var local = factory.CreateClient(new Microsoft.AspNetCore.Mvc.Testing.WebApplicationFactoryClientOptions { BaseAddress = new Uri("https://localhost/") });
+        Assert.IsFalse((await local.GetAsync("/setup")).Headers.Contains("Strict-Transport-Security"));
     }
 }

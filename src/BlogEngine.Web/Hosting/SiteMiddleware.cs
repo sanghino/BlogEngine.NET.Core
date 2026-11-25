@@ -158,20 +158,36 @@ public sealed class ConditionalCompressionMiddleware
 /// Intestazioni di sicurezza su tutte le risposte: il sito non può essere incorniciato da altri siti
 /// (clickjacking su login e amministrazione), il browser non "indovina" il tipo dei file e agli altri
 /// siti arriva solo l'origine come referrer. Un'intestazione già impostata (es. dai file caricati) resta.
+/// Sulle richieste HTTPS (non locali) c'è anche HSTS: per un anno il browser apre il sito solo in HTTPS.
 /// </summary>
 public sealed class SecurityHeadersMiddleware(RequestDelegate next)
 {
+    /// <summary>Un anno; senza includeSubDomains, perché altri sottodomini potrebbero non avere HTTPS.</summary>
+    public const string HstsValue = "max-age=31536000";
+
     public Task InvokeAsync(HttpContext http)
     {
         http.Response.OnStarting(() =>
         {
             var headers = http.Response.Headers;
             headers.TryAdd("X-Frame-Options", "SAMEORIGIN");
+            headers.TryAdd("Content-Security-Policy", "frame-ancestors 'self'");
             headers.TryAdd("X-Content-Type-Options", "nosniff");
             headers.TryAdd("Referrer-Policy", "strict-origin-when-cross-origin");
+            if (http.Request.IsHttps && !IsLocalHost(http.Request.Host.Host))
+            {
+                headers.TryAdd("Strict-Transport-Security", HstsValue);
+            }
+
             return Task.CompletedTask;
         });
 
         return next(http);
     }
+
+    // HSTS su localhost resterebbe nel browser per tutti i progetti provati in locale.
+    private static bool IsLocalHost(string host) =>
+        host.Equals("localhost", StringComparison.OrdinalIgnoreCase)
+        || host.EndsWith(".localhost", StringComparison.OrdinalIgnoreCase)
+        || host is "127.0.0.1" or "[::1]" or "::1";
 }

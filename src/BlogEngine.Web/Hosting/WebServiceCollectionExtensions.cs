@@ -61,6 +61,9 @@ public static class WebServiceCollectionExtensions
             });
         services.AddAuthorization();
 
+        // Il cookie antifalsificazione ha già HttpOnly; con questa riga in HTTPS ha anche Secure.
+        services.AddAntiforgery(options => options.Cookie.SecurePolicy = CookieSecurePolicy.SameAsRequest);
+
         services.AddRateLimiter(options =>
         {
             options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
