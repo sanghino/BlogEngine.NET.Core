@@ -123,6 +123,19 @@ public sealed class BlogEngineImportTests
         Assert.AreEqual("UEFA-Champions-League-(ex-Coppa-dei-Campioni)", BlogEngineImporter.SlugFromUrl("/page/UEFA-Champions-League-(ex-Coppa-dei-Campioni).aspx"));
         Assert.AreEqual("Avanti-cos236", BlogEngineImporter.SlugFromUrl("/post/Avanti-cos236;.aspx"));
         Assert.AreEqual(string.Empty, BlogEngineImporter.SlugFromUrl("/post/.aspx"));
+
+        // Live Writer codificava due volte: la virgola arrivava come %252c e non deve restare "2c" nello slug.
+        Assert.AreEqual("Jordan-Joe", BlogEngineImporter.SlugFromUrl("/page/Jordan%252c-Joe.aspx"));
+    }
+
+    [TestMethod]
+    public void RepairedContentLink_FixesDoubleEncodedSlugs()
+    {
+        Assert.AreEqual(("page", "Jordan-Joe"), BlogEngineImporter.RepairedContentLink("/page/Jordan2c-Joe"));
+        Assert.AreEqual(("post", "Saldi-di-meta-stagione"), BlogEngineImporter.RepairedContentLink("/post/Saldi-di-met2243b-stagione"));
+        Assert.AreEqual(("post", "Partita-finita"), BlogEngineImporter.RepairedContentLink("/post/2010/05/02/Partita-finita21"));
+        Assert.IsNull(BlogEngineImporter.RepairedContentLink("/post/Niente-da-riparare"));
+        Assert.IsNull(BlogEngineImporter.RepairedContentLink("/category/Jordan2c-Joe"));
     }
 
     [TestMethod]

@@ -287,7 +287,51 @@ public sealed partial class BlogEngineImporter(
             last = last[..^".aspx".Length];
         }
 
-        return Slug.Create(WebUtility.UrlDecode(last));
+        return Slug.Create(DecodeFully(last));
+    }
+
+    /// <summary>
+    /// Decodifica finché serve: Windows Live Writer scriveva i link già codificati una seconda volta
+    /// ("Jordan%252c-Joe"), e una sola decodifica lasciava "%2c", che nello slug diventava "2c".
+    /// </summary>
+    public static string DecodeFully(string value)
+    {
+        for (var i = 0; i < 3 && value.Contains('%', StringComparison.Ordinal); i++)
+        {
+            var decoded = WebUtility.UrlDecode(value);
+            if (decoded == value)
+            {
+                break;
+            }
+
+            value = decoded;
+        }
+
+        return WebUtility.HtmlDecode(value);
+    }
+
+    /// <summary>
+    /// "/post/Saldi-di-met2243b-stagione" → ("post", "Saldi-di-meta-stagione"): ripara gli slug rimasti nei testi
+    /// importati prima di <see cref="DecodeFully"/>, dove dai caratteri codificati due volte restavano le cifre
+    /// ("2c" della virgola, "2243b" di "&amp;#224;" = "à"). Null se l'indirizzo non è di un post o di una pagina
+    /// o non c'è niente da riparare.
+    /// </summary>
+    public static (string Kind, string Slug)? RepairedContentLink(string path)
+    {
+        if (BrokenContentLink().Match(path) is not { Success: true } match)
+        {
+            return null;
+        }
+
+        var original = WebUtility.UrlDecode(match.Groups["slug"].Value);
+        var repaired = EntityRemnant().Replace(original, m =>
+            int.TryParse(m.Groups["code"].Value, NumberStyles.None, CultureInfo.InvariantCulture, out var code) && code is >= 160 and <= 0xFFFF
+                ? ((char)code).ToString()
+                : m.Value);
+        repaired = Slug.Create(PunctuationRemnant().Replace(repaired, string.Empty));
+        return repaired.Length > 0 && !string.Equals(repaired, original, StringComparison.Ordinal)
+            ? (match.Groups["kind"].Value.ToLowerInvariant(), repaired)
+            : null;
     }
 
     /// <summary>
@@ -487,7 +531,7 @@ public sealed partial class BlogEngineImporter(
 
         if (OldContentLink().Match(pathAndQuery) is { Success: true } content)
         {
-            return $"/{content.Groups["kind"].Value.ToLowerInvariant()}/{Slug.Create(WebUtility.UrlDecode(content.Groups["slug"].Value))}{content.Groups["rest"].Value}";
+            return $"/{content.Groups["kind"].Value.ToLowerInvariant()}/{Slug.Create(DecodeFully(content.Groups["slug"].Value))}{content.Groups["rest"].Value}";
         }
 
         return pathAndQuery == url ? null : pathAndQuery;
@@ -624,6 +668,17 @@ public sealed partial class BlogEngineImporter(
 
     [GeneratedRegex(@"^/(?<kind>post|page)/(?:\d{4}/\d{1,2}/\d{1,2}/)?(?<slug>[^/?#]+?)\.aspx(?<rest>[?#].*)?$", RegexOptions.IgnoreCase)]
     private static partial Regex OldContentLink();
+
+    [GeneratedRegex(@"^/(?<kind>post|page)/(?:\d{4}/\d{1,2}/\d{1,2}/)?(?<slug>[^/?#]+)/?$", RegexOptions.IgnoreCase)]
+    private static partial Regex BrokenContentLink();
+
+    // "&#224;" codificato due volte: restano "26" (&), "23" (#), il codice e "3b" (;).
+    [GeneratedRegex(@"(?:26)?(?:23)?(?<code>\d{3,5})3b", RegexOptions.IgnoreCase)]
+    private static partial Regex EntityRemnant();
+
+    // Virgola, due punti, punto e virgola, punto esclamativo, interrogativo, apici, parentesi prima di un trattino o alla fine.
+    [GeneratedRegex(@"(?<=\p{L})(?:2c|3a|3b|21|3f|27|22|28|29)(?=-|$)", RegexOptions.IgnoreCase)]
+    private static partial Regex PunctuationRemnant();
 
     [GeneratedRegex(@"/page/(?<slug>[^""'?#/]+?)\.aspx", RegexOptions.IgnoreCase)]
     private static partial Regex PageLink();

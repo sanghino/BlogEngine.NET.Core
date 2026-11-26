@@ -81,7 +81,7 @@ public sealed class BlogController(
 
         var blogSettings = await site.GetSettingsAsync();
         return await PostListAsync(await posts.GetVisiblePostsAsync(), page, ServingContentBy.AllContent, string.Empty,
-            new PageMeta { Description = blogSettings.Description, Keywords = await AllTagsAsync() });
+            new PageMeta { Description = blogSettings.Description, Keywords = await AllTagsAsync(), Canonical = links.ToAbsolute(links.BlogRoot).ToString() });
     }
 
     /// <summary>Elenco dei post anche quando è impostata una pagina iniziale.</summary>
@@ -95,7 +95,7 @@ public sealed class BlogController(
 
         var blogSettings = await site.GetSettingsAsync();
         return await PostListAsync(await posts.GetVisiblePostsAsync(), page, ServingContentBy.AllContent, string.Empty,
-            new PageMeta { Description = blogSettings.Description });
+            new PageMeta { Description = blogSettings.Description, Canonical = links.ToAbsolute(links.BlogRoot + "blog").ToString() });
     }
 
     [HttpGet("/category/{slug}")]
@@ -138,8 +138,15 @@ public sealed class BlogController(
             ?? tag;
 
         var list = all.Where(p => p.Tags.Any(t => string.Equals(t, match, StringComparison.OrdinalIgnoreCase))).ToList();
+        if (list.Count == 0)
+        {
+            // Un tag che nessun post visibile usa non è una pagina da indicizzare.
+            return NotFound();
+        }
+
+        // Un solo indirizzo per il tag, qualunque sia la forma richiesta (maiuscole, ?tag=/x, spazi).
         return await PostListAsync(list, page, ServingContentBy.Tag, $"{site.T("AllPostsTagged")} '{match}'",
-            new PageMeta { Keywords = match });
+            new PageMeta { Keywords = match, Canonical = links.ToAbsolute(links.Tag(match)).ToString() });
     }
 
     private async Task<IActionResult> AuthorAsync(string name, int page)
@@ -148,7 +155,7 @@ public sealed class BlogController(
         var profile = await profiles.GetAsync(name);
         var display = string.IsNullOrWhiteSpace(profile?.DisplayName) ? name : profile.DisplayName;
         return await PostListAsync(list, page, ServingContentBy.Author, $"{site.T("AllPostsBy")} {display}",
-            new PageMeta { Author = display });
+            new PageMeta { Author = display, Canonical = links.ToAbsolute(links.Author(name)).ToString() });
     }
 
     private async Task<IActionResult> DateAsync(int year, int? month, int? day, int page)
@@ -169,7 +176,13 @@ public sealed class BlogController(
         }
 
         // Le date dell'indirizzo sono nel fuso orario del blog, quelle salvate in UTC.
-        var list = await posts.GetByDateAsync(await clock.ToUtcAsync(from), await clock.ToUtcAsync(to));
+        // GetByDateAsync confronta i giorni con gli estremi inclusi: qui serve l'intervallo esatto [inizio, fine),
+        // altrimenti /2023 mostrerebbe anche i post del 1° gennaio 2024 (e un blog a Roma quelli della sera prima).
+        var fromUtc = await clock.ToUtcAsync(from);
+        var toUtc = await clock.ToUtcAsync(to);
+        var list = (await posts.GetByDateAsync(fromUtc, toUtc))
+            .Where(p => p.DateCreated >= fromUtc && p.DateCreated < toUtc)
+            .ToList();
         return await PostListAsync(list, page, ServingContentBy.DateRange, title, new PageMeta());
     }
 
@@ -200,6 +213,13 @@ public sealed class BlogController(
         }
 
         meta.Title = title;
+
+        // Ogni pagina dell'elenco è canonica di se stessa: la 2 non deve rimandare alla 1.
+        if (!string.IsNullOrEmpty(meta.Canonical) && pager.Page > 1)
+        {
+            meta.Canonical += $"?page={pager.Page.ToString(CultureInfo.InvariantCulture)}";
+        }
+
         meta.PreviousUrl = pager.NewerUrl;
         meta.NextUrl = pager.OlderUrl;
         return await site.PageAsync("index", meta, new Dictionary<string, object?>
@@ -606,6 +626,18 @@ public sealed class BlogController(
             if (moved is not null)
             {
                 return RedirectPermanent(moved);
+            }
+
+            // Link di un blog importato da BlogEngine.NET con lo slug codificato due volte ("Jordan2c-Joe" per "Jordan, Joe").
+            if (Import.BlogEngineImporter.RepairedContentLink(original.OriginalPath) is { } repaired)
+            {
+                var target = repaired.Kind == "post"
+                    ? await posts.GetBySlugAsync(repaired.Slug) is { } post && await posts.IsVisibleAsync(post) ? await links.PostAsync(post) : null
+                    : await pages.GetBySlugAsync(repaired.Slug) is { } page && await pages.IsVisibleAsync(page) ? await links.PageAsync(page) : null;
+                if (target is not null)
+                {
+                    return RedirectPermanent(target);
+                }
             }
 
             // Come error404.aspx: propone i contenuti che somigliano all'indirizzo richiesto.

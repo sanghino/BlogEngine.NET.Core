@@ -199,6 +199,12 @@ public sealed partial class PublicSiteTests
             var posts = services.GetRequiredService<IPostService>();
             await posts.SaveAsync(new Post { Title = "Ricetta della torta", Content = "<p>Farina e uova</p>", Author = "admin", Tags = ["Cucina Facile"], DateCreated = new DateTime(2024, 3, 15, 10, 0, 0, DateTimeKind.Utc) });
             await posts.SaveAsync(new Post { Title = "Bozza segreta", Content = "testo", Author = "admin", IsPublished = false });
+            for (var i = 1; i <= 10; i++)
+            {
+                // Abbastanza post per avere una seconda pagina (10 per pagina) nel tag e nella pagina iniziale.
+                await posts.SaveAsync(new Post { Title = $"Piatto numero {i}", Content = "<p>x</p>", Author = "admin", Tags = ["Cucina Facile"], DateCreated = new DateTime(2024, 1, i, 10, 0, 0, DateTimeKind.Utc) });
+            }
+
             await services.GetRequiredService<IPageService>().SaveAsync(new Page { Title = "Chi sono", Content = "<p>Presentazione</p>", IsPublished = true, ShowInList = true, ShowInMenu = true });
         });
         using var visitor = factory.CreateBrowser();
@@ -206,6 +212,24 @@ public sealed partial class PublicSiteTests
         var tag = await visitor.GetStringAsync("/tag/cucina-facile");
         StringAssert.Contains(tag, "Ricetta della torta");
         StringAssert.Contains(await visitor.GetStringAsync("/?tag=/Cucina Facile"), "Ricetta della torta", "Vecchio formato default.aspx?tag=");
+
+        // Canonical: un solo indirizzo per tag, qualunque forma si usi; i tag senza post non esistono.
+        const string tagCanonical = "<link rel=\"canonical\" href=\"http://localhost/tag/Cucina-Facile\" />";
+        StringAssert.Contains(tag, tagCanonical);
+        StringAssert.Contains(await visitor.GetStringAsync("/?tag=/Cucina Facile"), tagCanonical);
+        StringAssert.Contains(await visitor.GetStringAsync("/tag/CUCINA-FACILE"), tagCanonical);
+        Assert.AreEqual(HttpStatusCode.NotFound, (await visitor.GetAsync("/tag/nessun-post")).StatusCode);
+
+        // Link importati con lo slug codificato due volte: 301 al post giusto invece di 404.
+        using var noRedirect = factory.CreateBrowser(followRedirects: false);
+        var broken = await noRedirect.GetAsync("/post/Ricetta-della-torta2c");
+        Assert.AreEqual(HttpStatusCode.MovedPermanently, broken.StatusCode);
+        Assert.AreEqual("/post/Ricetta-della-torta", broken.Headers.Location!.OriginalString);
+        Assert.AreEqual(HttpStatusCode.NotFound, (await noRedirect.GetAsync("/post/Post-inesistente2c")).StatusCode);
+        StringAssert.Contains(await visitor.GetStringAsync("/author/admin"), "<link rel=\"canonical\" href=\"http://localhost/author/admin\" />");
+        StringAssert.Contains(await visitor.GetStringAsync("/"), "<link rel=\"canonical\" href=\"http://localhost/\" />");
+        StringAssert.Contains(await visitor.GetStringAsync("/?page=2"), "<link rel=\"canonical\" href=\"http://localhost/?page=2\" />", "La pagina 2 è canonica di se stessa.");
+        StringAssert.Contains(await visitor.GetStringAsync("/tag/cucina-facile?page=2"), "<link rel=\"canonical\" href=\"http://localhost/tag/Cucina-Facile?page=2\" />");
         StringAssert.Contains(await visitor.GetStringAsync("/2024/03"), "Ricetta della torta");
         StringAssert.Contains(await visitor.GetStringAsync("/2023"), "class=\"no-posts\"");
         StringAssert.Contains(await visitor.GetStringAsync("/author/admin"), "Ricetta della torta");
