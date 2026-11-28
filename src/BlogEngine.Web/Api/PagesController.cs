@@ -134,6 +134,12 @@ public sealed class PagesController(IPageService pages, IRightsService rights, A
         page.Keywords = detail.Keywords ?? string.Empty;
         page.IsFrontPage = detail.IsFrontPage;
         page.SortOrder = detail.SortOrder;
+        page.SubpagesPosition = detail.SubpagesPosition;
+        page.SubpagesStyle = detail.SubpagesStyle;
+        page.SubpagesColumns = Math.Clamp(detail.SubpagesColumns == 0 ? 3 : detail.SubpagesColumns, 2, 4);
+        page.SubpagesImages = detail.SubpagesImages;
+        page.SubpagesTitle = detail.SubpagesTitle?.Trim() ?? string.Empty;
+        page.SubpagesOrder = detail.SubpagesOrder;
         if (!string.IsNullOrWhiteSpace(detail.Slug))
         {
             page.Slug = detail.Slug;

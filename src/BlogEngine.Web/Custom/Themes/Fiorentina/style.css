@@ -1333,3 +1333,6 @@ input[type="submit"]:hover, input[type="button"]:hover, button:hover {
 	border: 1px solid #e2e8f0;
 	color: #6330C9;
 }
+
+/* Sottopagine (stile scelto nell'editor della pagina): colori del tema. */
+.page-children { --subpages-accent: #6330C9; --subpages-card-bg: rgba(99, 48, 201, 0.05); --subpages-card-border: rgba(99, 48, 201, 0.25); --subpages-button-bg: #6330C9; --subpages-button-text: #fff; }

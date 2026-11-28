@@ -140,6 +140,12 @@ internal static class XmlMappers
         Element("showInList", page.ShowInList),
         Element("showInMenu", page.ShowInMenu),
         Element("sortOrder", page.SortOrder),
+        Element("subpagesPosition", page.SubpagesPosition),
+        Element("subpagesStyle", page.SubpagesStyle),
+        Element("subpagesColumns", page.SubpagesColumns),
+        Element("subpagesImages", page.SubpagesImages),
+        Element("subpagesTitle", page.SubpagesTitle),
+        Element("subpagesOrder", page.SubpagesOrder),
         Element("dateCreated", page.DateCreated),
         Element("dateModified", page.DateModified));
 
@@ -160,6 +166,12 @@ internal static class XmlMappers
         // Prima dell'opzione separata il menu seguiva "showInList": le pagine già salvate restano com'erano.
         ShowInMenu = e.Bool("showInMenu", e.Bool("showInList")),
         SortOrder = e.Int("sortOrder"),
+        SubpagesPosition = e.Enum<SubpagesPosition>("subpagesPosition"),
+        SubpagesStyle = e.Enum<SubpagesStyle>("subpagesStyle"),
+        SubpagesColumns = e.Int("subpagesColumns") is > 0 and var columns ? columns : 3,
+        SubpagesImages = e.Bool("subpagesImages"),
+        SubpagesTitle = e.String("subpagesTitle"),
+        SubpagesOrder = e.Enum<SubpagesOrder>("subpagesOrder"),
         DateCreated = e.Date("dateCreated"),
         DateModified = e.Date("dateModified"),
     };

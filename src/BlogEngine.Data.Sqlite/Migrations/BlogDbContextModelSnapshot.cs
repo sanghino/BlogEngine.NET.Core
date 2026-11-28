@@ -569,6 +569,25 @@ namespace BlogEngine.Data.Sqlite.Migrations
                     b.Property<int>("SortOrder")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("SubpagesColumns")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<bool>("SubpagesImages")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SubpagesOrder")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SubpagesPosition")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SubpagesStyle")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("SubpagesTitle")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasColumnType("TEXT");

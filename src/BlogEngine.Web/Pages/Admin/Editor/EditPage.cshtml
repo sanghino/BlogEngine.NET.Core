@@ -119,6 +119,25 @@
                             <div class="newpage-widget">
                                 <label><input type="checkbox" data-ng-model="page.ShowInMenu" name="cbShowInMenu" /> {{lbl.showInMenu}}</label>
                             </div>
+                            @* Come compaiono in questa pagina i link alle sue pagine figlie. *@
+                            <div class="newpage-widget newpage-subpages">
+                                <label class="newpage-widget-title" style="display:block">{{lbl.subpages}}</label>
+                                <p class="help-block" style="font-size:12px;margin:0 0 6px" ng-if="!page.HasChildren">{{lbl.subpagesNoChildren}}</p>
+                                <label for="selSubpagesPosition" style="display:block;font-weight:normal;margin-bottom:2px">{{lbl.subpagesPosition}}</label>
+                                <select id="selSubpagesPosition" class="form-control form-control-sm" data-ng-model="page.SubpagesPosition" data-ng-options="o.id as lbl[o.key] for o in subpagesPositions"></select>
+                                <label for="selSubpagesStyle" style="font-weight:normal;margin:6px 0 2px">{{lbl.subpagesStyle}}</label>
+                                <select id="selSubpagesStyle" class="form-control form-control-sm" data-ng-model="page.SubpagesStyle" data-ng-options="o.id as lbl[o.key] for o in subpagesStyles"></select>
+                                <div ng-if="page.SubpagesStyle === 3" style="margin-top:6px">
+                                    <label for="selSubpagesColumns" style="font-weight:normal;margin-bottom:2px">{{lbl.subpagesColumns}}</label>
+                                    <select id="selSubpagesColumns" class="form-control form-control-sm" data-ng-model="page.SubpagesColumns" data-ng-options="n for n in [2, 3, 4]"></select>
+                                    <label style="font-weight:normal;margin-top:6px"><input type="checkbox" data-ng-model="page.SubpagesImages" /> {{lbl.subpagesImages}}</label>
+                                </div>
+                                <label for="selSubpagesOrder" style="font-weight:normal;margin:6px 0 2px">{{lbl.subpagesOrder}}</label>
+                                <select id="selSubpagesOrder" class="form-control form-control-sm" data-ng-model="page.SubpagesOrder" data-ng-options="o.id as lbl[o.key] for o in subpagesOrders"></select>
+                                <label for="txtSubpagesTitle" style="font-weight:normal;margin:6px 0 2px">{{lbl.subpagesTitle}}</label>
+                                <input type="text" class="form-control form-control-sm" id="txtSubpagesTitle" data-ng-model="page.SubpagesTitle" placeholder="{{lbl.subpagesTitlePlaceholder}}" />
+                                <p class="help-block" style="font-size:12px;margin:6px 0 0">{{lbl.subpagesHelp}}</p>
+                            </div>
                             <div class="newpage-widget" data-ng-show="lookups.PageOptions.ShowCustomFields">
                                 <label class="newpage-widget-title">{{lbl.customFields}}</label>
                                 <a class="btn btn-default btn-sm btn-block" id="btnCustomFields" ng-click="showCustom()" data-toggle="modal">{{lbl.add}}</a>

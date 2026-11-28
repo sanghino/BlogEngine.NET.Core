@@ -16,6 +16,7 @@ a runtime sta in `App_Data` (accanto a `public`), temi ed estensioni installabil
 |---|---|---|---|
 | ☑ | Post: creazione, modifica, bozze, pubblicazione programmata, slug, descrizione, autore | `Post.cs`, `PostRepository`, `PostsController` | Core + API |
 | ☑ | Pagine statiche, gerarchia padre/figlio, pagina iniziale personalizzata | `Page.cs`, `PageRepository`, `PagesController` | Core + API + `/page/{slug}`; home da `CustomFrontPage` o dalla pagina "home" (`/blog` mostra comunque i post) |
+| ☑ | Elenco delle sottopagine a scelta | (nuovo) | Nell'editor della pagina: dove (in fondo, o solo dove si inserisce), aspetto (elenco puntato, numerato, con descrizioni, schede su 2-4 colonne con immagine, pulsanti, su una riga), ordine (manuale, alfabetico, dalla più recente), titolo. Pulsante "Sottopagine" dell'editor che inserisce `[sottopagine stile=... colonne=... immagini=si ordine=... titolo="..."]` (anche in inglese `[subpages style=...]`): l'elenco resta aggiornato da solo. Colori dal tema (variabili `--subpages-*`); le pagine esistenti restano come prima |
 | ☑ | Categorie gerarchiche | `Category.cs`, `CategoriesController` | Core + API + `/category/{slug}` |
 | ☑ | Tag e tag cloud | `TagRepository`, `Data/Services/TagCloud.cs` | Core + API + `/tag/{tag}` (anche `?tag=`) + widget TagCloud |
 | ☑ | Campi personalizzati su post, pagine, profili e temi | `CustomFieldRepository`, `CustomFieldsParser` | Core + API; segnaposto `[CUSTOMFIELD...]` e `[CUSTOMBLOCK]` nei testi (`CustomFieldTokensHandler`), filtro `theme_field` nei temi |

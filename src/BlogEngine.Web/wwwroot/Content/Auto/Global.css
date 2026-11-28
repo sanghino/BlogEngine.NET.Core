@@ -1,4 +1,4 @@
-﻿p { }
+p { }
 /* DO NOT START CSS WITH A COMMENT! */
 
 /*[ Star rater ]*/
@@ -186,3 +186,32 @@ div.post .text a[rel~="muse"][rel~="met"], div.post .text a[rel~="crush"][rel~="
 .space-game-stage { display: flex; justify-content: center; }
 .space-game-stage .block-game-board { touch-action: none; }
 .game-difesa .block-game-overlay { left: 50%; right: auto; width: var(--space-width, 100%); transform: translateX(-50%); }
+
+/*[ Sottopagine: stili scelti nell'editor della pagina; i colori li decide il tema con le variabili --subpages-* ]*/
+.page-children-title { margin: 1.2em 0 .5em; font-size: 1.15em; }
+.page-children-descriptions { list-style: none; padding-left: 0; }
+.page-children-descriptions > li { margin: 0 0 .8em; }
+.page-children-descriptions > li > a { font-weight: 600; }
+.page-children-descriptions .page-child-description { margin: .15em 0 0; opacity: .8; font-size: .95em; }
+.page-children-cards { display: grid; grid-template-columns: repeat(var(--subpages-cols, 3), minmax(0, 1fr)); gap: 14px; margin: 1em 0; }
+.page-children-cols-2 { --subpages-cols: 2; }
+.page-children-cols-3 { --subpages-cols: 3; }
+.page-children-cols-4 { --subpages-cols: 4; }
+.page-children-cards .page-child-card { display: flex; flex-direction: column; gap: 6px; padding: 14px; border-radius: 8px; text-decoration: none;
+    background: var(--subpages-card-bg, rgba(127,127,127,.06)); border: 1px solid var(--subpages-card-border, rgba(127,127,127,.25)); color: var(--subpages-card-text, inherit);
+    transition: border-color .15s, transform .15s; }
+.page-children-cards .page-child-card:hover, .page-children-cards .page-child-card:focus-visible { border-color: var(--subpages-accent, currentColor); transform: translateY(-2px); }
+.page-children-cards .page-child-image { display: block; margin: -14px -14px 4px; overflow: hidden; border-radius: 8px 8px 0 0; aspect-ratio: 16 / 9; background: rgba(127,127,127,.12); }
+.page-children-cards .page-child-image img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.page-children-cards .page-child-title { font-weight: 700; color: var(--subpages-accent, inherit); }
+.page-children-cards .page-child-description { font-size: .9em; opacity: .8; line-height: 1.4; }
+.page-children-buttons { display: flex; flex-wrap: wrap; gap: 8px; margin: 1em 0; }
+.page-children-buttons .page-child-button { display: inline-block; padding: .5em 1em; border-radius: 6px; text-decoration: none; font-weight: 600;
+    background: var(--subpages-button-bg, var(--subpages-accent, #2a6496)); color: var(--subpages-button-text, #fff); border: 1px solid transparent; }
+.page-children-buttons .page-child-button:hover, .page-children-buttons .page-child-button:focus-visible { filter: brightness(1.12); text-decoration: none; }
+.page-children-inline .page-children-sep { opacity: .55; }
+/* I temi sottolineano i link nel testo: schede e pulsanti no (peso di un id, come per i giochi). */
+:is(#page, body) a.page-child-card, :is(#page, body) a.page-child-card span, :is(#page, body) a.page-child-button { text-decoration: none; border-bottom: 0; }
+:is(#page, body) a.page-child-card { border: 1px solid var(--subpages-card-border, rgba(127,127,127,.25)); }
+@media (max-width: 700px) { .page-children-cards { --subpages-cols: 2; } }
+@media (max-width: 460px) { .page-children-cards { grid-template-columns: 1fr; } }

@@ -135,6 +135,71 @@ var codeLanguages = [
 
 var brushPattern = /brush\s*:\s*([^;\s]+)/i;
 
+// Pulsante "Inserisci sottopagine" (solo nell'editor delle pagine): scrive il segnaposto [sottopagine ...] con le
+// opzioni scelte. Al suo posto il sito mostra l'elenco aggiornato delle pagine figlie (vedi SubpagesPlaceholder.cs).
+var blogEditorIsPage = function () {
+    return /\/editpage(\.cshtml)?/i.test(window.location.pathname);
+};
+
+var openSubpagesDialog = function (editor) {
+    var italian = ((window.SiteVars && SiteVars.Language) || '').toLowerCase().indexOf('it') === 0;
+    var words = italian
+        ? { tag: 'sottopagine', style: 'stile', columns: 'colonne', images: 'immagini', title: 'titolo', order: 'ordine', yes: 'si',
+            styles: ['elenco', 'numerato', 'descrizioni', 'schede', 'pulsanti', 'riga'], orders: ['manuale', 'alfabetico', 'recenti'] }
+        : { tag: 'subpages', style: 'style', columns: 'columns', images: 'images', title: 'title', order: 'order', yes: 'yes',
+            styles: ['list', 'numbered', 'descriptions', 'cards', 'buttons', 'inline'], orders: ['manual', 'title', 'newest'] };
+    var label = function (key, fallback) { return blogEditorLabel(key, fallback); };
+
+    editor.windowManager.open({
+        title: label('subpagesInsert', 'Insert subpages'),
+        body: {
+            type: 'panel',
+            items: [
+                { type: 'htmlpanel', html: '<p style="margin:0 0 8px">' + editor.dom.encode(label('subpagesInsertHelp', 'The list of child pages appears here and stays up to date by itself.')) + '</p>' },
+                {
+                    type: 'listbox', name: 'style', label: label('subpagesStyle', 'Style'), items: [
+                        { value: 'page', text: label('subpagesStylePage', 'As set in the page') },
+                        { value: '0', text: label('subpagesStyleList', 'Bulleted list') },
+                        { value: '1', text: label('subpagesStyleNumbered', 'Numbered list') },
+                        { value: '2', text: label('subpagesStyleDescriptions', 'List with descriptions') },
+                        { value: '3', text: label('subpagesStyleCards', 'Cards') },
+                        { value: '4', text: label('subpagesStyleButtons', 'Buttons') },
+                        { value: '5', text: label('subpagesStyleInline', 'On one line') }
+                    ]
+                },
+                { type: 'listbox', name: 'columns', label: label('subpagesColumns', 'Columns (cards)'), items: [{ value: '', text: '-' }, { value: '2', text: '2' }, { value: '3', text: '3' }, { value: '4', text: '4' }] },
+                { type: 'checkbox', name: 'images', label: label('subpagesImages', 'Show the first image of each page (cards)') },
+                {
+                    type: 'listbox', name: 'order', label: label('subpagesOrder', 'Order'), items: [
+                        { value: 'page', text: label('subpagesStylePage', 'As set in the page') },
+                        { value: '0', text: label('subpagesOrderManual', 'Sort order') },
+                        { value: '1', text: label('subpagesOrderTitle', 'Alphabetical') },
+                        { value: '2', text: label('subpagesOrderNewest', 'Newest first') }
+                    ]
+                },
+                { type: 'input', name: 'title', label: label('subpagesTitle', 'Title above the list'), placeholder: label('subpagesTitlePlaceholder', 'e.g. In this section') }
+            ]
+        },
+        initialData: { style: 'page', columns: '', images: false, order: 'page', title: '' },
+        buttons: [
+            { type: 'cancel', text: label('cancel', 'Cancel') },
+            { type: 'submit', text: label('subpagesInsertButton', 'Insert'), primary: true }
+        ],
+        onSubmit: function (api) {
+            var data = api.getData();
+            var parts = [words.tag];
+            if (data.style !== 'page') parts.push(words.style + '=' + words.styles[+data.style]);
+            if (data.columns) parts.push(words.columns + '=' + data.columns);
+            if (data.images) parts.push(words.images + '=' + words.yes);
+            if (data.order !== 'page') parts.push(words.order + '=' + words.orders[+data.order]);
+            var title = (data.title || '').replace(/["\]]/g, '').trim();
+            if (title) parts.push(words.title + '="' + title + '"');
+            editor.insertContent('<p>' + editor.dom.encode('[' + parts.join(' ') + ']') + '</p>');
+            api.close();
+        }
+    });
+};
+
 var openCodeDialog = function (editor) {
     var pre = editor.dom.getParent(editor.selection.getNode(), 'pre');
     var existing = pre && brushPattern.test(pre.className) ? pre : null;
@@ -278,7 +343,7 @@ if (document.getElementById('txtContent')) {
         selector: '#txtContent',
         plugins: 'advlist autolink lists link image charmap preview anchor searchreplace visualblocks code fullscreen insertdatetime media table',
         toolbar: 'blocks | bold underline italic | alignleft aligncenter alignright | bullist numlist | forecolor backcolor | ' +
-            'link unlink image media table blogcode blogmore | fullscreen code | blogfiles',
+            'link unlink image media table blogcode blogmore' + (blogEditorIsPage() ? ' blogsubpages' : '') + ' | fullscreen code | blogfiles',
         menubar: false,
         // Come in TinyMCE 4: se la finestra è stretta i pulsanti vanno a capo invece di finire nel menu "...".
         toolbar_mode: 'wrap',
@@ -311,6 +376,12 @@ if (document.getElementById('txtContent')) {
                 text: '[more]',
                 tooltip: blogEditorLabel('editorMoreTooltip', 'Break the post here in lists ([more])'),
                 onAction: function () { editor.insertContent('<p>[more]</p>'); }
+            });
+            editor.ui.registry.addButton('blogsubpages', {
+                icon: 'unordered-list',
+                text: blogEditorLabel('subpagesButton', 'Subpages'),
+                tooltip: blogEditorLabel('subpagesInsert', 'Insert subpages'),
+                onAction: function () { openSubpagesDialog(editor); }
             });
             editor.ui.registry.addButton('blogfiles', {
                 icon: 'browse',

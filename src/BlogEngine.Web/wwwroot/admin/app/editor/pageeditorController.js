@@ -1,9 +1,28 @@
-﻿angular.module('blogAdmin').controller('PageEditorController', ["$rootScope", "$scope", "$location", "$filter", "$log", "dataService", function ($rootScope, $scope, $location, $filter, $log, dataService) {
+angular.module('blogAdmin').controller('PageEditorController', ["$rootScope", "$scope", "$location", "$filter", "$log", "dataService", function ($rootScope, $scope, $location, $filter, $log, dataService) {
     $scope.id = getFromQueryString('id');
     $scope.page = newPage;
     $scope.lookups = [];
     $scope.selectedParent = {};
     $scope.fullScreen = false;
+
+    // Elenco delle sottopagine: valori come negli enum del server (SubpagesPosition, SubpagesStyle, SubpagesOrder).
+    $scope.subpagesPositions = [
+        { id: 0, key: 'subpagesPositionBottom' },
+        { id: 1, key: 'subpagesPositionPlaceholder' }
+    ];
+    $scope.subpagesStyles = [
+        { id: 0, key: 'subpagesStyleList' },
+        { id: 1, key: 'subpagesStyleNumbered' },
+        { id: 2, key: 'subpagesStyleDescriptions' },
+        { id: 3, key: 'subpagesStyleCards' },
+        { id: 4, key: 'subpagesStyleButtons' },
+        { id: 5, key: 'subpagesStyleInline' }
+    ];
+    $scope.subpagesOrders = [
+        { id: 0, key: 'subpagesOrderManual' },
+        { id: 1, key: 'subpagesOrderTitle' },
+        { id: 2, key: 'subpagesOrderNewest' }
+    ];
     $scope.security = $rootScope.security;
     $scope.UserVars = UserVars;
     $scope.root = $rootScope.SiteVars.ApplicationRelativeWebRoot;
@@ -248,5 +267,11 @@ var newPage = {
     "Slug": "",
     "ShowInList": true,
     "ShowInMenu": false,
-    "IsPublished": false
+    "IsPublished": false,
+    "SubpagesPosition": 0,
+    "SubpagesStyle": 0,
+    "SubpagesColumns": 3,
+    "SubpagesImages": false,
+    "SubpagesTitle": "",
+    "SubpagesOrder": 0
 }

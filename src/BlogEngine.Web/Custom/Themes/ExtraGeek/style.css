@@ -1695,3 +1695,6 @@ input[type="file"] {
 	border: 1px solid var(--eg-line-soft);
 	color: var(--eg-sky-light);
 }
+
+/* Sottopagine (stile scelto nell'editor della pagina): colori del tema. */
+.page-children { --subpages-accent: var(--eg-sky); --subpages-card-bg: var(--eg-deep); --subpages-card-border: var(--eg-line-soft); --subpages-card-text: var(--eg-text); --subpages-button-bg: var(--eg-sky); --subpages-button-text: var(--eg-night); }

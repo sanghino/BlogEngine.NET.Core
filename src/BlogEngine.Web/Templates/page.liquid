@@ -2,11 +2,8 @@
 <div id="page" class="page-global">
     <h2 class="page-global-title">{{ page.title }}</h2>
     <div>{{ page.content }}</div>
-    {%- if page.children.size > 0 and page.children_in_content == false %}
-    <ul class="page-children">
-        {%- for child in page.children %}<li><a href="{{ child.url }}">{{ child.title }}</a></li>{% endfor %}
-    </ul>
-    {%- endif %}
+    {%- comment -%} Sottopagine in fondo, nello stile scelto nell'editor (page.children resta per i temi che le vogliono disegnare da sé). {%- endcomment -%}
+    {{ page.children_html }}
     {{ page.admin_links }}
     {%- if comments.provider == 'disqus' and comments.is_open %}
     <div id="disqus_box">

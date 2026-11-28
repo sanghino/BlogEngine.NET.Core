@@ -173,6 +173,20 @@ public sealed class PageDetail
     public bool IsDeleted { get; set; }
 
     public int SortOrder { get; set; }
+
+    // Elenco delle sottopagine (vedi Page.Subpages*).
+
+    public BlogEngine.Models.SubpagesPosition SubpagesPosition { get; set; }
+
+    public BlogEngine.Models.SubpagesStyle SubpagesStyle { get; set; }
+
+    public int SubpagesColumns { get; set; } = 3;
+
+    public bool SubpagesImages { get; set; }
+
+    public string? SubpagesTitle { get; set; }
+
+    public BlogEngine.Models.SubpagesOrder SubpagesOrder { get; set; }
 }
 
 public sealed class CategoryItem

@@ -144,7 +144,8 @@ public abstract class StoreContractTests
         var blogId = Guid.NewGuid();
         var parent = Guid.NewGuid();
         await (await NewStoreAsync<IEntityStore<Page>>()).SaveAsync(
-            new Page { BlogId = blogId, Title = "Chi sono", Slug = "chi-sono", Content = "x", Parent = parent, IsFrontPage = true, ShowInList = true, ShowInMenu = false, SortOrder = 3, DateCreated = Created });
+            new Page { BlogId = blogId, Title = "Chi sono", Slug = "chi-sono", Content = "x", Parent = parent, IsFrontPage = true, ShowInList = true, ShowInMenu = false, SortOrder = 3, DateCreated = Created,
+              SubpagesPosition = SubpagesPosition.PlaceholderOnly, SubpagesStyle = SubpagesStyle.Cards, SubpagesColumns = 4, SubpagesImages = true, SubpagesTitle = "In questa sezione", SubpagesOrder = SubpagesOrder.Newest });
         await (await NewStoreAsync<IEntityStore<Category>>()).SaveAsync(new Category { BlogId = blogId, Title = "Senza padre", DateCreated = Created });
         await (await NewStoreAsync<IEntityStore<Category>>()).SaveAsync(new Category { BlogId = blogId, Title = "Con padre", Parent = parent, DateCreated = Created });
         await (await NewStoreAsync<IEntityStore<BlogRollItem>>()).SaveAsync(
@@ -158,6 +159,12 @@ public abstract class StoreContractTests
         Assert.AreEqual(3, page.SortOrder);
         Assert.IsTrue(page.ShowInList);
         Assert.IsFalse(page.ShowInMenu, "Elenco delle pagine e menu sono opzioni separate.");
+        Assert.AreEqual(SubpagesPosition.PlaceholderOnly, page.SubpagesPosition);
+        Assert.AreEqual(SubpagesStyle.Cards, page.SubpagesStyle);
+        Assert.AreEqual(4, page.SubpagesColumns);
+        Assert.IsTrue(page.SubpagesImages);
+        Assert.AreEqual("In questa sezione", page.SubpagesTitle);
+        Assert.AreEqual(SubpagesOrder.Newest, page.SubpagesOrder);
 
         var categories = await (await NewStoreAsync<IEntityStore<Category>>()).GetAllAsync(blogId);
         Assert.IsNull(categories.Single(c => c.Title == "Senza padre").Parent);
@@ -359,11 +366,13 @@ public sealed class XmlStoreContractTests : StoreContractTests
         foreach (var file in Directory.GetFiles(Storage.DataRoot, "*.xml", SearchOption.AllDirectories))
         {
             var text = File.ReadAllText(file);
-            File.WriteAllText(file, System.Text.RegularExpressions.Regex.Replace(text, @"\s*<showInMenu>[^<]*</showInMenu>", string.Empty));
+            File.WriteAllText(file, System.Text.RegularExpressions.Regex.Replace(text, @"\s*<(showInMenu|subpages\w+)\s*/>|\s*<(?<tag>showInMenu|subpages\w+)>[^<]*</\k<tag>>", string.Empty));
         }
 
         var pages = await (await NewStoreAsync<IEntityStore<Page>>()).GetAllAsync(blogId);
         Assert.IsTrue(pages.Single(p => p.Title == "Vecchia").ShowInMenu);
+        Assert.AreEqual(3, pages.Single(p => p.Title == "Vecchia").SubpagesColumns, "Le pagine salvate prima delle opzioni delle sottopagine hanno i valori di serie.");
+        Assert.AreEqual(SubpagesStyle.List, pages.Single(p => p.Title == "Vecchia").SubpagesStyle);
         Assert.IsFalse(pages.Single(p => p.Title == "Nascosta").ShowInMenu);
     }
 }

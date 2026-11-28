@@ -34,6 +34,24 @@ public sealed class Page : BlogEntity, IPublishable
 
     public int SortOrder { get; set; }
 
+    // Elenco delle sottopagine in questa pagina (valori predefiniti = come è sempre stato). Il segnaposto
+    // [sottopagine ...] nel testo può cambiare queste scelte per il singolo elenco.
+
+    public SubpagesPosition SubpagesPosition { get; set; }
+
+    public SubpagesStyle SubpagesStyle { get; set; }
+
+    /// <summary>Colonne delle schede (2-4).</summary>
+    public int SubpagesColumns { get; set; } = 3;
+
+    /// <summary>Immagine nelle schede: la prima immagine della pagina figlia.</summary>
+    public bool SubpagesImages { get; set; }
+
+    /// <summary>Titolo sopra l'elenco (es. "In questa sezione"); vuoto per nessun titolo.</summary>
+    public string SubpagesTitle { get; set; } = string.Empty;
+
+    public SubpagesOrder SubpagesOrder { get; set; }
+
     public bool HasParentPage => Parent != Guid.Empty;
 
     /// <summary>Le pagine non hanno un autore: viene mostrato quello impostato nel blog.</summary>

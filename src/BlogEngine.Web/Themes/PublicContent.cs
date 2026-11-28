@@ -313,18 +313,35 @@ public sealed class PublicContent(
 
         var url = await links.PageAsync(page);
         var children = new List<PageLinkModel>();
+        var subpages = new List<SubpageItem>();
         foreach (var child in visiblePages.Where(p => p.Parent == page.Id && p.IsPublished).OrderBy(p => p.SortOrder))
         {
-            children.Add(new PageLinkModel { Title = child.Title, Url = await links.PageAsync(child), Description = child.Description });
+            var childUrl = await links.PageAsync(child);
+            children.Add(new PageLinkModel { Title = child.Title, Url = childUrl, Description = child.Description });
+            subpages.Add(new SubpageItem
+            {
+                Title = child.Title,
+                Url = childUrl,
+                Description = child.Description,
+                Image = SubpagesPlaceholder.ImageOf(child.Content),
+                DateCreated = child.DateCreated,
+                SortOrder = child.SortOrder,
+            });
         }
 
-        // Con il segnaposto [sottopagine] l'elenco va nel punto scelto invece che in fondo alla pagina.
+        // Con il segnaposto [sottopagine ...] l'elenco va nel punto scelto invece che in fondo alla pagina;
+        // con "solo dove c'è il segnaposto" senza segnaposto non compare (i link si scrivono a mano).
+        var options = SubpagesOptions.From(page);
         var body = serving.Body;
         var childrenInContent = SubpagesPlaceholder.IsIn(body);
         if (childrenInContent)
         {
-            body = SubpagesPlaceholder.Replace(body, children);
+            body = SubpagesPlaceholder.Replace(body, subpages, options);
         }
+
+        var childrenHtml = childrenInContent || page.SubpagesPosition == SubpagesPosition.PlaceholderOnly
+            ? string.Empty
+            : SubpagesPlaceholder.Render(subpages, options);
 
         var canEdit = await CanAsync(Rights.EditOwnPages);
         var adminLinks = new List<string>();
@@ -350,7 +367,8 @@ public sealed class PublicContent(
             DateCreated = await clock.ToBlogTimeAsync(page.DateCreated),
             DateModified = await clock.ToBlogTimeAsync(page.DateModified),
             Children = children,
-            ChildrenInContent = childrenInContent,
+            ChildrenInContent = childrenInContent || page.SubpagesPosition == SubpagesPosition.PlaceholderOnly,
+            ChildrenHtml = new HtmlString(childrenHtml),
             AdminLinks = adminLinks.Count == 0 ? HtmlString.Empty : new HtmlString($"<div class=\"page-adminlinks\">{string.Join(" | ", adminLinks)}</div>"),
             EditUrl = canEdit ? $"{links.BlogRoot}admin/app/editor/editpage.cshtml?id={page.Id}" : string.Empty,
         };

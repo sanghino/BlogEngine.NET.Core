@@ -3713,4 +3713,82 @@
   <data name="contactEnabled" xml:space="preserve">
     <value>Active</value>
   </data>
+  <data name="subpages" xml:space="preserve">
+    <value>Subpages</value>
+  </data>
+  <data name="subpagesNoChildren" xml:space="preserve">
+    <value>This page has no child pages yet: these options apply when you add some.</value>
+  </data>
+  <data name="subpagesPosition" xml:space="preserve">
+    <value>Where</value>
+  </data>
+  <data name="subpagesPositionBottom" xml:space="preserve">
+    <value>At the bottom of the page</value>
+  </data>
+  <data name="subpagesPositionPlaceholder" xml:space="preserve">
+    <value>Only where I insert them</value>
+  </data>
+  <data name="subpagesStyle" xml:space="preserve">
+    <value>Style</value>
+  </data>
+  <data name="subpagesStylePage" xml:space="preserve">
+    <value>As set in the page</value>
+  </data>
+  <data name="subpagesStyleList" xml:space="preserve">
+    <value>Bulleted list</value>
+  </data>
+  <data name="subpagesStyleNumbered" xml:space="preserve">
+    <value>Numbered list</value>
+  </data>
+  <data name="subpagesStyleDescriptions" xml:space="preserve">
+    <value>List with descriptions</value>
+  </data>
+  <data name="subpagesStyleCards" xml:space="preserve">
+    <value>Cards</value>
+  </data>
+  <data name="subpagesStyleButtons" xml:space="preserve">
+    <value>Buttons</value>
+  </data>
+  <data name="subpagesStyleInline" xml:space="preserve">
+    <value>On one line</value>
+  </data>
+  <data name="subpagesColumns" xml:space="preserve">
+    <value>Columns (cards)</value>
+  </data>
+  <data name="subpagesImages" xml:space="preserve">
+    <value>Show the first image of each page (cards)</value>
+  </data>
+  <data name="subpagesOrder" xml:space="preserve">
+    <value>Order</value>
+  </data>
+  <data name="subpagesOrderManual" xml:space="preserve">
+    <value>Sort order of the pages</value>
+  </data>
+  <data name="subpagesOrderTitle" xml:space="preserve">
+    <value>Alphabetical</value>
+  </data>
+  <data name="subpagesOrderNewest" xml:space="preserve">
+    <value>Newest first</value>
+  </data>
+  <data name="subpagesTitle" xml:space="preserve">
+    <value>Title above the list</value>
+  </data>
+  <data name="subpagesTitlePlaceholder" xml:space="preserve">
+    <value>e.g. In this section</value>
+  </data>
+  <data name="subpagesHelp" xml:space="preserve">
+    <value>With &quot;Only where I insert them&quot; use the Subpages button of the editor, or write your own links. The button can also insert lists with a different style.</value>
+  </data>
+  <data name="subpagesButton" xml:space="preserve">
+    <value>Subpages</value>
+  </data>
+  <data name="subpagesInsert" xml:space="preserve">
+    <value>Insert subpages</value>
+  </data>
+  <data name="subpagesInsertHelp" xml:space="preserve">
+    <value>The list of child pages appears here and stays up to date by itself. Options left empty follow the page settings.</value>
+  </data>
+  <data name="subpagesInsertButton" xml:space="preserve">
+    <value>Insert</value>
+  </data>
 </root>

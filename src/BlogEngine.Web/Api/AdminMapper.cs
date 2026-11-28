@@ -115,6 +115,12 @@ public sealed class AdminMapper(
             IsFrontPage = page.IsFrontPage,
             IsDeleted = page.IsDeleted,
             SortOrder = page.SortOrder,
+            SubpagesPosition = page.SubpagesPosition,
+            SubpagesStyle = page.SubpagesStyle,
+            SubpagesColumns = page.SubpagesColumns,
+            SubpagesImages = page.SubpagesImages,
+            SubpagesTitle = page.SubpagesTitle,
+            SubpagesOrder = page.SubpagesOrder,
             CanUserEdit = canEdit,
             CanUserDelete = canEdit,
         };

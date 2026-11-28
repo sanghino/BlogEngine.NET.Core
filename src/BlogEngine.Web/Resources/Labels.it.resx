@@ -3711,4 +3711,82 @@
   <data name="contactEnabled" xml:space="preserve">
     <value>Attiva</value>
   </data>
+  <data name="subpages" xml:space="preserve">
+    <value>Sottopagine</value>
+  </data>
+  <data name="subpagesNoChildren" xml:space="preserve">
+    <value>Questa pagina non ha ancora pagine figlie: queste scelte valgono quando ne aggiungerai.</value>
+  </data>
+  <data name="subpagesPosition" xml:space="preserve">
+    <value>Dove</value>
+  </data>
+  <data name="subpagesPositionBottom" xml:space="preserve">
+    <value>In fondo alla pagina</value>
+  </data>
+  <data name="subpagesPositionPlaceholder" xml:space="preserve">
+    <value>Solo dove le inserisco</value>
+  </data>
+  <data name="subpagesStyle" xml:space="preserve">
+    <value>Aspetto</value>
+  </data>
+  <data name="subpagesStylePage" xml:space="preserve">
+    <value>Come impostato nella pagina</value>
+  </data>
+  <data name="subpagesStyleList" xml:space="preserve">
+    <value>Elenco puntato</value>
+  </data>
+  <data name="subpagesStyleNumbered" xml:space="preserve">
+    <value>Elenco numerato</value>
+  </data>
+  <data name="subpagesStyleDescriptions" xml:space="preserve">
+    <value>Elenco con descrizioni</value>
+  </data>
+  <data name="subpagesStyleCards" xml:space="preserve">
+    <value>Schede</value>
+  </data>
+  <data name="subpagesStyleButtons" xml:space="preserve">
+    <value>Pulsanti</value>
+  </data>
+  <data name="subpagesStyleInline" xml:space="preserve">
+    <value>Su una riga</value>
+  </data>
+  <data name="subpagesColumns" xml:space="preserve">
+    <value>Colonne (schede)</value>
+  </data>
+  <data name="subpagesImages" xml:space="preserve">
+    <value>Mostra la prima immagine di ogni pagina (schede)</value>
+  </data>
+  <data name="subpagesOrder" xml:space="preserve">
+    <value>Ordine</value>
+  </data>
+  <data name="subpagesOrderManual" xml:space="preserve">
+    <value>Ordine impostato nelle pagine</value>
+  </data>
+  <data name="subpagesOrderTitle" xml:space="preserve">
+    <value>Alfabetico</value>
+  </data>
+  <data name="subpagesOrderNewest" xml:space="preserve">
+    <value>Dalla più recente</value>
+  </data>
+  <data name="subpagesTitle" xml:space="preserve">
+    <value>Titolo sopra l&apos;elenco</value>
+  </data>
+  <data name="subpagesTitlePlaceholder" xml:space="preserve">
+    <value>es. In questa sezione</value>
+  </data>
+  <data name="subpagesHelp" xml:space="preserve">
+    <value>Con &quot;Solo dove le inserisco&quot; usa il pulsante Sottopagine dell&apos;editor, oppure scrivi tu i link. Il pulsante può anche inserire elenchi con un aspetto diverso.</value>
+  </data>
+  <data name="subpagesButton" xml:space="preserve">
+    <value>Sottopagine</value>
+  </data>
+  <data name="subpagesInsert" xml:space="preserve">
+    <value>Inserisci sottopagine</value>
+  </data>
+  <data name="subpagesInsertHelp" xml:space="preserve">
+    <value>Qui comparirà l&apos;elenco delle pagine figlie, sempre aggiornato. Le opzioni non scelte seguono le impostazioni della pagina.</value>
+  </data>
+  <data name="subpagesInsertButton" xml:space="preserve">
+    <value>Inserisci</value>
+  </data>
 </root>

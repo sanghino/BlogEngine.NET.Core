@@ -46,6 +46,12 @@ public static class EntityCopies
         ShowInList = page.ShowInList,
         ShowInMenu = page.ShowInMenu,
         SortOrder = page.SortOrder,
+        SubpagesPosition = page.SubpagesPosition,
+        SubpagesStyle = page.SubpagesStyle,
+        SubpagesColumns = page.SubpagesColumns,
+        SubpagesImages = page.SubpagesImages,
+        SubpagesTitle = page.SubpagesTitle,
+        SubpagesOrder = page.SubpagesOrder,
         DateCreated = page.DateCreated,
         DateModified = page.DateModified,
     };

@@ -167,6 +167,78 @@ public sealed partial class PublicSiteTests
         Assert.IsFalse(empty.Contains("page-children"));
     }
 
+    /// <summary>Aspetto, ordine e posizione delle sottopagine scelti nell'editor o nel segnaposto.</summary>
+    [TestMethod]
+    public async Task Subpages_StyleOrderAndPosition_FollowTheEditorAndThePlaceholder()
+    {
+        using var factory = new BlogWebFactory();
+        using var admin = await factory.InstallAsync();
+        admin.DefaultRequestHeaders.Add(BlogContextMiddleware.BlogInstanceHeader, Guid.Empty.ToString());
+        Guid sectionId = Guid.Empty;
+        await factory.RunAsSystemAsync(async services =>
+        {
+            var pages = services.GetRequiredService<IPageService>();
+            var section = new Page
+            {
+                Title = "Sezione",
+                Content = "<p>Intro</p><p>[sottopagine stile=pulsanti ordine=alfabetico]</p><p>Fine</p>",
+                IsPublished = true,
+                SubpagesStyle = SubpagesStyle.Cards,
+                SubpagesColumns = 2,
+                SubpagesImages = true,
+                SubpagesTitle = "In questa sezione",
+            };
+            await pages.SaveAsync(section);
+            sectionId = section.Id;
+            await pages.SaveAsync(new Page { Title = "Zeta", Description = "Ultima & basta", Content = "<p><img src=\"/foto/zeta.jpg\" /></p>", IsPublished = true, Parent = section.Id, SortOrder = 1, DateCreated = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc) });
+            await pages.SaveAsync(new Page { Title = "Alfa", Description = "Prima", Content = "x", IsPublished = true, Parent = section.Id, SortOrder = 2, DateCreated = new DateTime(2026, 1, 1, 0, 0, 0, DateTimeKind.Utc) });
+
+            var hidden = new Page { Title = "Manuale", Content = "<p>I link li scrivo io</p>", IsPublished = true, SubpagesPosition = SubpagesPosition.PlaceholderOnly };
+            await pages.SaveAsync(hidden);
+            await pages.SaveAsync(new Page { Title = "Figlia nascosta", Content = "x", IsPublished = true, Parent = hidden.Id });
+        });
+        using var visitor = factory.CreateBrowser();
+
+        // Il segnaposto cambia stile e ordine; titolo e colonne restano quelli della pagina.
+        var html = await visitor.GetStringAsync("/page/sezione");
+        StringAssert.Contains(html, "<h3 class=\"page-children-title\">In questa sezione</h3><div class=\"page-children page-children-buttons\">");
+        Assert.IsTrue(html.IndexOf(">Alfa</a>", StringComparison.Ordinal) < html.IndexOf(">Zeta</a>", StringComparison.Ordinal), "Ordine alfabetico.");
+        Assert.IsTrue(html.IndexOf("Intro", StringComparison.Ordinal) < html.IndexOf("page-children-buttons", StringComparison.Ordinal));
+        Assert.IsFalse(html.Contains("[sottopagine"), "Il segnaposto non resta nel testo.");
+        Assert.IsFalse(html.Contains("page-children-cards"), "L'elenco non si ripete in fondo.");
+
+        // Senza segnaposto valgono le scelte della pagina: schede su 2 colonne, con immagine e descrizione, nell'ordine manuale.
+        await factory.RunAsSystemAsync(async services =>
+        {
+            var pages = services.GetRequiredService<IPageService>();
+            var section = (await pages.GetVisiblePagesAsync()).Single(p => p.Id == sectionId);
+            section.Content = "<p>Intro</p>";
+            await pages.SaveAsync(section);
+        });
+        html = await visitor.GetStringAsync("/page/sezione");
+        StringAssert.Contains(html, "class=\"page-children page-children-cards page-children-cols-2\"");
+        StringAssert.Contains(html, "<img src=\"/foto/zeta.jpg\" alt=\"\" loading=\"lazy\" />");
+        StringAssert.Contains(html, "<span class=\"page-child-description\">Ultima &amp; basta</span>");
+        Assert.IsTrue(html.IndexOf(">Zeta<", StringComparison.Ordinal) < html.IndexOf(">Alfa<", StringComparison.Ordinal), "Ordine impostato nelle pagine.");
+
+        // "Solo dove le inserisco": senza segnaposto nessun elenco.
+        Assert.IsFalse((await visitor.GetStringAsync("/page/manuale")).Contains("page-children"));
+
+        // L'editor legge e salva le scelte.
+        var detail = JsonNode.Parse(await admin.GetStringAsync($"/api/pages/{sectionId}"))!.AsObject();
+        Assert.AreEqual((int)SubpagesStyle.Cards, detail["SubpagesStyle"]!.GetValue<int>());
+        Assert.AreEqual("In questa sezione", detail["SubpagesTitle"]!.GetValue<string>());
+        detail["SubpagesStyle"] = (int)SubpagesStyle.Numbered;
+        detail["SubpagesOrder"] = (int)SubpagesOrder.Newest;
+        detail["SubpagesTitle"] = string.Empty;
+        var saved = await admin.PutAsync("/api/pages/update/foo", new StringContent(detail.ToJsonString(), System.Text.Encoding.UTF8, "application/json"));
+        Assert.IsTrue(saved.IsSuccessStatusCode, await saved.Content.ReadAsStringAsync());
+        html = await visitor.GetStringAsync("/page/sezione");
+        StringAssert.Contains(html, "<ol class=\"page-children page-children-numbered\">");
+        Assert.IsFalse(html.Contains("page-children-title"));
+        Assert.IsTrue(html.IndexOf(">Alfa</a>", StringComparison.Ordinal) < html.IndexOf(">Zeta</a>", StringComparison.Ordinal), "Dalla più recente.");
+    }
+
     /// <summary>Il menu del tema mostra solo le pagine con "Mostra nel menu", indipendentemente dall'elenco delle pagine.</summary>
     [TestMethod]
     public async Task Menu_ShowsOnlyPagesMarkedForMenu()
