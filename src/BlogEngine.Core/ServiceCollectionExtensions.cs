@@ -97,6 +97,7 @@ public static class ServiceCollectionExtensions
         Map<IUserStore>();
         Map<IRoleStore>();
         Map<ICommentFilterStore>();
+        Map<IEntityStore<ContactMessage>>();
         return services;
 
         void Map<TContract>()

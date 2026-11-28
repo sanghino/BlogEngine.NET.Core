@@ -13,6 +13,7 @@ namespace BlogEngine.Data.Xml;
 /// blogs/{idBlog}/posts/{idPost}.xml      un file per post, commenti inclusi
 /// blogs/{idBlog}/pages/{idPagina}.xml    un file per pagina
 /// blogs/{idBlog}/referrers/{aaaa-mm-gg}.xml
+/// blogs/{idBlog}/contactmessages/{id}.xml  messaggi di contatto bloccati dal filtro antispam
 /// blogs/{idBlog}/datastore/{tipo}/{id}.json
 /// blogs/{idBlog}/categories.xml, blogroll.xml, profiles.xml, settings.xml, rights.xml,
 ///   customfields.xml, users.xml, roles.xml, commentfilters.xml, pingservices.xml, stopwords.xml
@@ -26,6 +27,7 @@ public sealed class XmlDataStore :
     IEntityStore<Category>,
     IEntityStore<BlogRollItem>,
     IEntityStore<Referrer>,
+    IEntityStore<ContactMessage>,
     IProfileStore,
     ISettingsStore,
     IRightsStore,
@@ -131,6 +133,17 @@ public sealed class XmlDataStore :
             await RemoveAsync(file, "referrers", "referrer", e => e.Guid("id") == id, cancellationToken).ConfigureAwait(false);
         }
     }
+
+    // ---- Messaggi del modulo di contatto bloccati dal filtro: un file per messaggio ----
+
+    Task<IReadOnlyList<ContactMessage>> IEntityStore<ContactMessage>.GetAllAsync(Guid blogId, CancellationToken cancellationToken) =>
+        ReadFolderAsync(Path.Combine(BlogFolder(blogId), "contactmessages"), XmlMappers.ToContactMessage, cancellationToken);
+
+    Task IEntityStore<ContactMessage>.SaveAsync(ContactMessage entity, CancellationToken cancellationToken) =>
+        _files.SaveAsync(ItemFile(entity.BlogId, "contactmessages", entity.Id), new XDocument(XmlMappers.ToXml(entity)), cancellationToken);
+
+    Task IEntityStore<ContactMessage>.DeleteAsync(Guid blogId, Guid id, CancellationToken cancellationToken) =>
+        _files.DeleteAsync(ItemFile(blogId, "contactmessages", id), cancellationToken);
 
     // ---- Profili ----
 

@@ -1,0 +1,172 @@
+<div class="content-contact-messages-view" data-ng-controller="ContactMessagesController">
+    <style>
+        .content-contact-messages-view .msg-tabs { margin-bottom: 15px; }
+        .content-contact-messages-view .msg-table td, .content-contact-messages-view .msg-table th { vertical-align: top; text-align: left; color: #333; }
+        .content-contact-messages-view .msg-subject { cursor: pointer; font-weight: 600; color: #2a6496; }
+        .content-contact-messages-view .msg-subject:hover { text-decoration: underline; }
+        .content-contact-messages-view .msg-table .msg-reason { color: #a94442; }
+        .content-contact-messages-view .msg-released td { opacity: .65; }
+        .content-contact-messages-view .msg-detail td { background: #f9f9f9; }
+        .content-contact-messages-view .msg-text { white-space: pre-wrap; word-break: break-word; margin: 0 0 8px; font-family: inherit; background: #fff; border: 1px solid #ddd; padding: 10px; max-height: 360px; overflow: auto; }
+        .content-contact-messages-view .msg-table .msg-meta { font-size: 12px; color: #777; word-break: break-all; }
+        .content-contact-messages-view .msg-table .item-actions { white-space: nowrap; text-align: right; }
+        .content-contact-messages-view .msg-blacklist { margin-top: 8px; }
+        .content-contact-messages-view .msg-blacklist .btn { margin: 0 4px 4px 0; }
+        .content-contact-messages-view .rule-check { padding: 8px 0; border-bottom: 1px solid #eee; display: flex; gap: 10px; align-items: flex-start; }
+        .content-contact-messages-view .rule-check label { font-weight: 600; margin: 0; }
+        .content-contact-messages-view .rule-check input[type=number] { width: 70px; display: inline-block; margin: 0 6px; }
+        .content-contact-messages-view .rule-check .help { color: #777; font-size: 12px; }
+        .content-contact-messages-view .rules-table td { vertical-align: middle; }
+        .content-contact-messages-view .rules-table select, .content-contact-messages-view .rules-table input[type=text] { min-width: 90px; }
+        .content-contact-messages-view .rules-table .rule-off td { opacity: .5; }
+        .content-contact-messages-view .section-title { margin: 25px 0 6px; font-size: 16px; }
+        .content-contact-messages-view .link-test { margin-top: 8px; font-size: 13px; }
+    </style>
+    <div class="main-header clearfix">
+        <h2 class="page-title pull-left">{{lbl.contactMessages}} <span class="text-muted" ng-if="blockedCount() > 0">({{blockedCount()}})</span></h2>
+        <div class="pull-right" ng-if="tab === 'messages'">
+            <button type="button" class="btn btn-danger btn-sm" ng-click="removeBlocked()" ng-disabled="blockedCount() === 0"><i class="fa fa-trash"></i> {{lbl.contactDeleteBlocked}}</button>
+        </div>
+        <div class="pull-right" ng-if="tab === 'rules' && settings">
+            <button type="button" class="btn btn-success btn-sm" ng-click="saveSettings()"><i class="fa fa-save"></i> {{lbl.save}}</button>
+        </div>
+    </div>
+    <div class="content-inner">
+        <ul class="nav nav-tabs msg-tabs">
+            <li ng-class="{ active: tab === 'messages' }"><a href="" ng-click="show('messages')"><i class="fa fa-envelope"></i> {{lbl.contactMessagesTab}}</a></li>
+            <li ng-class="{ active: tab === 'rules' }"><a href="" ng-click="show('rules')"><i class="fa fa-filter"></i> {{lbl.contactRules}}</a></li>
+        </ul>
+
+        <!-- Messaggi bloccati -->
+        <div ng-if="tab === 'messages'">
+            <p class="text-muted">{{lbl.contactMessagesHelp}}</p>
+            <table class="table msg-table" ng-if="messages.length > 0">
+                <thead>
+                    <tr>
+                        <th>{{lbl.date}}</th>
+                        <th>{{lbl.name}}</th>
+                        <th>{{lbl.subject}}</th>
+                        <th>{{lbl.contactReason}}</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody ng-repeat="m in messages">
+                    <tr ng-class="{ 'msg-released': m.Released }">
+                        <td style="white-space:nowrap">{{m.Date}}</td>
+                        <td>{{m.Name}}<div class="msg-meta">{{m.Email}}</div></td>
+                        <td><span class="msg-subject" ng-click="toggle(m)"><i class="fa" ng-class="open[m.Id] ? 'fa-caret-down' : 'fa-caret-right'"></i> {{m.Subject}}</span></td>
+                        <td>
+                            <span class="msg-reason" ng-if="!m.Released">{{m.Reason}}</span>
+                            <span class="label label-success" ng-if="m.Released">{{lbl.contactReleased}}</span>
+                            <div class="msg-meta" ng-if="m.Released">{{m.DateReleased}} · {{m.ReleasedBy}}</div>
+                        </td>
+                        <td class="item-actions">
+                            <button type="button" class="btn btn-success btn-sm" ng-if="!m.Released" ng-click="release(m)" ng-disabled="busy[m.Id]"><i class="fa" ng-class="busy[m.Id] ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i> {{lbl.contactRelease}}</button>
+                            <button type="button" class="btn btn-danger btn-sm" ng-click="remove(m)" title="{{lbl.delete}}"><i class="fa fa-trash"></i></button>
+                        </td>
+                    </tr>
+                    <tr class="msg-detail" ng-if="open[m.Id]">
+                        <td colspan="5">
+                            <pre class="msg-text">{{m.Text}}</pre>
+                            <div class="msg-meta" ng-if="m.AttachmentName"><i class="fa fa-paperclip"></i> {{lbl.contactAttachment}}: {{m.AttachmentName}} ({{size(m.AttachmentSize)}})</div>
+                            <div class="msg-meta">IP: {{m.IP}} · {{m.UserAgent}}</div>
+                            <div class="msg-meta">{{lbl.contactBlocked}}: {{m.Reason}} ({{m.BlockedBy}})</div>
+                            <div class="msg-blacklist">
+                                <button type="button" class="btn btn-default btn-xs" ng-click="blacklist(m, 'Email')"><i class="fa fa-ban"></i> {{lbl.contactBlacklistEmail}}</button>
+                                <button type="button" class="btn btn-default btn-xs" ng-click="blacklist(m, 'EmailDomain')"><i class="fa fa-ban"></i> {{lbl.contactBlacklistDomain}}</button>
+                                <button type="button" class="btn btn-default btn-xs" ng-if="m.IP" ng-click="blacklist(m, 'IP')"><i class="fa fa-ban"></i> {{lbl.contactBlacklistIp}}</button>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="text-muted" ng-if="loaded && messages.length === 0">{{lbl.contactMessagesEmpty}}</p>
+            <div class="table-item-empty" id="tr-spinner" ng-if="!loaded"><div id="div-spinner"><i class="fa fa-spinner fa-spin"></i></div></div>
+        </div>
+
+        <!-- Regole del filtro -->
+        <div ng-if="tab === 'rules'">
+            <div ng-if="!settings" class="text-muted"><i class="fa fa-spinner fa-spin"></i></div>
+            <div ng-if="settings">
+                <h3 class="section-title">{{lbl.contactAutoChecks}}</h3>
+                <p class="text-muted">{{lbl.contactAutoChecksHelp}}</p>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkHoneypot" ng-model="settings.Honeypot" />
+                    <div><label for="chkHoneypot">{{lbl.contactCheckHoneypot}}</label><div class="help">{{lbl.contactCheckHoneypotHelp}}</div></div>
+                </div>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkTimer" ng-model="settings.Timer" />
+                    <div><label for="chkTimer">{{lbl.contactCheckTimer}}</label><input type="number" class="form-control input-sm" min="0" max="600" ng-model="settings.MinSeconds" ng-disabled="!settings.Timer" />{{lbl.contactSeconds}}<div class="help">{{lbl.contactCheckTimerHelp}}</div></div>
+                </div>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkLinkInName" ng-model="settings.LinkInName" />
+                    <div><label for="chkLinkInName">{{lbl.contactCheckLinkInName}}</label><div class="help">{{lbl.contactCheckLinkInNameHelp}}</div></div>
+                </div>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkMaxLinks" ng-model="settings.MaxLinksEnabled" />
+                    <div><label for="chkMaxLinks">{{lbl.contactCheckMaxLinks}}</label><input type="number" class="form-control input-sm" min="0" max="100" ng-model="settings.MaxLinks" ng-disabled="!settings.MaxLinksEnabled" /><div class="help">{{lbl.contactCheckMaxLinksHelp}}</div></div>
+                </div>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkLinkReputation" ng-model="settings.LinkReputation" />
+                    <div>
+                        <label for="chkLinkReputation">{{lbl.contactCheckLinkReputation}}</label>
+                        <div class="help">{{lbl.contactCheckLinkReputationHelp}}</div>
+                        <button type="button" class="btn btn-default btn-xs" style="margin-top:6px" ng-click="testLinks()" ng-disabled="linkTest === 'loading'"><i class="fa" ng-class="linkTest === 'loading' ? 'fa-spinner fa-spin' : 'fa-stethoscope'"></i> {{lbl.contactLinkTest}}</button>
+                        <div class="link-test" ng-if="linkTest && linkTest !== 'loading'">
+                            <div ng-repeat="t in linkTest"><i class="fa" ng-class="t.State === 'listed' ? 'fa-check text-success' : 'fa-exclamation-triangle text-warning'"></i> {{t.List}}: {{linkState(t.State)}}</div>
+                        </div>
+                    </div>
+                </div>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkCommentFilters" ng-model="settings.CommentFilters" />
+                    <div><label for="chkCommentFilters">{{lbl.contactCheckCommentFilters}}</label><div class="help">{{lbl.contactCheckCommentFiltersHelp}}</div></div>
+                </div>
+                <div class="rule-check">
+                    <input type="checkbox" id="chkExternal" ng-model="settings.ExternalServices" />
+                    <div><label for="chkExternal">{{lbl.contactCheckExternal}}</label><div class="help">{{lbl.contactCheckExternalHelp}}</div></div>
+                </div>
+
+                <h3 class="section-title">{{lbl.contactCustomRules}}</h3>
+                <p class="text-muted">{{lbl.contactCustomRulesHelp}}<br />{{lbl.contactCustomRulesExamples}}</p>
+                <div class="table-responsive" ng-if="settings.Rules.length > 0">
+                <table class="table rules-table">
+                    <thead>
+                        <tr>
+                            <th>{{lbl.contactEnabled}}</th>
+                            <th>{{lbl.contactRuleField}}</th>
+                            <th>{{lbl.contactRuleCondition}}</th>
+                            <th>{{lbl.contactRuleValue}}</th>
+                            <th>{{lbl.contactRuleAction}}</th>
+                            <th>{{lbl.contactRuleNote}}</th>
+                            <th>{{lbl.contactRuleHits}}</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr ng-repeat="rule in settings.Rules" ng-class="{ 'rule-off': !rule.Enabled }">
+                            <td><input type="checkbox" ng-model="rule.Enabled" /></td>
+                            <td><select class="form-control input-sm" ng-model="rule.Field" ng-options="f.id as f.label for f in fields"></select></td>
+                            <td>
+                                <select class="form-control input-sm" ng-if="hasOperator(rule)" ng-model="rule.Operator" ng-options="o.id as o.label for o in operators"></select>
+                                <span ng-if="!hasOperator(rule)">=</span>
+                            </td>
+                            <td><input type="text" class="form-control input-sm" ng-model="rule.Value" /></td>
+                            <td><select class="form-control input-sm" ng-model="rule.Action" ng-options="a.id as a.label for a in actions"></select></td>
+                            <td><input type="text" class="form-control input-sm" ng-model="rule.Note" /></td>
+                            <td title="{{lastHit(rule)}}">{{rule.Hits}}</td>
+                            <td style="white-space:nowrap">
+                                <button type="button" class="btn btn-default btn-xs" ng-click="moveRule($index, -1)" ng-disabled="$first"><i class="fa fa-arrow-up"></i></button>
+                                <button type="button" class="btn btn-default btn-xs" ng-click="moveRule($index, 1)" ng-disabled="$last"><i class="fa fa-arrow-down"></i></button>
+                                <button type="button" class="btn btn-danger btn-xs" ng-click="removeRule($index)" title="{{lbl.delete}}"><i class="fa fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+                </div>
+                <p class="text-muted" ng-if="settings.Rules.length === 0">{{lbl.contactRulesEmpty}}</p>
+                <button type="button" class="btn btn-primary btn-sm" ng-click="addRule()"><i class="fa fa-plus"></i> {{lbl.contactRuleAdd}}</button>
+                <button type="button" class="btn btn-success btn-sm" ng-click="saveSettings()"><i class="fa fa-save"></i> {{lbl.save}}</button>
+            </div>
+        </div>
+    </div>
+</div>

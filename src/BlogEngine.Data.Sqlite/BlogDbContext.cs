@@ -46,6 +46,8 @@ public sealed class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbC
 
     public DbSet<CommentFilterRow> CommentFilters => Set<CommentFilterRow>();
 
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+
     protected override void ConfigureConventions(ModelConfigurationBuilder configurationBuilder)
     {
         // SQLite non conserva il tipo della data: tutte le date sono in UTC.
@@ -141,6 +143,12 @@ public sealed class BlogDbContext(DbContextOptions<BlogDbContext> options) : DbC
         modelBuilder.Entity<ExtensionDataRow>(b => b.HasKey(x => new { x.BlogId, x.Kind, x.Id }));
 
         modelBuilder.Entity<CommentFilterRow>(b =>
+        {
+            b.HasKey(x => x.Id);
+            b.HasIndex(x => x.BlogId);
+        });
+
+        modelBuilder.Entity<ContactMessage>(b =>
         {
             b.HasKey(x => x.Id);
             b.HasIndex(x => x.BlogId);

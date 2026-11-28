@@ -176,6 +176,49 @@ public abstract class StoreContractTests
     }
 
     [TestMethod]
+    public async Task ContactMessages_RoundTripWithAttachment()
+    {
+        var blogId = Guid.NewGuid();
+        var message = new ContactMessage
+        {
+            BlogId = blogId,
+            DateCreated = Created,
+            Name = "Mario <Rossi>",
+            Email = "mario@example.com",
+            Subject = "Ciao & grazie",
+            Text = "Riga 1\nRiga 2 con \"virgolette\"",
+            IP = "203.0.113.7",
+            UserAgent = "Mozilla/5.0",
+            BlockedBy = "Links",
+            Reason = "3 link nel messaggio",
+            AttachmentName = "foto.jpg",
+            AttachmentType = "image/jpeg",
+            AttachmentData = [1, 2, 3, 255],
+        };
+        await (await NewStoreAsync<IEntityStore<ContactMessage>>()).SaveAsync(message);
+
+        var read = (await (await NewStoreAsync<IEntityStore<ContactMessage>>()).GetAllAsync(blogId)).Single();
+        Assert.AreEqual(Created, read.DateCreated);
+        Assert.AreEqual("Mario <Rossi>", read.Name);
+        Assert.AreEqual("Riga 1\nRiga 2 con \"virgolette\"", read.Text);
+        Assert.AreEqual("Links", read.BlockedBy);
+        Assert.AreEqual(ContactMessageStatus.Blocked, read.Status);
+        Assert.IsNull(read.DateReleased);
+        CollectionAssert.AreEqual(new byte[] { 1, 2, 3, 255 }, read.AttachmentData);
+
+        read.Status = ContactMessageStatus.Released;
+        read.DateReleased = Created.AddHours(1);
+        read.ReleasedBy = "admin";
+        await (await NewStoreAsync<IEntityStore<ContactMessage>>()).SaveAsync(read);
+        var released = (await (await NewStoreAsync<IEntityStore<ContactMessage>>()).GetAllAsync(blogId)).Single();
+        Assert.AreEqual(ContactMessageStatus.Released, released.Status);
+        Assert.AreEqual(Created.AddHours(1), released.DateReleased);
+
+        await (await NewStoreAsync<IEntityStore<ContactMessage>>()).DeleteAsync(blogId, read.Id);
+        Assert.AreEqual(0, (await (await NewStoreAsync<IEntityStore<ContactMessage>>()).GetAllAsync(blogId)).Count);
+    }
+
+    [TestMethod]
     public async Task ProfilesUsersRoles_AreKeyedByNameIgnoringCase()
     {
         var blogId = Guid.NewGuid();

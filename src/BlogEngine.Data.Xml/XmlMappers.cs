@@ -228,6 +228,48 @@ internal static class XmlMappers
         PossibleSpam = e.Bool("possibleSpam"),
     };
 
+    // ---- Messaggi di contatto bloccati ----
+
+    public static XElement ToXml(ContactMessage message) => new("contactMessage",
+        Element("id", message.Id),
+        Element("blogId", message.BlogId),
+        Element("dateCreated", message.DateCreated),
+        Element("name", message.Name),
+        Element("email", message.Email),
+        Element("subject", message.Subject),
+        Element("text", message.Text),
+        Element("ip", message.IP),
+        Element("userAgent", message.UserAgent),
+        Element("blockedBy", message.BlockedBy),
+        Element("reason", message.Reason),
+        Element("status", message.Status),
+        Element("dateReleased", message.DateReleased),
+        Element("releasedBy", message.ReleasedBy),
+        Element("attachmentName", message.AttachmentName),
+        Element("attachmentType", message.AttachmentType),
+        Element("attachmentData", message.AttachmentData is { Length: > 0 } data ? Convert.ToBase64String(data) : null));
+
+    public static ContactMessage ToContactMessage(XElement e) => new()
+    {
+        Id = e.Guid("id"),
+        BlogId = e.Guid("blogId"),
+        DateCreated = e.Date("dateCreated"),
+        Name = e.String("name"),
+        Email = e.String("email"),
+        Subject = e.String("subject"),
+        Text = e.String("text"),
+        IP = e.String("ip"),
+        UserAgent = e.String("userAgent"),
+        BlockedBy = e.String("blockedBy"),
+        Reason = e.String("reason"),
+        Status = e.Enum<ContactMessageStatus>("status"),
+        DateReleased = e.NullableDate("dateReleased"),
+        ReleasedBy = e.String("releasedBy"),
+        AttachmentName = e.String("attachmentName"),
+        AttachmentType = e.String("attachmentType"),
+        AttachmentData = e.String("attachmentData") is { Length: > 0 } base64 ? Convert.FromBase64String(base64) : null,
+    };
+
     // ---- Profili, campi personalizzati, utenti e ruoli ----
 
     public static XElement ToXml(AuthorProfile p) => new("profile",

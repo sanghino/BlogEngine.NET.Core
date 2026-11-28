@@ -33,6 +33,10 @@
                 {
                     <li id="mu-comments" data-ng-class="{ active: isActive('/content/comments')}"><a href="@(root)admin/#/content/comments">@L["comments"]</a></li>
                 }
+                @if (Admin.Can(Rights.ModerateComments))
+                {
+                    <li data-ng-class="{ active: isActive('/content/contactmessages')}"><a href="@(root)admin/#/content/contactmessages">@L["contactMessages"]</a></li>
+                }
                 <li id="mu-pages" data-ng-class="{ active: isActive('/content/pages')}"><a href="@(root)admin/#/content/pages">@L["pages"]</a></li>
                 <li data-ng-class="{ active: isActive('/content/categories')}"><a href="@(root)admin/#/content/categories">@L["categories"]</a></li>
                 <li data-ng-class="{ active: isActive('/content/tags')}"><a href="@(root)admin/#/content/tags">@L["tags"]</a></li>

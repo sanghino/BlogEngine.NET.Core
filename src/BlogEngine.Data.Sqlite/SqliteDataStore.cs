@@ -16,6 +16,7 @@ public sealed class SqliteDataStore(IDbContextFactory<BlogDbContext> factory) :
     IEntityStore<Category>,
     IEntityStore<BlogRollItem>,
     IEntityStore<Referrer>,
+    IEntityStore<ContactMessage>,
     IProfileStore,
     ISettingsStore,
     IRightsStore,
@@ -58,6 +59,7 @@ public sealed class SqliteDataStore(IDbContextFactory<BlogDbContext> factory) :
         await db.Categories.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
         await db.BlogRoll.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
         await db.Referrers.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
+        await db.ContactMessages.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
         await db.Profiles.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
         await db.CustomFields.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
         await db.Users.Where(x => x.BlogId == blogId).ExecuteDeleteAsync(cancellationToken).ConfigureAwait(false);
@@ -153,6 +155,14 @@ public sealed class SqliteDataStore(IDbContextFactory<BlogDbContext> factory) :
     Task IEntityStore<Referrer>.SaveAsync(Referrer entity, CancellationToken cancellationToken) => UpsertAsync(entity, [entity.Id], cancellationToken);
 
     Task IEntityStore<Referrer>.DeleteAsync(Guid blogId, Guid id, CancellationToken cancellationToken) => DeleteAsync<Referrer>(x => x.BlogId == blogId && x.Id == id, cancellationToken);
+
+    // ---- Messaggi di contatto bloccati dal filtro antispam ----
+
+    Task<IReadOnlyList<ContactMessage>> IEntityStore<ContactMessage>.GetAllAsync(Guid blogId, CancellationToken cancellationToken) => ListAsync<ContactMessage>(x => x.BlogId == blogId, cancellationToken);
+
+    Task IEntityStore<ContactMessage>.SaveAsync(ContactMessage entity, CancellationToken cancellationToken) => UpsertAsync(entity, [entity.Id], cancellationToken);
+
+    Task IEntityStore<ContactMessage>.DeleteAsync(Guid blogId, Guid id, CancellationToken cancellationToken) => DeleteAsync<ContactMessage>(x => x.BlogId == blogId && x.Id == id, cancellationToken);
 
     // ---- Profili, campi personalizzati, utenti e ruoli ----
 

@@ -14,6 +14,7 @@
         .when("/content/tags", { templateUrl: "app/content/tags/tagView.html" })
         .when("/content/polls", { templateUrl: "app/content/polls/pollView.html" })
         .when("/content/games", { templateUrl: "app/content/games/gameView.html" })
+        .when("/content/contactmessages", { templateUrl: "app/content/contactmessages/contactMessageView.html" })
 
         .when("/custom/plugins", { templateUrl: "app/custom/plugins/pluginView.html" })
         .when("/custom/plugins/gallery", { templateUrl: "app/custom/plugins/pluginGallery.html" })

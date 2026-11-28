@@ -439,6 +439,12 @@ public sealed class ContactModel
     public string Text { get; init; } = string.Empty;
 
     public IReadOnlyList<string> Errors { get; init; } = [];
+
+    /// <summary>
+    /// Ora di apertura del modulo, cifrata: va rimandata nel campo nascosto "opened". Chi invia in meno di
+    /// pochi secondi è un programma automatico (filtro antispam del modulo di contatto).
+    /// </summary>
+    public string OpenedToken { get; init; } = string.Empty;
 }
 
 /// <summary>Un widget all'interno di una zona: disponibile nel suo template come <c>widget</c>.</summary>

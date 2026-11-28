@@ -3491,4 +3491,226 @@
   <data name="gameFire" xml:space="preserve">
     <value>Fire</value>
   </data>
+  <data name="contactSpamHoneypot" xml:space="preserve">
+    <value>Hidden anti-robot field filled in</value>
+  </data>
+  <data name="contactSpamBadToken" xml:space="preserve">
+    <value>Form opening time missing or tampered with</value>
+  </data>
+  <data name="contactSpamTooFast" xml:space="preserve">
+    <value>Sent {0} seconds after opening the form</value>
+  </data>
+  <data name="contactSpamLinkInName" xml:space="preserve">
+    <value>Web address in the name</value>
+  </data>
+  <data name="contactSpamLinks" xml:space="preserve">
+    <value>{0} links in the message (at most {1} allowed)</value>
+  </data>
+  <data name="contactSpamFilter" xml:space="preserve">
+    <value>Comment filter: {0} {1} &quot;{2}&quot;</value>
+  </data>
+  <data name="contactSpamService" xml:space="preserve">
+    <value>Reported as spam by {0}</value>
+  </data>
+  <data name="contactMessages" xml:space="preserve">
+    <value>Blocked messages</value>
+  </data>
+  <data name="contactMessagesHelp" xml:space="preserve">
+    <value>Contact form messages stopped by the spam filter. They were not sent: check them and deliver the good ones. Messages older than 90 days are deleted automatically.</value>
+  </data>
+  <data name="contactMessagesEmpty" xml:space="preserve">
+    <value>No blocked messages.</value>
+  </data>
+  <data name="contactRelease" xml:space="preserve">
+    <value>Deliver</value>
+  </data>
+  <data name="contactReleaseConfirm" xml:space="preserve">
+    <value>Deliver this message to the blog address?</value>
+  </data>
+  <data name="contactReleased" xml:space="preserve">
+    <value>Delivered</value>
+  </data>
+  <data name="contactBlocked" xml:space="preserve">
+    <value>Blocked</value>
+  </data>
+  <data name="contactReason" xml:space="preserve">
+    <value>Reason</value>
+  </data>
+  <data name="contactDeleteBlocked" xml:space="preserve">
+    <value>Delete all blocked</value>
+  </data>
+  <data name="contactAttachment" xml:space="preserve">
+    <value>Attachment</value>
+  </data>
+  <data name="contactSpamRule" xml:space="preserve">
+    <value>Custom rule: {0}</value>
+  </data>
+  <data name="contactSpamBadLink" xml:space="preserve">
+    <value>Link to {0}, reported as {1} by {2}</value>
+  </data>
+  <data name="contactFieldEmail" xml:space="preserve">
+    <value>Sender email</value>
+  </data>
+  <data name="contactFieldEmailDomain" xml:space="preserve">
+    <value>Email domain</value>
+  </data>
+  <data name="contactFieldIP" xml:space="preserve">
+    <value>IP address</value>
+  </data>
+  <data name="contactFieldName" xml:space="preserve">
+    <value>Name</value>
+  </data>
+  <data name="contactFieldSubject" xml:space="preserve">
+    <value>Subject</value>
+  </data>
+  <data name="contactFieldText" xml:space="preserve">
+    <value>Message</value>
+  </data>
+  <data name="contactFieldLinkDomain" xml:space="preserve">
+    <value>Link domain</value>
+  </data>
+  <data name="contactOperatorContains" xml:space="preserve">
+    <value>contains</value>
+  </data>
+  <data name="contactOperatorEquals" xml:space="preserve">
+    <value>is</value>
+  </data>
+  <data name="contactOperatorRegex" xml:space="preserve">
+    <value>matches the regular expression</value>
+  </data>
+  <data name="contactMessagesTab" xml:space="preserve">
+    <value>Messages</value>
+  </data>
+  <data name="contactRules" xml:space="preserve">
+    <value>Rules</value>
+  </data>
+  <data name="contactAutoChecks" xml:space="preserve">
+    <value>Automatic checks</value>
+  </data>
+  <data name="contactAutoChecksHelp" xml:space="preserve">
+    <value>Uncheck a check to turn it off. Changes apply to new messages after saving.</value>
+  </data>
+  <data name="contactCheckHoneypot" xml:space="preserve">
+    <value>Anti-robot trap field</value>
+  </data>
+  <data name="contactCheckHoneypotHelp" xml:space="preserve">
+    <value>A field hidden from people: only automated programs fill it in.</value>
+  </data>
+  <data name="contactCheckTimer" xml:space="preserve">
+    <value>Too fast</value>
+  </data>
+  <data name="contactCheckTimerHelp" xml:space="preserve">
+    <value>Blocks messages sent less than this many seconds after opening the form, or with a tampered opening time.</value>
+  </data>
+  <data name="contactCheckLinkInName" xml:space="preserve">
+    <value>Link in the name</value>
+  </data>
+  <data name="contactCheckLinkInNameHelp" xml:space="preserve">
+    <value>A web address in the name field is typical of spam.</value>
+  </data>
+  <data name="contactCheckMaxLinks" xml:space="preserve">
+    <value>Too many links</value>
+  </data>
+  <data name="contactCheckMaxLinksHelp" xml:space="preserve">
+    <value>Maximum number of links allowed in subject and message.</value>
+  </data>
+  <data name="contactCheckLinkReputation" xml:space="preserve">
+    <value>Link quality</value>
+  </data>
+  <data name="contactCheckLinkReputationHelp" xml:space="preserve">
+    <value>Checks link domains in the public lists of spam, phishing and malware sites (Spamhaus DBL, SURBL).</value>
+  </data>
+  <data name="contactCheckCommentFilters" xml:space="preserve">
+    <value>Comment filters</value>
+  </data>
+  <data name="contactCheckCommentFiltersHelp" xml:space="preserve">
+    <value>Also applies the rules set in Comments → Filters.</value>
+  </data>
+  <data name="contactCheckExternal" xml:space="preserve">
+    <value>Anti-spam services</value>
+  </data>
+  <data name="contactCheckExternalHelp" xml:space="preserve">
+    <value>StopForumSpam and Akismet, if enabled in the extensions.</value>
+  </data>
+  <data name="contactSeconds" xml:space="preserve">
+    <value>seconds</value>
+  </data>
+  <data name="contactCustomRules" xml:space="preserve">
+    <value>Custom rules</value>
+  </data>
+  <data name="contactCustomRulesHelp" xml:space="preserve">
+    <value>Black list (Block) and white list (Allow) of senders. Rules are checked from the top; the first one that applies decides. Allow lets the message through without the other checks, except the trap field and the time.</value>
+  </data>
+  <data name="contactCustomRulesExamples" xml:space="preserve">
+    <value>Examples: email domain = spam.com (subdomains included); IP = 203.0.113.7, 203.0.113. or 203.0.113.0/24; link domain = casino.example.</value>
+  </data>
+  <data name="contactRuleAdd" xml:space="preserve">
+    <value>Add rule</value>
+  </data>
+  <data name="contactRuleField" xml:space="preserve">
+    <value>Field</value>
+  </data>
+  <data name="contactRuleCondition" xml:space="preserve">
+    <value>Condition</value>
+  </data>
+  <data name="contactRuleValue" xml:space="preserve">
+    <value>Value</value>
+  </data>
+  <data name="contactRuleAction" xml:space="preserve">
+    <value>Action</value>
+  </data>
+  <data name="contactRuleBlock" xml:space="preserve">
+    <value>Block</value>
+  </data>
+  <data name="contactRuleAllow" xml:space="preserve">
+    <value>Allow</value>
+  </data>
+  <data name="contactRuleNote" xml:space="preserve">
+    <value>Note</value>
+  </data>
+  <data name="contactRuleHits" xml:space="preserve">
+    <value>Hits</value>
+  </data>
+  <data name="contactRuleInvalid" xml:space="preserve">
+    <value>Invalid rule</value>
+  </data>
+  <data name="contactRulesSaved" xml:space="preserve">
+    <value>Rules saved</value>
+  </data>
+  <data name="contactRulesEmpty" xml:space="preserve">
+    <value>No custom rules.</value>
+  </data>
+  <data name="contactBlacklistEmail" xml:space="preserve">
+    <value>Block this email</value>
+  </data>
+  <data name="contactBlacklistDomain" xml:space="preserve">
+    <value>Block this domain</value>
+  </data>
+  <data name="contactBlacklistIp" xml:space="preserve">
+    <value>Block this IP</value>
+  </data>
+  <data name="contactRuleAdded" xml:space="preserve">
+    <value>Rule added</value>
+  </data>
+  <data name="contactRuleExists" xml:space="preserve">
+    <value>The rule already exists</value>
+  </data>
+  <data name="contactLinkTest" xml:space="preserve">
+    <value>Test the link lists</value>
+  </data>
+  <data name="contactLinkTestListed" xml:space="preserve">
+    <value>working</value>
+  </data>
+  <data name="contactLinkTestRefused" xml:space="preserve">
+    <value>refuses this server&apos;s queries (public DNS): the check is skipped</value>
+  </data>
+  <data name="contactLinkTestNotListed" xml:space="preserve">
+    <value>unexpected answer: the check may not work</value>
+  </data>
+  <data name="contactLinkTestTimeout" xml:space="preserve">
+    <value>no answer</value>
+  </data>
+  <data name="contactEnabled" xml:space="preserve">
+    <value>Active</value>
+  </data>
 </root>

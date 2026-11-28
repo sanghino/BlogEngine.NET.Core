@@ -17,6 +17,7 @@ public sealed class InMemoryStores :
     IEntityStore<Category>,
     IEntityStore<BlogRollItem>,
     IEntityStore<Referrer>,
+    IEntityStore<ContactMessage>,
     IProfileStore,
     ISettingsStore,
     IRightsStore,
@@ -80,6 +81,10 @@ public sealed class InMemoryStores :
     Task<IReadOnlyList<Referrer>> IEntityStore<Referrer>.GetAllAsync(Guid blogId, CancellationToken cancellationToken) => GetAll<Referrer>(blogId);
     Task IEntityStore<Referrer>.SaveAsync(Referrer entity, CancellationToken cancellationToken) => Save(entity);
     Task IEntityStore<Referrer>.DeleteAsync(Guid blogId, Guid id, CancellationToken cancellationToken) => Delete<Referrer>(id);
+
+    Task<IReadOnlyList<ContactMessage>> IEntityStore<ContactMessage>.GetAllAsync(Guid blogId, CancellationToken cancellationToken) => GetAll<ContactMessage>(blogId);
+    Task IEntityStore<ContactMessage>.SaveAsync(ContactMessage entity, CancellationToken cancellationToken) => Save(entity);
+    Task IEntityStore<ContactMessage>.DeleteAsync(Guid blogId, Guid id, CancellationToken cancellationToken) => Delete<ContactMessage>(id);
 
     /// <summary>Elementi di un tipo attualmente "su disco".</summary>
     public IReadOnlyList<T> Stored<T>() where T : class => _entities.Where(e => e.Key.Item1 == typeof(T)).Select(e => (T)e.Value).ToList();

@@ -1,6 +1,7 @@
 {%- comment -%}
   Modulo di contatto (porting di contact.aspx). Variabili: contact (message, thank_message, error_message,
-  allow_attachments, sent, failed, name, email, subject, text, errors) e antiforgery (campo nascosto obbligatorio).
+  allow_attachments, sent, failed, name, email, subject, text, errors, opened_token) e antiforgery (campo nascosto
+  obbligatorio). I campi nascosti "hp" e "opened" servono al filtro antispam: un tema che ridefinisce il modulo li deve tenere.
 {%- endcomment -%}
 <div id="contact" class="contact-page page-global">
     {%- if contact.sent %}
@@ -37,6 +38,7 @@
         {%- endif %}
         <div class="form-group" id="contactCaptcha">{{ contact.captcha }}</div>
         <div style="display:none"><input type="text" name="hp" tabindex="-1" autocomplete="off" /></div>
+        <input type="hidden" name="opened" value="{{ contact.opened_token }}" />
         <div class="text-right btn-wrapper">
             <button type="submit" id="btnSend" class="btn btn-primary">{{ 'send' | t }}</button>
             {%- if contact.failed %}<span id="lblStatus">{{ contact.error_message }}.</span>{% endif %}

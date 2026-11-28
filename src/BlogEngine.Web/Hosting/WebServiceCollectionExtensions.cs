@@ -122,6 +122,13 @@ public static class WebServiceCollectionExtensions
         services.AddScoped<Themes.WidgetService>();
         services.AddScoped<Themes.SiteRenderer>();
         services.AddScoped<Themes.PublicContent>();
+
+        // Modulo di contatto: filtro antispam e archivio dei messaggi bloccati.
+        services.AddScoped<Public.ContactSpamFilter>();
+        services.AddScoped<Public.ContactMailer>();
+        services.AddScoped<Public.ContactMessageService>();
+        services.AddScoped<Public.ContactFilterSettingsService>();
+        services.AddSingleton<Public.ILinkReputationService, Public.DnsLinkReputationService>();
         services.AddBuiltInWidgets();
 
         // Servizi per le estensioni: risorse della pagina, email in background, riavvio quando cambiano.
